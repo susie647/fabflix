@@ -1,1 +1,1 @@
-Cool project
+Cool projectgit status
