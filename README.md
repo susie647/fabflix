@@ -1,1 +1,5 @@
-Cool projectgit status
+Cool project! 
+
+Group members:
+Kanglan Tang
+Susie Liu
