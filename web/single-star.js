@@ -64,7 +64,7 @@ function handleResult(resultData) {
     for (let i = 0; i < Math.min(10, resultData.length); i++) {
         let rowHTML = "";
         rowHTML += "<tr>";
-        rowHTML += "<th>" + '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">'
+        rowHTML += "<th>" + '<a href=' + resultData[i]['movie_id'] + '"single-movie.html?id=">'
             + resultData[i]["movie_title"] +     // display star_name for the link text
             '</a>' + "</th>";
         // Append the row created to the table body, which will refresh the page

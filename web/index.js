@@ -29,7 +29,7 @@ function handleMovieResult(resultData) {
         rowHTML +=
             "<th>" +
             // Add a link to single-star.html with id passed with GET url parameter
-            '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">'
+            '<a href=' + resultData[i]['movie_id'] + '"single-movie.html?id=">'
             + resultData[i]["movie_title"] +     // display star_name for the link text
             '</a>' +
             "</th>";
@@ -48,12 +48,12 @@ function handleMovieResult(resultData) {
 
         while(resultData[i]["movie_id"] === movie_id) {
             if(count_star <2){
-                stars += '<a href="single-star.html?id=' + resultData[i]['star_id'] + '">'
+                stars += '<a href=' + resultData[i]['star_id'] + '"single-star.html?id=">'
                     + resultData[i]["star_name"] + '</a>' + ", ";
                 count_star++;
             }
             else if(count_star ===2){
-                stars += '<a href="single-star.html?id=' + resultData[i]['star_id'] + '">'
+                stars += '<a href=' + resultData[i]['star_id'] + '"single-star.html?id=">'
                     + resultData[i]["star_name"] + '</a>';
                 count_star++;
             }
