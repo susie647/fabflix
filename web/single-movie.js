@@ -15,6 +15,8 @@
  * @param target String
  * @returns {*}
  */
+
+
 function getParameterByName(target) {
     // Get request URL
     let url = window.location.href;
@@ -90,6 +92,8 @@ function handleResult(resultData) {
 
     // Append the row created to the table body, which will refresh the page
     movieTableBodyElement.append(rowHTML);
+
+
 }
 
 /**

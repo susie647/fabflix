@@ -72,12 +72,16 @@ function handleResult(resultData) {
     }
 }
 
+
+
 /**
  * Once this .js is loaded, following scripts will be executed by the browser\
  */
 
 // Get id from URL
 let starId = getParameterByName('id');
+
+//document.getElementById("clickMe").onclick = backFunction;
 
 // Makes the HTTP GET request and registers on success callback function handleResult
 jQuery.ajax({

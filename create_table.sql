@@ -1,4 +1,4 @@
-CREATE DATABASE moviedb;
+CREATE DATABASE moviedb CHARACTER SET utf8;
 
 use moviedb;
 
