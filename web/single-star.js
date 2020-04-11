@@ -51,8 +51,8 @@ function handleResult(resultData) {
     }
 
     // append two html <p> created to the h3 body, which will refresh the page
-    starInfoElement.append("<p>Star Name: " + resultData[0]["star_name"] + "</p>" +
-        "<p>Year Of Birth: " + year + "</p>");
+    starInfoElement.append("<p style=\"text-align:center;\">Star Name: <b>" + resultData[0]["star_name"] + "</b></p>" +
+        "<p style=\"text-align:center;\">Year Of Birth: " + year + "</p>");
 
     console.log("handleResult: populating movie table from resultData");
 
@@ -64,9 +64,9 @@ function handleResult(resultData) {
     for (let i = 0; i < Math.min(10, resultData.length); i++) {
         let rowHTML = "";
         rowHTML += "<tr>";
-        rowHTML += "<th>" + '<a href="single-movie.html?movieId=' + resultData[i]['movie_id'] + '">'
+        rowHTML += "<th><i>" + '<a href="single-movie.html?movieId=' + resultData[i]['movie_id'] + '">'
             + resultData[i]["movie_title"] +     // display star_name for the link text
-            '</a>' + "</th>";
+            '</a>' + "</i></th>";
         // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);
     }

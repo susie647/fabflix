@@ -45,7 +45,7 @@ function handleResult(resultData) {
     let movieInfoElement = jQuery("#movie_info");
 
     // append two html <p> created to the h3 body, which will refresh the page
-    movieInfoElement.append("<p>Movie Name: " + resultData[0]["movie_title"] + "</p>");
+    movieInfoElement.append("<p style=\"text-align:center;\">Movie Name: <b>" + resultData[0]["movie_title"] + "</b></p>");
 
     console.log("handleResult: populating movie table from resultData");
 
