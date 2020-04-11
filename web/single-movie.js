@@ -54,17 +54,42 @@ function handleResult(resultData) {
     let movieTableBodyElement = jQuery("#movie_table_body");
 
     // Concatenate the html tags with resultData jsonObject to create table rows
-    for (let i = 0; i < Math.min(20, resultData.length); i++) {
-        let rowHTML = "";
-        rowHTML += "<tr>";
-        rowHTML += "<th>" + resultData[i]["movie_title"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-        rowHTML += "</tr>";
 
-        // Append the row created to the table body, which will refresh the page
-        movieTableBodyElement.append(rowHTML);
+    let rowHTML = "";
+    let stars = '<a href="single-star.html?id=' + resultData[0]['star_id'] + '">'
+        + resultData[0]["star_name"] + '</a>';
+    let genre_count = 1;
+    let temp_genre = resultData[0]["movie_genre"];
+    let genres = temp_genre;
+
+    rowHTML += "<tr>";
+    //rowHTML += "<th>" +resultData[0]["movie_title"] + "</th>";
+    rowHTML += "<th>" + resultData[0]["movie_year"] + "</th>";
+    rowHTML += "<th>" + resultData[0]["movie_director"] + "</th>";
+
+
+    for (let i = 1; i < resultData.length; i++) {
+        //
+        if(resultData[i]["movie_genre"]!==temp_genre){
+            genres += ", " + resultData[i]["movie_genre"];
+            temp_genre = resultData[i]["movie_genre"];
+            genre_count++;
+        }
+
+        if(genre_count===1) {
+            stars += ", " + '<a href="single-star.html?id=' + resultData[i]['star_id'] + '">'
+                + resultData[i]["star_name"] + '</a>';
+        }
+
     }
+    rowHTML += "<th>" + genres + "</th>";
+    rowHTML += "<th>" + stars + "</th>";
+
+    rowHTML += "<th>" + resultData[0]["movie_rating"] + "</th>";
+    rowHTML += "</tr>";
+
+    // Append the row created to the table body, which will refresh the page
+    movieTableBodyElement.append(rowHTML);
 }
 
 /**
@@ -78,6 +103,6 @@ let movieId = getParameterByName('movieId');
 jQuery.ajax({
     dataType: "json",  // Setting return data type
     method: "GET",// Setting request method
-    url: "api/single-movie?movieId=" + movieId, // Setting request url, which is mapped by StarsServlet in Stars.java
+    url: "cs122b/single-movie?movieId=" + movieId, // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleStarServlet
 });

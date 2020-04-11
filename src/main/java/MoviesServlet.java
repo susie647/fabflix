@@ -18,7 +18,7 @@ import java.sql.Statement;
 
 
 // Declaring a WebServlet called StarsServlet, which maps to url "/api/stars"
-@WebServlet(name = "MoviesServlet", urlPatterns = "/project1/movies")
+@WebServlet(name = "MoviesServlet", urlPatterns = "/cs122b/movies")
 public class MoviesServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

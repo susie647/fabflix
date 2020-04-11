@@ -29,7 +29,7 @@ function handleMovieResult(resultData) {
         rowHTML +=
             "<th>" +
             // Add a link to single-star.html with id passed with GET url parameter
-            '<a href=' + resultData[i]['movie_id'] + '"single-movie.html?id=">'
+            '<a href="single-movie.html?movieId=' + resultData[i]['movie_id'] + '">'
             + resultData[i]["movie_title"] +     // display star_name for the link text
             '</a>' +
             "</th>";
@@ -48,12 +48,12 @@ function handleMovieResult(resultData) {
 
         while(resultData[i]["movie_id"] === movie_id) {
             if(count_star <2){
-                stars += '<a href=' + resultData[i]['star_id'] + '"single-star.html?id=">'
+                stars += '<a href="single-star.html?id=' + resultData[i]['star_id'] + '">'
                     + resultData[i]["star_name"] + '</a>' + ", ";
                 count_star++;
             }
             else if(count_star ===2){
-                stars += '<a href=' + resultData[i]['star_id'] + '"single-star.html?id=">'
+                stars += '<a href="single-star.html?id=' + resultData[i]['star_id'] + '">'
                     + resultData[i]["star_name"] + '</a>';
                 count_star++;
             }
@@ -89,6 +89,6 @@ function handleMovieResult(resultData) {
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: "project1/movies", // Setting request url, which is mapped by StarsServlet in Stars.java
+    url: "cs122b/movies", // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
