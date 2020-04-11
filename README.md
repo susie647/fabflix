@@ -23,30 +23,33 @@ Susie Liu
 	f. copy the .war file into Tomcat webapp folder to deploy the application
 
 
+
 3. Each Member's Contribution:
 
-Kanglan Tang: 
-	1. wrote movie list page;
+		Kanglan Tang: 
 
-	2. wrote single movie page;
+			1. wrote movie list page;
 
-	3. linked movie list page and single movie page;
+			2. wrote single movie page;
 
-	4. added .gitignore file
+			3. linked movie list page and single movie page;
 
-	5. wrote README.md
+			4. added .gitignore file
+
+			5. wrote README.md
 
 
-Susie Liu:
-	1. wrote movie list page;
+		Susie Liu:
 
-	2. wrote single star page;
+			1. wrote movie list page;
 
-	3. linked movie list page and single star page;
+			2. wrote single star page;
 
-	4. modified css;
+			3. linked movie list page and single star page;
 
-	5. created create_table.sql
+			4. modified css;
+
+			5. created create_table.sql
 
 
 
