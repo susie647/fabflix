@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-@WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
+@WebServlet(name = "LoginServlet", urlPatterns = "/cs122b/login")
 public class LoginServlet extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -49,6 +49,7 @@ public class LoginServlet extends HttpServlet {
             if (rs.next()) {
                 if(password.equals(rs.getString("password"))){
                     request.getSession().setAttribute("user", new User(email));
+                    request.getSession().setAttribute("login", true);// used to check login status
 
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");
@@ -58,7 +59,7 @@ public class LoginServlet extends HttpServlet {
                     responseJsonObject.addProperty("message", "incorrect password");
                 }
             }
-            else{
+            else{ // resultSet is empty
                 responseJsonObject.addProperty("message", "user " + email + " doesn't exist");
             }
 

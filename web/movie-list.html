@@ -10,16 +10,29 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <title>Main Page</title>
+    <title>Movie List</title>
 </head>
 <body>
+<h1 style="color:blue;text-align:center;">Movies</h1>
 
-<h1 id="welcomeInfo" style="color:blue;text-align:center;"></h1>
-
-<p id="sessionID"></p>
-<p id="lastAccessTime"></p>
-
-<a href = "movie-list.html"><button>Go to Movie List Page</button></a>
+<!-- Id "star_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
+<table id=movie_table class="table table-striped">
+    <!-- Create a table header -->
+    <thead>
+    <tr>
+        <!-- Titles of each column-->
+        <th style ="color:red">Title</th>
+        <th style ="color:red">Year</th>
+        <th style ="color:red">Director</th>
+        <th style ="color:red">Genres</th>
+        <th style ="color:red">Stars</th>
+        <th style ="color:red">Rating</th>
+    </tr>
+    </thead>
+    <!-- Table body is left empty here, will be populated with the data retrieved with index.js -->
+    <!-- Again, id "movie_table_body" is useful for jQuery to find this html element -->
+    <tbody id=movie_table_body></tbody>
+</table>
 
 <!-- Load jQuery and Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -30,8 +43,6 @@
 <!-- The path is relative to index.html, since these two files are in the same directory -->
 <!-- Note the url does not contain a "/" in the beginning, which means the url is relative to current path
      otherwise the url is relative to the root path-->
-<script src="index.js"></script>
+<script src="movie-list.js"></script>
 </body>
-
-
 </html>

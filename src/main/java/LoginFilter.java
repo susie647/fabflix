@@ -32,9 +32,13 @@ public class LoginFilter implements Filter {
         }
 
         // Redirect to login page if the "user" attribute doesn't exist in session
-        if (httpRequest.getSession().getAttribute("user") == null) {
+        if (httpRequest.getSession(true).getAttribute("user") == null) {
             httpResponse.sendRedirect("login.html");
-        } else {
+        }
+        else if (httpRequest.getSession().getAttribute("login").equals(false)) {
+            httpResponse.sendRedirect("login.html");
+        }
+        else {
             chain.doFilter(request, response);
         }
     }
@@ -51,7 +55,7 @@ public class LoginFilter implements Filter {
     public void init(FilterConfig fConfig) {
         allowedURIs.add("login.html");
         allowedURIs.add("login.js");
-        allowedURIs.add("api/login");
+        allowedURIs.add("cs122b/login");
     }
 
     public void destroy() {
