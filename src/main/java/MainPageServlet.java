@@ -53,4 +53,21 @@ public class MainPageServlet extends HttpServlet{
         // write all the data into the jsonObject
         response.getWriter().write(responseJsonObject.toString());
     }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        JsonObject responseJsonObject = new JsonObject();
+        try {
+            HttpSession session = request.getSession(true);
+            session.setAttribute("login", false);
+            responseJsonObject.addProperty("status", "success");
+            responseJsonObject.addProperty("message", "logout successfully");
+        } catch (Exception ex) {
+            responseJsonObject.addProperty("message", "session error");
+            // Output Error Massage to html
+            //out.println(String.format("<html><head><title>MovieDBExample: Error</title></head>\n<body><p>SQL error in doGet: %s</p></body></html>", ex.getMessage()));
+            return;
+        }
+        response.getWriter().write(responseJsonObject.toString());
+    }
 }
