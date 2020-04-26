@@ -40,8 +40,6 @@ public class MoviesServlet extends HttpServlet {
             // Get a connection from dataSource
             Connection dbcon = dataSource.getConnection();
 
-            // Declare our statement
-            Statement statement = dbcon.createStatement();
 
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String title = "";
@@ -61,7 +59,7 @@ public class MoviesServlet extends HttpServlet {
                 temp+=String.format(" and m.title like '%s'",title);
             }
             if (year>-1){
-                temp+=String.format(" and m.year like '%d'",year);
+                temp+=String.format(" and m.year='%d'",year);
             }
             if (director.compareTo("")>0){
                 temp+=String.format(" and m.director like '%s'", director);
@@ -69,14 +67,43 @@ public class MoviesServlet extends HttpServlet {
             if (star.compareTo("")>0){
                 temp+=String.format(" and s.name like '%s'", star);
             }
-            // Generate a SQL query
-            String query = String.format("SELECT distinct m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
-                    "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name, s.birthYear as year_of_birth " +
-                    "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r " +
-                    "where m.id=r.movieId and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id" +
-                    "%s", temp);
 
+            // query to get all qualifying movieid
+            Statement statement = dbcon.createStatement();
+            // Generate a SQL query
+
+            String query = String.format("SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
+                    "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name " +
+                    "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
+                    "(SELECT distinct m.id as movie_id " +
+                    "from movies as m, stars as s, stars_in_movies as sm " +
+                    "where m.id=sm.movieId and sm.starId=s.id" +
+                    "%s limit 20 offset 0) as movieIDtable " +
+                    "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
+                    "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp);
             ResultSet rs = statement.executeQuery(query);
+
+
+            //m.id=tt123 or m.id=tt234 or
+            /*
+            String allMovieId = "";
+            while (rs1.next()) {
+                String tempMovieId = rs1.getString("movie_id");
+                allMovieId+= String.format("m.id='%s' or ", tempMovieId);
+            }
+            allMovieId = allMovieId.substring(0,allMovieId.length()-3);
+
+            // Declare our statement
+            Statement statement2 = dbcon.createStatement();
+            String query2 = String.format("SELECT distinct m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
+                    "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name " +
+                    "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r " +
+                    "where m.id=r.movieId and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id " +
+                    "and %s", allMovieId);
+
+            ResultSet rs = statement2.executeQuery(query2);
+
+             */
 
             JsonArray jsonArray = new JsonArray();
 
@@ -90,7 +117,6 @@ public class MoviesServlet extends HttpServlet {
                 String movie_rating = rs.getString("rating");
                 String star_id = rs.getString("star_id");
                 String star_name = rs.getString("star_name");
-                String star_year_of_birth = rs.getString("year_of_birth");
 
                 // Create a JsonObject based on the data we retrieve from rs
                 JsonObject jsonObject = new JsonObject();
@@ -102,7 +128,6 @@ public class MoviesServlet extends HttpServlet {
                 jsonObject.addProperty("movie_rating", movie_rating);
                 jsonObject.addProperty("star_id", star_id);
                 jsonObject.addProperty("star_name", star_name);
-                jsonObject.addProperty("star_year_of_birth", star_year_of_birth);
 
                 jsonArray.add(jsonObject);
             }
@@ -111,6 +136,7 @@ public class MoviesServlet extends HttpServlet {
             out.write(jsonArray.toString());
             // set response status to 200 (OK)
             response.setStatus(200);
+
 
             rs.close();
             statement.close();

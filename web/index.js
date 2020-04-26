@@ -137,5 +137,6 @@ $.ajax("cs122b/main", {
     success: handleSessionData
 });
 
+
 // Bind the submit action of the form to a handler function
 logout_form.submit(submitLogoutForm);
