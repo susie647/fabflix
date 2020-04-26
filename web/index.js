@@ -1,71 +1,5 @@
 let logout_form = $("#logout_form");
 
-// function handleMovieResult(resultData) {
-//     console.log("handleMovieResult: populating star table from resultData");
-//
-//     // Populate the star table
-//     // Find the empty table body by id "star_table_body"
-//     let movieTableBodyElement = jQuery("#movie_table_body");
-//
-//     // Iterate through resultData, no more than 10 entries
-//     for (let i = 0; i < resultData.length; i++) {
-//
-//         // Concatenate the html tags with resultData jsonObject
-//         let rowHTML = "";
-//         rowHTML += "<tr>";
-//         rowHTML +=
-//             "<th><i>" +
-//             // Add a link to single-star.html with id passed with GET url parameter
-//             '<a href="single-movie.html?movieId=' + resultData[i]['movie_id'] + '" >'
-//             + resultData[i]["movie_title"] +     // display star_name for the link text
-//             '</a>' +
-//             "</i></th>";
-//         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
-//         rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-//
-//         let movie_id = resultData[i]["movie_id"];
-//
-//         let temp_genre = resultData[i]["movie_genre"];
-//         let genres = temp_genre;
-//         let count_genre = 1;
-//
-//         let stars = "";
-//         let count_star = 0;
-//
-//
-//         while(resultData[i]["movie_id"] === movie_id) {
-//             if(count_star <2){
-//                 stars += '<a href="single-star.html?id=' + resultData[i]['star_id'] + '">'
-//                     + resultData[i]["star_name"] + '</a>' + ", ";
-//                 count_star++;
-//             }
-//             else if(count_star ===2){
-//                 stars += '<a href="single-star.html?id=' + resultData[i]['star_id'] + '">'
-//                     + resultData[i]["star_name"] + '</a>';
-//                 count_star++;
-//             }
-//             if(count_genre<3 && resultData[i]["movie_genre"]!==temp_genre){
-//                 genres += ", " + resultData[i]["movie_genre"];
-//                 temp_genre = resultData[i]["movie_genre"];
-//                 count_genre++;
-//             }
-//             i++;
-//         }
-//         i--;
-//
-//
-//
-//         rowHTML += "<th>" + genres + "</th>";
-//         rowHTML += "<th>" + stars + "</th>";
-//
-//
-//         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
-//         rowHTML += "</tr>";
-//
-//         // Append the row created to the table body, which will refresh the page
-//         movieTableBodyElement.append(rowHTML);
-//     }
-// }
 
 function handleSessionData(resultDataString) {
     let resultDataJson = JSON.parse(resultDataString);
@@ -78,6 +12,29 @@ function handleSessionData(resultDataString) {
     $("#welcomeInfo").text(resultDataJson["welcomeInfo"]);
     $("#sessionID").text("Session ID: " + resultDataJson["sessionID"]);
     $("#lastAccessTime").text("Last access time: " + resultDataJson["lastAccessTime"]);
+}
+
+function handleGenresData(resultData) {
+    console.log("handleGenresData: populating genres table from resultData");
+
+    // Genres body table
+    let genresTableBody = $("#genres_table_body");
+    // //
+    // genresTableBody.append("<tr><th>Test</th></tr>");
+    for (let i = 0; i < resultData.length; i++){
+        let rowHTML = "";
+        rowHTML += "<tr>";
+        // rowHTML += "<th>" + resultData[i]["genre_name"] + "</th>";
+        rowHTML +=
+            "<th><i>" +
+            // Add a link to movie-list.html with id passed with GET url parameter
+            '<a href="movie-list.html?genreId=' + resultData[i]['genre_id'] + '" >'
+            + resultData[i]["genre_name"] +     // display star_name for the link text
+            '</a>' +
+            "</i></th>";
+        rowHTML += "</tr>";
+        genresTableBody.append(rowHTML);
+    }
 }
 
 function handleLogoutResult(resultDataString) {
@@ -137,6 +94,12 @@ $.ajax("cs122b/main", {
     success: handleSessionData
 });
 
+$.ajax({
+    dataType: "json", // Setting return data type
+    method: "GET", // Setting request method
+    url: "cs122b/browse",
+    success: (resultData) => handleGenresData(resultData)
+});
 
 // Bind the submit action of the form to a handler function
 logout_form.submit(submitLogoutForm);
