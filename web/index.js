@@ -1,12 +1,43 @@
 let logout_form = $("#logout_form");
 
 
-function handleSessionData(resultDataString) {
+function genCharArray(startChar, endChar) {
+    let a = [], i = startChar.charCodeAt(0), j = endChar.charCodeAt(0);
+    for (; i <= j; ++i) {
+        a.push(String.fromCharCode(i));
+    }
+    return a;
+}
+
+function handleMainPageData(resultDataString) {
     let resultDataJson = JSON.parse(resultDataString);
 
     console.log("handle session response");
     console.log(resultDataJson);
     console.log(resultDataJson["sessionID"]);
+
+    console.log("populating movie titles table");
+
+    // Genres body table
+    let movieTitlesTableBody = $("#movie_titles_table_body");
+
+    let numbers = genCharArray('0', '9');
+    let alphanumeric = numbers.concat(genCharArray('A', 'Z'));
+    alphanumeric.push('*');
+
+    for (let i = 0; i < alphanumeric.length; i++){
+        let rowHTML = "";
+        rowHTML += "<tr>";
+        rowHTML +=
+            "<th><i>" +
+            // Add a link to movie-list.html with id passed with GET url parameter
+            '<a href="movie-list.html?movieTitle=' + alphanumeric[i] + '" >'
+            + alphanumeric[i] +     // display star_name for the link text
+            '</a>' +
+            "</i></th>";
+        rowHTML += "</tr>";
+        movieTitlesTableBody.append(rowHTML);
+    }
 
     // show the session information
     $("#welcomeInfo").text(resultDataJson["welcomeInfo"]);
@@ -36,6 +67,7 @@ function handleGenresData(resultData) {
         genresTableBody.append(rowHTML);
     }
 }
+
 
 function handleLogoutResult(resultDataString) {
     let resultDataJson = JSON.parse(resultDataString);
@@ -91,7 +123,7 @@ function submitLogoutForm(formSubmitEvent) {
 
 $.ajax("cs122b/main", {
     method: "GET",
-    success: handleSessionData
+    success: handleMainPageData
 });
 
 $.ajax({

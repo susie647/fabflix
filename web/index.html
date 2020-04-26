@@ -33,6 +33,13 @@
     '%XYZ': All strings that end with 'XYZ'. E.g. 'WXYZ' and 'ZZXYZ'.
     '%AN%': All strings that contain the pattern 'AN' anywhere. E.g. 'LOS ANGELES' and 'SAN FRANCISCO'.</p>
 
+
+<!-- <a href = "movie-list.html"><button>Go to Movie List Page</button></a> -->
+
+<form id="logout_form" method="post" action="#">
+    <input type="submit" value="Logout">
+</form>
+
 <table id=genres_table class="table table-striped">
     <!-- Create a table header -->
     <thead>
@@ -46,11 +53,18 @@
     <tbody id=genres_table_body></tbody>
 </table>
 
-<a href = "movie-list.html"><button>Go to Movie List Page</button></a>
-
-<form id="logout_form" method="post" action="#">
-    <input type="submit" value="Logout">
-</form>
+<table id=movie_titles_table class="table table-striped">
+    <!-- Create a table header -->
+    <thead>
+    <tr>
+        <!-- Titles of each column-->
+        <th style ="color:red">Movie Titles</th>
+    </tr>
+    </thead>
+    <!-- Table body is left empty here, will be populated with the data retrieved with index.js -->
+    <!-- Again, id "movie_table_body" is useful for jQuery to find this html element -->
+    <tbody id=movie_titles_table_body></tbody>
+</table>
 
 <!-- Load jQuery and Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

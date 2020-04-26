@@ -104,23 +104,44 @@ function handleMovieResult(resultData) {
  */
 
 // Makes the HTTP GET request and registers on success callback function handleStarResult
-let title = "";
-if (getParameterByName('title')!==""){
-    title = getParameterByName('title')+"25";
-}
-let year = getParameterByName('year');
-let director = "";
-if(getParameterByName('director')!==""){
-    director = getParameterByName('director')+"25";
-}
-let star = "";
-if(getParameterByName('star')!==""){
-    star = getParameterByName('star')+"25";
-}
 
-jQuery.ajax({
-    dataType: "json", // Setting return data type
-    method: "GET", // Setting request method
-    url: "cs122b/form?title="+ title +"&year="+ year + "&director="+ director + "&star="+star, // Setting request url, which is mapped by StarsServlet in Stars.java
-    success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
-});
+if (getParameterByName('genreId')) {
+    let genre = getParameterByName('genreId');
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "cs122b/movie-list?genreId="+genre, // Setting request url, which is mapped by StarsServlet in Stars.java
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
+}
+else if (getParameterByName('movieTitle')) {
+    let movieTitle = getParameterByName('movieTitle');
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "cs122b/movie-list?movieTitle="+movieTitle, // Setting request url, which is mapped by StarsServlet in Stars.java
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
+}
+else {
+    let title = "";
+    if (getParameterByName('title')!==""){
+        title = getParameterByName('title')+"25";
+    }
+    let year = getParameterByName('year');
+    let director = "";
+    if(getParameterByName('director')!==""){
+        director = getParameterByName('director')+"25";
+    }
+    let star = "";
+    if(getParameterByName('star')!==""){
+        star = getParameterByName('star')+"25";
+    }
+
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "cs122b/movie-list?title="+ title +"&year="+ year + "&director="+ director + "&star="+star, // Setting request url, which is mapped by StarsServlet in Stars.java
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
+}
