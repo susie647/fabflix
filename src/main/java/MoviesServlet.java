@@ -18,7 +18,7 @@ import java.sql.Statement;
 
 
 // Declaring a WebServlet called StarsServlet, which maps to url "/api/stars"
-@WebServlet(name = "MoviesServlet", urlPatterns = "/cs122b/movies")
+@WebServlet(name = "MoviesServlet", urlPatterns = "/cs122b/form")
 public class MoviesServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -43,16 +43,39 @@ public class MoviesServlet extends HttpServlet {
             // Declare our statement
             Statement statement = dbcon.createStatement();
 
-            String query = "SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, g.name as genre, r.rating as rating," +
-                    "s.id as star_id, s.name as star_name, s.birthYear as year_of_birth " +
-                    "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r " +
-                    "where m.id=r.movieId and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id " +
-                    "order by r.rating desc limit 184";
-            //String query = "SELECT * from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm," +
-            //                    "ratings as r where m.id=r.movieId and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and " +
-            //                    "sm.movieId=s.id order by r.rating desc limit 20";
+            // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
+            String title = "";
+            title = request.getParameter("title");
+            int year = -1;
+            if(!request.getParameter("year").equals(""))
+                year = Integer.parseInt(request.getParameter("year"));
+            String director = "";
+            director = request.getParameter("director");
+            String star = "";
+            star = request.getParameter("star");
 
-            // Perform the query
+
+
+            String temp = "";
+            if (title.compareTo("")>0){
+                temp+=String.format(" and m.title like '%s'",title);
+            }
+            if (year>-1){
+                temp+=String.format(" and m.year like '%d'",year);
+            }
+            if (director.compareTo("")>0){
+                temp+=String.format(" and m.director like '%s'", director);
+            }
+            if (star.compareTo("")>0){
+                temp+=String.format(" and s.name like '%s'", star);
+            }
+            // Generate a SQL query
+            String query = String.format("SELECT distinct m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
+                    "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name, s.birthYear as year_of_birth " +
+                    "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r " +
+                    "where m.id=r.movieId and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id" +
+                    "%s", temp);
+
             ResultSet rs = statement.executeQuery(query);
 
             JsonArray jsonArray = new JsonArray();

@@ -19,7 +19,7 @@
 <p id="sessionID"></p>
 <p id="lastAccessTime"></p>
 
-<form id="search_form" ACTION="search-list.html" METHOD="GET">
+<form id="search_form" ACTION="movie-list.html" METHOD="GET">
     Title: <input TYPE="TEXT" name="title"> <br>
     Year: <input TYPE="TEXT" name="year"><br>
     Director: <input TYPE="TEXT" name="director"> <br>
@@ -28,6 +28,10 @@
     <input TYPE="SUBMIT" VALUE="Submit Order">
 
 </form>
+<p>'A_Z': All strings that start with 'A', then follow by a single character, and end with 'Z'. E.g. 'ABZ' and 'A2Z'. However, 'AKKZ' does not satisfy the condition.
+    'ABC%': All strings that start with 'ABC'. E.g. 'ABCD' and 'ABCABC'.
+    '%XYZ': All strings that end with 'XYZ'. E.g. 'WXYZ' and 'ZZXYZ'.
+    '%AN%': All strings that contain the pattern 'AN' anywhere. E.g. 'LOS ANGELES' and 'SAN FRANCISCO'.</p>
 
 
 

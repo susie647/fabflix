@@ -13,6 +13,24 @@
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
  * @param resultData jsonObject
  */
+
+
+function getParameterByName(target) {
+    // Get request URL
+    let url = window.location.href;
+    // Encode target parameter name to url encoding
+    target = target.replace(/[\[\]]/g, "\\$&");
+
+    // Ues regular expression to find matched parameter value
+    let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+
+    // Return the decoded parameter value
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 function handleMovieResult(resultData) {
     console.log("handleMovieResult: populating star table from resultData");
 
@@ -86,9 +104,23 @@ function handleMovieResult(resultData) {
  */
 
 // Makes the HTTP GET request and registers on success callback function handleStarResult
+let title = "";
+if (getParameterByName('title')!==""){
+    title = getParameterByName('title')+"25";
+}
+let year = getParameterByName('year');
+let director = "";
+if(getParameterByName('director')!==""){
+    director = getParameterByName('director')+"25";
+}
+let star = "";
+if(getParameterByName('star')!==""){
+    star = getParameterByName('star')+"25";
+}
+
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: "cs122b/movies", // Setting request url, which is mapped by StarsServlet in Stars.java
+    url: "cs122b/form?title="+ title +"&year="+ year + "&director="+ director + "&star="+star, // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
