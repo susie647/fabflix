@@ -43,6 +43,10 @@ public class MovieListServlet extends HttpServlet {
             Statement statement;
             ResultSet rs;
 
+            int page = Integer.parseInt(request.getParameter("page"));
+            int moviesPerPage = Integer.parseInt(request.getParameter("moviesPerPage"));
+            int offset = moviesPerPage * (page-1);
+
             if(request.getParameter("genreId") != null){
                 // query to get all qualifying movieid
                 statement = dbcon.createStatement();
@@ -54,9 +58,10 @@ public class MovieListServlet extends HttpServlet {
                         "(SELECT distinct m.id as movie_id " +
                         "from movies as m, genres as g, genres_in_movies as gm " +
                         "where g.id = %s and gm.genreId=g.id and m.id=gm.movieId " +
-                        "limit 20 offset 0) as movieIDtable " +
+                        "limit %d offset %d) as movieIDtable " +
                         "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
-                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", request.getParameter("genreId"));
+                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", request.getParameter("genreId"),
+                        moviesPerPage, offset);
                 rs = statement.executeQuery(query);
             }
             else if(request.getParameter("movieTitle") != null){
@@ -79,9 +84,9 @@ public class MovieListServlet extends HttpServlet {
                         "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name " +
                         "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
                         "(SELECT distinct m.id as movie_id from movies as m %s " +
-                        "limit 20 offset 0) as movieIDtable " +
+                        "limit %d offset %d) as movieIDtable " +
                         "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
-                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp);
+                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp,moviesPerPage, offset);
                 rs = statement.executeQuery(query);
             }
             else {
@@ -121,9 +126,9 @@ public class MovieListServlet extends HttpServlet {
                         "(SELECT distinct m.id as movie_id " +
                         "from movies as m, stars as s, stars_in_movies as sm " +
                         "where m.id=sm.movieId and sm.starId=s.id" +
-                        "%s limit 20 offset 0) as movieIDtable " +
+                        "%s limit %d offset %d) as movieIDtable " +
                         "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
-                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp);
+                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp,moviesPerPage, offset);
                 rs = statement.executeQuery(query);
             }
 
