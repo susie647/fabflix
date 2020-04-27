@@ -47,6 +47,34 @@ public class MovieListServlet extends HttpServlet {
             int moviesPerPage = Integer.parseInt(request.getParameter("moviesPerPage"));
             int offset = moviesPerPage * (page-1);
 
+            String sort = request.getParameter("sort");
+            String sortQuery = "";
+            if(sort.equals("tara")){
+                sortQuery = "m.title ASC, r.rating ASC";
+            }
+            else if(sort.equals("tard")){
+                sortQuery = "m.title ASC, r.rating DESC";
+            }
+            else if(sort.equals("tdra")){
+                sortQuery = "m.title DESC, r.rating ASC";
+            }
+            else if(sort.equals("tdrd")){
+                sortQuery = "m.title DESC, r.rating DESC";
+            }
+            else if(sort.equals("rata")){
+                sortQuery = "r.rating ASC, m.title ASC";
+            }
+            else if(sort.equals("ratd")){
+                sortQuery = "r.rating ASC, m.title DESC";
+            }
+            else if(sort.equals("rdta")){
+                sortQuery = "r.rating DESC, m.title ASC";
+            }
+            else if(sort.equals("rdtd")){
+                sortQuery = "r.rating DESC, m.title DESC";
+            }
+
+
             if(request.getParameter("genreId") != null){
                 // query to get all qualifying movieid
                 statement = dbcon.createStatement();
@@ -55,13 +83,13 @@ public class MovieListServlet extends HttpServlet {
                 String query = String.format("SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
                         "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name " +
                         "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
-                        "(SELECT distinct m.id as movie_id " +
-                        "from movies as m, genres as g, genres_in_movies as gm " +
-                        "where g.id = %s and gm.genreId=g.id and m.id=gm.movieId " +
-                        "limit %d offset %d) as movieIDtable " +
+                        "(SELECT distinct m.id as movie_id, m.title as movie_title, r.rating " +
+                        "from movies as m, genres as g, genres_in_movies as gm, ratings as r " +
+                        "where g.id = %s and gm.genreId=g.id and m.id=gm.movieId and m.id=r.movieId " +
+                        "order by %s limit %d offset %d) as movieIDtable " +
                         "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
                         "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", request.getParameter("genreId"),
-                        moviesPerPage, offset);
+                        sortQuery, moviesPerPage, offset);
                 rs = statement.executeQuery(query);
             }
             else if(request.getParameter("movieTitle") != null){
@@ -72,7 +100,8 @@ public class MovieListServlet extends HttpServlet {
                 String temp;
 
                 if (movieTitle.matches("[A-Z]")){
-                    temp = "where m.title LIKE '" + movieTitle.toLowerCase() + "%' OR m.title LIKE '"+ movieTitle + "%' ";
+                    //temp = "where m.title LIKE '" + movieTitle.toLowerCase() + "%' OR m.title LIKE '"+ movieTitle + "%' ";
+                    temp = "where m.title LIKE '" + movieTitle + "%' ";
                 }
                 else if (movieTitle.matches("[0-9]")){
                     temp = "where m.title LIKE '" + movieTitle + "%' ";
@@ -83,10 +112,10 @@ public class MovieListServlet extends HttpServlet {
                 String query = String.format("SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
                         "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name " +
                         "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
-                        "(SELECT distinct m.id as movie_id from movies as m %s " +
-                        "limit %d offset %d) as movieIDtable " +
+                        "(SELECT distinct m.id as movie_id, m.title as movie_title, r.rating from movies as m, ratings as r %s and m.id=r.movieId " +
+                        "order by %s limit %d offset %d) as movieIDtable " +
                         "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
-                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp,moviesPerPage, offset);
+                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp,sortQuery, moviesPerPage, offset);
                 rs = statement.executeQuery(query);
             }
             else {
@@ -123,12 +152,12 @@ public class MovieListServlet extends HttpServlet {
                 String query = String.format("SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
                         "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name " +
                         "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
-                        "(SELECT distinct m.id as movie_id " +
-                        "from movies as m, stars as s, stars_in_movies as sm " +
-                        "where m.id=sm.movieId and sm.starId=s.id" +
-                        "%s limit %d offset %d) as movieIDtable " +
+                        "(SELECT distinct m.id as movie_id, m.title as movie_title, r.rating " +
+                        "from movies as m, stars as s, stars_in_movies as sm, ratings as r " +
+                        "where m.id=sm.movieId and sm.starId=s.id and m.id=r.movieId" +
+                        "%s order by %s limit %d offset %d) as movieIDtable " +
                         "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
-                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp,moviesPerPage, offset);
+                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp,sortQuery, moviesPerPage, offset);
                 rs = statement.executeQuery(query);
             }
 

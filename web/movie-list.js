@@ -107,6 +107,7 @@ function handleMovieResult(resultData) {
 
 let page=parseInt(getParameterByName('page'));
 let moviesPerPage =getParameterByName('moviesPerPage');
+let sort=getParameterByName('sort');
 let previous= document.getElementById('previous');
 let next = document.getElementById('next');
 
@@ -146,7 +147,7 @@ if (getParameterByName('genreId')) {
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
-        url: "cs122b/movie-list?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage, // Setting request url, which is mapped by StarsServlet in Stars.java
+        url: "cs122b/movie-list?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort, // Setting request url, which is mapped by StarsServlet in Stars.java
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 }
@@ -154,7 +155,7 @@ else if (getParameterByName('movieTitle')) {
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
-        url: "cs122b/movie-list?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage, // Setting request url, which is mapped by StarsServlet in Stars.java
+        url: "cs122b/movie-list?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort, // Setting request url, which is mapped by StarsServlet in Stars.java
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 }
@@ -162,7 +163,7 @@ else {
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
-        url: "cs122b/movie-list?title="+ title +"&year="+ year + "&director="+ director + "&star="+star+"&page="+page+"&moviesPerPage="+moviesPerPage, // Setting request url, which is mapped by StarsServlet in Stars.java
+        url: "cs122b/movie-list?title="+ title +"&year="+ year + "&director="+ director + "&star="+star+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort, // Setting request url, which is mapped by StarsServlet in Stars.java
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 }
@@ -179,13 +180,13 @@ previous.addEventListener('click',()=>{
         page = 1;
     }
     else if (getParameterByName('genreId')) {
-        window.location.href= "movie-list.html?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage;
+        window.location.href= "movie-list.html?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort;
     }
     else if (getParameterByName('movieTitle')) {
-        window.location.href="movie-list.html?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage;
+        window.location.href="movie-list.html?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort;
     }
     else{
-        window.location.href="movie-list.html?title="+ title +"&year="+ year + "&director="+ director + "&star="+star+"&page="+page+"&moviesPerPage="+moviesPerPage;
+        window.location.href="movie-list.html?title="+ title +"&year="+ year + "&director="+ director + "&star="+star+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort;
     }
 });
 
@@ -194,13 +195,13 @@ next.addEventListener('click',()=>{
     if (page===10000){
     }
     else if (getParameterByName('genreId')) {
-        window.location.href= "movie-list.html?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage;
+        window.location.href= "movie-list.html?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort;
     }
     else if (getParameterByName('movieTitle')) {
-        window.location.href="movie-list.html?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage;
+        window.location.href="movie-list.html?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort;
     }
     else{
-        window.location.href="movie-list.html?title="+ title +"&year="+ year + "&director="+ director + "&star="+star+"&page="+page+"&moviesPerPage="+moviesPerPage;
+        window.location.href="movie-list.html?title="+ title +"&year="+ year + "&director="+ director + "&star="+star+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort;
     }
 });
 
@@ -208,22 +209,31 @@ next.addEventListener('click',()=>{
  * select sort and listings
  */
 
-let sort= document.getElementById('sort');
+let sortings= document.getElementById('sort');
 let listings = document.getElementById('listings');
-sort.addEventListener('change', ()=>{
-
+sortings.addEventListener('change', ()=>{
+    sort = sortings.options[sortings.selectedIndex].value;
+    if (getParameterByName('genreId')) {
+        window.location.href= "movie-list.html?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort;
+    }
+    else if (getParameterByName('movieTitle')) {
+        window.location.href="movie-list.html?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort;
+    }
+    else {
+        window.location.href = "movie-list.html?title=" + title + "&year=" + year + "&director=" + director + "&star=" + star + "&page=" + page + "&moviesPerPage=" + moviesPerPage+"&sort="+sort;
+    }
 
 });
 
 listings.addEventListener('change', ()=>{
     moviesPerPage = listings.options[listings.selectedIndex].value;
     if (getParameterByName('genreId')) {
-        window.location.href= "movie-list.html?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage;
+        window.location.href= "movie-list.html?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort;
     }
     else if (getParameterByName('movieTitle')) {
-        window.location.href="movie-list.html?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage;
+        window.location.href="movie-list.html?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort;
     }
     else {
-        window.location.href = "movie-list.html?title=" + title + "&year=" + year + "&director=" + director + "&star=" + star + "&page=" + page + "&moviesPerPage=" + moviesPerPage;
+        window.location.href = "movie-list.html?title=" + title + "&year=" + year + "&director=" + director + "&star=" + star + "&page=" + page + "&moviesPerPage=" + moviesPerPage+"&sort="+sort;
     }
 });

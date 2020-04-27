@@ -31,7 +31,7 @@ function handleMainPageData(resultDataString) {
         rowHTML +=
             "<th><i>" +
             // Add a link to movie-list.html with id passed with GET url parameter
-            '<a href="movie-list.html?movieTitle=' + alphanumeric[i] + '&page=1&moviesPerPage=10" >'
+            '<a href="movie-list.html?movieTitle=' + alphanumeric[i] + '&page=1&moviesPerPage=10&sort=tara" >'
             + alphanumeric[i] +     // display star_name for the link text
             '</a>' +
             "</i></th>";
@@ -59,7 +59,7 @@ function handleGenresData(resultData) {
         rowHTML +=
             "<th><i>" +
             // Add a link to movie-list.html with id passed with GET url parameter
-            '<a href="movie-list.html?genreId=' + resultData[i]['genre_id'] + '&page=1&moviesPerPage=10" >'
+            '<a href="movie-list.html?genreId=' + resultData[i]['genre_id'] + '&page=1&moviesPerPage=10&sort=tara" >'
             + resultData[i]["genre_name"] +     // display star_name for the link text
             '</a>' +
             "</i></th>";
