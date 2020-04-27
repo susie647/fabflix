@@ -120,6 +120,11 @@ function handleResult(resultData) {
     rowHTML += "<th>" + stars.substring(1) + "</th>";
 
     rowHTML += "<th>" + resultData[0]["movie_rating"] + "</th>";
+
+
+    //add to cart button
+    rowHTML += "<th><button id='add'>+</button></th>";
+
     rowHTML += "</tr>";
 
     // Append the row created to the table body, which will refresh the page
