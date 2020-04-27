@@ -38,6 +38,20 @@ function getParameterByName(target) {
  * @param resultData jsonObject
  */
 
+function sort2DimentionalArray(a, b) {
+    if (a[1] == b[1]) {
+        if (a[0] == b[0]) {
+            return 0;
+        }
+        else {
+            return (a[0] < b[0]) ? -1 : 1;
+        }
+    }
+    else{
+        return (a[1] > b[1]) ? -1 : 1;
+    }
+}
+
 function handleResult(resultData) {
 
     console.log("handleResult: populating star info from resultData");
@@ -58,34 +72,52 @@ function handleResult(resultData) {
     // Concatenate the html tags with resultData jsonObject to create table rows
 
     let rowHTML = "";
-    let stars = '<a href="single-star.html?id=' + resultData[0]['star_id'] + '">'
-        + resultData[0]["star_name"] + '</a>';
-    let genre_count = 1;
-    let temp_genre = resultData[0]["movie_genre"];
-    let genres = temp_genre;
+    let stars = "";
+    let genres = "";
 
     rowHTML += "<tr>";
-    //rowHTML += "<th>" +resultData[0]["movie_title"] + "</th>";
     rowHTML += "<th>" + resultData[0]["movie_year"] + "</th>";
     rowHTML += "<th>" + resultData[0]["movie_director"] + "</th>";
 
+    let genres_dict = {};
+    let stars_dict = {};
 
-    for (let i = 1; i < resultData.length; i++) {
+    for (let i = 0; i < resultData.length; i++) {
         //
-        if(resultData[i]["movie_genre"]!==temp_genre){
-            genres += ", " + resultData[i]["movie_genre"];
-            temp_genre = resultData[i]["movie_genre"];
-            genre_count++;
+        let genre = resultData[i]["movie_genre"];
+        if (genres_dict.hasOwnProperty(genre) == false){
+            genres_dict[genre] = resultData[i]['movie_genre_id'];
         }
 
-        if(genre_count===1) {
-            stars += ", " + '<a href="single-star.html?id=' + resultData[i]['star_id'] + '">'
-                + resultData[i]["star_name"] + '</a>';
+        let star = resultData[i]["star_name"];
+        if(stars_dict.hasOwnProperty(star) == false) {
+            stars_dict[star] = {"id": resultData[i]['star_id'], "played_count": resultData[i]["star_played_count"]};
         }
-
     }
-    rowHTML += "<th>" + genres + "</th>";
-    rowHTML += "<th>" + stars + "</th>";
+    // sorting genres dict
+    let sorted_genre = [];
+    for(let key in genres_dict) {
+        sorted_genre[sorted_genre.length] = key;
+    }
+    sorted_genre.sort();
+    for (let i = 0; i < sorted_genre.length; i++){
+        genres += ", " + '<a href="movie-list.html?genreId=' + genres_dict[sorted_genre[i]]+ "&page=1&moviesPerPage=10"
+            + '">' + sorted_genre[i] + '</a>';
+    }
+
+    // sorting stars dict
+    let sorted_star = [];
+    for(let key in stars_dict) {
+        sorted_star[sorted_star.length] = [key, stars_dict[key]["played_count"]];
+    }
+    sorted_star.sort(sort2DimentionalArray);
+    for (let i = 0; i < sorted_star.length; i++){
+        stars += ", " + '<a href="single-star.html?id=' + stars_dict[sorted_star[i][0]]["id"] + '">'
+            + sorted_star[i][0] + "(" + sorted_star[i][1] + ")" + '</a>';
+    }
+
+    rowHTML += "<th>" + genres.substring(1) + "</th>";
+    rowHTML += "<th>" + stars.substring(1) + "</th>";
 
     rowHTML += "<th>" + resultData[0]["movie_rating"] + "</th>";
     rowHTML += "</tr>";

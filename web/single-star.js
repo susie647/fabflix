@@ -36,6 +36,20 @@ function getParameterByName(target) {
  * @param resultData jsonObject
  */
 
+function sort2DimentionalArray(a, b) {
+    if (a[1] == b[1]) {
+        if (a[0] == b[0]) {
+            return 0;
+        }
+        else {
+            return (a[0] < b[0]) ? -1 : 1;
+        }
+    }
+    else{
+        return (a[1] > b[1]) ? -1 : 1;
+    }
+}
+
 function handleResult(resultData) {
 
     console.log("handleResult: populating star info from resultData");
@@ -60,12 +74,24 @@ function handleResult(resultData) {
     // Find the empty table body by id "movie_table_body"
     let movieTableBodyElement = jQuery("#movie_table_body");
 
+    let movies_dict = {};
     // Concatenate the html tags with resultData jsonObject to create table rows
-    for (let i = 0; i < Math.min(10, resultData.length); i++) {
+    for (let i = 0; i < resultData.length; i++) {
+        let movie = resultData[i]["movie_title"];
+        if (movies_dict.hasOwnProperty(movie) == false) {
+            movies_dict[movie] = {"id": resultData[i]["movie_id"],"year": resultData[i]["movie_year"]};
+        }
+    }
+    let sorted_movie = [];
+    for(let key in movies_dict) {
+        sorted_movie[sorted_movie.length] = [key, movies_dict[key]["year"]];
+    }
+    sorted_movie.sort(sort2DimentionalArray);
+    for (let i = 0; i < sorted_movie.length; i++) {
         let rowHTML = "";
         rowHTML += "<tr>";
-        rowHTML += "<th><i>" + '<a href="single-movie.html?movieId=' + resultData[i]['movie_id'] + '">'
-            + resultData[i]["movie_title"] +     // display star_name for the link text
+        rowHTML += "<th><i>" + '<a href="single-movie.html?movieId=' + movies_dict[sorted_movie[i][0]]['id'] + '">'
+            + sorted_movie[i][0] + "(" + sorted_movie[i][1] + ")" +      // display star_name for the link text
             '</a>' + "</i></th>";
         // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);

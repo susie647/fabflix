@@ -45,10 +45,13 @@ public class SingleMovieServlet extends HttpServlet {
             Connection dbcon = dataSource.getConnection();
 
             // Construct a query with parameter represented by "?"
-            String query = "SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
-                    "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name " +
-                    "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r " +
-                    "where m.id=? and m.id=r.movieId and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id";
+            String query = "SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, g.name as genre, gm.genreId as genre_id, "+
+                    "r.rating as rating, s.id as star_id, s.name as star_name, sc.count as count from movies as m, genres as g, "+
+                    "genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, (select s_id, count(*) as count "+
+                    "from (select s_table.s_id, sm.movieId from (select s.id as s_id from movies as m, stars_in_movies as sm, "+
+                    "stars as s where m.id =? and m.id=sm.movieId and sm.starId=s.id) as s_table, stars_in_movies as sm "+
+                    "where s_table.s_id = sm.starId) as sandm group by sandm.s_id) as sc where m.id=? and m.id=r.movieId "+
+                    "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id";
 
 
             // Declare our statement
@@ -57,6 +60,8 @@ public class SingleMovieServlet extends HttpServlet {
             // Set the parameter represented by "?" in the query to the id we get from url,
             // num 1 indicates the first "?" in the query
             statement.setString(1, id);
+            statement.setString(2, id);
+
 
             // Perform the query
             ResultSet rs = statement.executeQuery();
@@ -72,9 +77,11 @@ public class SingleMovieServlet extends HttpServlet {
                 String movie_year = rs.getString("year");
                 String movie_director = rs.getString("director");
                 String movie_genre = rs.getString("genre");
+                String movie_genre_id = rs.getString("genre_id");
                 String movie_rating = rs.getString("rating");
                 String star_id = rs.getString("star_id");
                 String star_name = rs.getString("star_name");
+                String star_played_count = rs.getString("count");
 
                 // Create a JsonObject based on the data we retrieve from rs
 
@@ -84,9 +91,11 @@ public class SingleMovieServlet extends HttpServlet {
                 jsonObject.addProperty("movie_year", movie_year);
                 jsonObject.addProperty("movie_director", movie_director);
                 jsonObject.addProperty("movie_genre", movie_genre);
+                jsonObject.addProperty("movie_genre_id", movie_genre_id);
                 jsonObject.addProperty("movie_rating", movie_rating);
                 jsonObject.addProperty("star_id", star_id);
                 jsonObject.addProperty("star_name", star_name);
+                jsonObject.addProperty("star_played_count", star_played_count);
 
                 jsonArray.add(jsonObject);
             }
