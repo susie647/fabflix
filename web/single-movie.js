@@ -85,12 +85,12 @@ function handleResult(resultData) {
     for (let i = 0; i < resultData.length; i++) {
         //
         let genre = resultData[i]["movie_genre"];
-        if (genres_dict.hasOwnProperty(genre) == false){
+        if (genres_dict.hasOwnProperty(genre) === false){
             genres_dict[genre] = resultData[i]['movie_genre_id'];
         }
 
         let star = resultData[i]["star_name"];
-        if(stars_dict.hasOwnProperty(star) == false) {
+        if(stars_dict.hasOwnProperty(star) === false) {
             stars_dict[star] = {"id": resultData[i]['star_id'], "played_count": resultData[i]["star_played_count"]};
         }
     }
