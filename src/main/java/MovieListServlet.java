@@ -96,16 +96,23 @@ public class MovieListServlet extends HttpServlet {
                 statement = dbcon.createStatement();
                 // Generate a SQL query
 
+
+
                 String query = String.format("SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
-                        "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name " +
-                        "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
-                        "(SELECT distinct m.id as movie_id, m.title as movie_title, r.rating " +
-                        "from movies as m, genres as g, genres_in_movies as gm, ratings as r " +
-                        "where g.id = %s and gm.genreId=g.id and m.id=gm.movieId and m.id=r.movieId " +
-                        "order by %s limit %d offset %d) as movieIDtable " +
-                        "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
-                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", request.getParameter("genreId"),
-                        sortQuery, moviesPerPage, offset);
+                                "g.name as genre, gm.genreId as genre_id, r.rating as rating, s.id as star_id, s.name as star_name, sc.count as count " +
+                                "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
+                                "(select s_id, count(*) as count, sandm.movie_id as movie_id " +
+                                "from (select s_table.s_id, sm.movieId as pmovie, s_table.movie_id as movie_id " +
+                                "from (select s.id as s_id, sm.movieId as movie_id from (SELECT m.id as movie_id " +
+                                "from movies as m, genres as g, genres_in_movies as gm, ratings as r " +
+                                "where g.id = %s and gm.genreId=g.id and m.id=gm.movieId and m.id=r.movieId " +
+                                "order by %s limit %d offset %d) as movieIDtable, stars_in_movies as sm, stars as s " +
+                                "where sm.movieId = movieIDtable.movie_id and sm.starId=s.id) as s_table, stars_in_movies as sm " +
+                                "where s_table.s_id = sm.starId) as sandm group by sandm.s_id, sandm.movie_id) as sc " +
+                                "where m.id=sc.movie_id and m.id=r.movieId " +
+                                "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id",
+                        request.getParameter("genreId"), sortQuery, moviesPerPage, offset);
+
                 rs = statement.executeQuery(query);
 
                 session.setAttribute("ML_status", "genreId="+request.getParameter("genreId"));
@@ -118,22 +125,33 @@ public class MovieListServlet extends HttpServlet {
                 String temp;
 
                 if (movieTitle.matches("[A-Z]")){
-                    //temp = "where m.title LIKE '" + movieTitle.toLowerCase() + "%' OR m.title LIKE '"+ movieTitle + "%' ";
                     temp = "where m.title LIKE '" + movieTitle + "%' ";
                 }
+
                 else if (movieTitle.matches("[0-9]")){
                     temp = "where m.title LIKE '" + movieTitle + "%' ";
                 }
+
                 else{
                     temp = "where m.title NOT LIKE '[a-z0-9A-Z]%' ";
                 }
+
+
+
                 String query = String.format("SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
-                        "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name " +
-                        "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
-                        "(SELECT distinct m.id as movie_id, m.title as movie_title, r.rating from movies as m, ratings as r %s and m.id=r.movieId " +
-                        "order by %s limit %d offset %d) as movieIDtable " +
-                        "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
-                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp,sortQuery, moviesPerPage, offset);
+                                "g.name as genre, gm.genreId as genre_id, r.rating as rating, s.id as star_id, s.name as star_name, sc.count as count " +
+                                "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
+                                "(select s_id, count(*) as count, sandm.movie_id as movie_id " +
+                                "from (select s_table.s_id, sm.movieId as pmovie, s_table.movie_id as movie_id " +
+                                "from (select s.id as s_id, sm.movieId as movie_id from " +
+                                "(SELECT m.id as movie_id from movies as m, ratings as r %s and m.id=r.movieId " +
+                                "order by %s limit %d offset %d) as movieIDtable, stars_in_movies as sm, stars as s " +
+                                "where sm.movieId = movieIDtable.movie_id and sm.starId=s.id) as s_table, stars_in_movies as sm " +
+                                "where s_table.s_id = sm.starId) as sandm group by sandm.s_id, sandm.movie_id) as sc " +
+                                "where m.id=sc.movie_id and m.id=r.movieId " +
+                                "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id",
+                        temp, sortQuery, moviesPerPage, offset);
+
                 rs = statement.executeQuery(query);
 
                 session.setAttribute("ML_status", "movieTitle="+movieTitle);
@@ -182,15 +200,21 @@ public class MovieListServlet extends HttpServlet {
                 statement = dbcon.createStatement();
                 // Generate a SQL query
 
+
                 String query = String.format("SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
-                        "g.name as genre, r.rating as rating, s.id as star_id, s.name as star_name " +
-                        "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
-                        "(SELECT distinct m.id as movie_id, m.title as movie_title, r.rating " +
-                        "from movies as m, stars as s, stars_in_movies as sm, ratings as r " +
-                        "where m.id=sm.movieId and sm.starId=s.id and m.id=r.movieId" +
-                        "%s order by %s limit %d offset %d) as movieIDtable " +
-                        "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
-                        "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp,sortQuery, moviesPerPage, offset);
+                                "g.name as genre, gm.genreId as genre_id, r.rating as rating, s.id as star_id, s.name as star_name, sc.count as count " +
+                                "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
+                                "(select s_id, count(*) as count, sandm.movie_id as movie_id " +
+                                "from (select s_table.s_id, sm.movieId as pmovie, s_table.movie_id as movie_id " +
+                                "from (select s.id as s_id, sm.movieId as movie_id from (SELECT m.id as movie_id " +
+                                "from movies as m, stars as s, stars_in_movies as sm, ratings as r " +
+                                "where m.id=sm.movieId and sm.starId=s.id and m.id=r.movieId " +
+                                "%s order by %s limit %d offset %d) as movieIDtable, stars_in_movies as sm, stars as s " +
+                                "where sm.movieId = movieIDtable.movie_id and sm.starId=s.id) as s_table, stars_in_movies as sm " +
+                                "where s_table.s_id = sm.starId) as sandm group by sandm.s_id, sandm.movie_id) as sc " +
+                                "where m.id=sc.movie_id and m.id=r.movieId " +
+                                "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id",
+                        temp, sortQuery, moviesPerPage, offset);
                 rs = statement.executeQuery(query);
 
                 session.setAttribute("ML_status", ML_status);
@@ -207,9 +231,11 @@ public class MovieListServlet extends HttpServlet {
                 String movie_year = rs.getString("year");
                 String movie_director = rs.getString("director");
                 String movie_genre = rs.getString("genre");
+                String movie_genre_id = rs.getString("genre_id");
                 String movie_rating = rs.getString("rating");
                 String star_id = rs.getString("star_id");
                 String star_name = rs.getString("star_name");
+                String star_played_count = rs.getString("count");
 
                 // Create a JsonObject based on the data we retrieve from rs
                 JsonObject jsonObject = new JsonObject();
@@ -218,9 +244,11 @@ public class MovieListServlet extends HttpServlet {
                 jsonObject.addProperty("movie_year", movie_year);
                 jsonObject.addProperty("movie_director", movie_director);
                 jsonObject.addProperty("movie_genre", movie_genre);
+                jsonObject.addProperty("movie_genre_id", movie_genre_id);
                 jsonObject.addProperty("movie_rating", movie_rating);
                 jsonObject.addProperty("star_id", star_id);
                 jsonObject.addProperty("star_name", star_name);
+                jsonObject.addProperty("star_played_count", star_played_count);
 
                 jsonArray.add(jsonObject);
             }
