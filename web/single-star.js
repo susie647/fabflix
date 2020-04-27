@@ -112,7 +112,7 @@ function handleGoBackButton(resultDataString) {
         let ML_moviesPerPage = resultDataJson["ML_moviesPerPage"];
         let ML_sort = resultDataJson["ML_sort"];
 
-        window.location.href= "movie-list.html?"+ML_status+"&page="+ML_page+"&moviesPerPage="+ML_moviesPerPage+"&sort="+ML_sort;
+        window.location.href= encodeURI("movie-list.html?"+ML_status+"&page="+ML_page+"&moviesPerPage="+ML_moviesPerPage+"&sort="+ML_sort);
 
     } else {
         // If login fails, the web page will display
