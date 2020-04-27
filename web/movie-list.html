@@ -15,6 +15,33 @@
 <body>
 <h1 style="color:blue;text-align:center;">Movies</h1>
 
+<div style="float:right;">
+<p style="float:left;">Sort By</p>
+<div style="float:left;">
+    <select id="sort">
+        <option value="tara">Title Ascending A->Z | Rating Ascending 1.0->10.0</option>
+        <option selected value="tard">Title Ascending A->Z | Rating Descending 10.0->1.0</option>
+        <option value="tdra">Title Descending Z->A | Rating Ascending 1.0->10.0</option>
+        <option value="tdrd">Title Descending Z->A | Rating Descending 10.0->1.0</option>
+        <option value="rata">Rating Ascending 1.0->10.0 | Title Ascending A->Z</option>
+        <option value="ratd">Rating Ascending 1.0->10.0 | Title Descending Z->A</option>
+        <option value="rdta">Rating Descending 10.0->1.0 | Title Ascending A->Z</option>
+        <option value="rdtd">Rating Descending 10.0->1.0 | Title Descending Z->A</option>
+    </select>
+</div>
+
+<p style="float:left;">    Results Per Page</p>
+<div style="float:left;">
+    <select id="listings">
+        <option selected value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
+</div>
+</div>
+
+
 <!-- Id "star_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
 <table id=movie_table class="table table-striped">
     <!-- Create a table header -->

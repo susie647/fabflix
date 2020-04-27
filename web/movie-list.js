@@ -64,7 +64,7 @@ function handleMovieResult(resultData) {
         let count_star = 0;
 
 
-        while(resultData[i]["movie_id"] === movie_id) {
+        while(i<resultData.length && resultData[i]["movie_id"] === movie_id) {
             if(count_star <2){
                 stars += '<a href="single-star.html?id=' + resultData[i]['star_id'] + '">'
                     + resultData[i]["star_name"] + '</a>' + ", ";
@@ -100,16 +100,49 @@ function handleMovieResult(resultData) {
 
 
 /**
- * Once this .js is loaded, following scripts will be executed by the browser
+ * get parameters
  */
 
 // Makes the HTTP GET request and registers on success callback function handleStarResult
 
-let page=getParameterByName('page');
+let page=parseInt(getParameterByName('page'));
 let moviesPerPage =getParameterByName('moviesPerPage');
+let previous= document.getElementById('previous');
+let next = document.getElementById('next');
+
+let genre = "";
+let movieTitle = "";
+let title = "";
+let year = "";
+let director = "";
+let star = "";
 
 if (getParameterByName('genreId')) {
-    let genre = getParameterByName('genreId');
+    genre = getParameterByName('genreId');
+}
+else if (getParameterByName('movieTitle')) {
+    movieTitle = getParameterByName('movieTitle');
+}
+else {
+    if (getParameterByName('title') !== "") {
+        title = getParameterByName('title') + "25";
+    }
+    if (getParameterByName('year') !== "") {
+        year = getParameterByName('year');
+    }
+    if (getParameterByName('director') !== "") {
+        director = getParameterByName('director') + "25";
+    }
+    if (getParameterByName('star') !== "") {
+        star = getParameterByName('star') + "25";
+    }
+}
+
+/**
+ * call java to receive json result
+ */
+
+if (getParameterByName('genreId')) {
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
@@ -118,7 +151,6 @@ if (getParameterByName('genreId')) {
     });
 }
 else if (getParameterByName('movieTitle')) {
-    let movieTitle = getParameterByName('movieTitle');
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
@@ -127,20 +159,6 @@ else if (getParameterByName('movieTitle')) {
     });
 }
 else {
-    let title = "";
-    if (getParameterByName('title')!==""){
-        title = getParameterByName('title')+"25";
-    }
-    let year = getParameterByName('year');
-    let director = "";
-    if(getParameterByName('director')!==""){
-        director = getParameterByName('director')+"25";
-    }
-    let star = "";
-    if(getParameterByName('star')!==""){
-        star = getParameterByName('star')+"25";
-    }
-
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
@@ -149,14 +167,63 @@ else {
     });
 }
 
+/**
+ * pagination
+ */
 
-let previous= document.getElementById('previous');
-let next = document.getElementById('next');
+
 
 previous.addEventListener('click',()=>{
-
+    page -=1;
+    if (page<=0){
+        page = 1;
+    }
+    else if (getParameterByName('genreId')) {
+        window.location.href= "movie-list.html?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage;
+    }
+    else if (getParameterByName('movieTitle')) {
+        window.location.href="movie-list.html?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage;
+    }
+    else{
+        window.location.href="movie-list.html?title="+ title +"&year="+ year + "&director="+ director + "&star="+star+"&page="+page+"&moviesPerPage="+moviesPerPage;
+    }
 });
 
 next.addEventListener('click',()=>{
+    page +=1;
+    if (page===10000){
+    }
+    else if (getParameterByName('genreId')) {
+        window.location.href= "movie-list.html?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage;
+    }
+    else if (getParameterByName('movieTitle')) {
+        window.location.href="movie-list.html?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage;
+    }
+    else{
+        window.location.href="movie-list.html?title="+ title +"&year="+ year + "&director="+ director + "&star="+star+"&page="+page+"&moviesPerPage="+moviesPerPage;
+    }
+});
 
+/**
+ * select sort and listings
+ */
+
+let sort= document.getElementById('sort');
+let listings = document.getElementById('listings');
+sort.addEventListener('change', ()=>{
+
+
+});
+
+listings.addEventListener('change', ()=>{
+    moviesPerPage = listings.options[listings.selectedIndex].value;
+    if (getParameterByName('genreId')) {
+        window.location.href= "movie-list.html?genreId="+genre+"&page="+page+"&moviesPerPage="+moviesPerPage;
+    }
+    else if (getParameterByName('movieTitle')) {
+        window.location.href="movie-list.html?movieTitle="+movieTitle+"&page="+page+"&moviesPerPage="+moviesPerPage;
+    }
+    else {
+        window.location.href = "movie-list.html?title=" + title + "&year=" + year + "&director=" + director + "&star=" + star + "&page=" + page + "&moviesPerPage=" + moviesPerPage;
+    }
 });
