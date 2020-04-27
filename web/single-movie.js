@@ -128,12 +128,61 @@ function handleResult(resultData) {
 
 }
 
+////////////////////////////////////////////////////
+function handleGoBackButton(resultDataString) {
+    let resultDataJson = JSON.parse(resultDataString);
+
+    console.log("handle movie list status response");
+    console.log(resultDataJson);
+    console.log(resultDataJson["status"]);
+
+    // If login succeeds, it will redirect the user to index.html
+    if (resultDataJson["status"] === "success") {
+        let ML_status = resultDataJson["ML_status"];
+        let ML_page = resultDataJson["ML_page"];
+        let ML_moviesPerPage = resultDataJson["ML_moviesPerPage"];
+        let ML_sort = resultDataJson["ML_sort"];
+
+        window.location.href= "movie-list.html?"+ML_status+"&page="+ML_page+"&moviesPerPage="+ML_moviesPerPage+"&sort="+ML_sort;
+
+    } else {
+        // If login fails, the web page will display
+        // error messages on <div> with id "login_error_message"
+        console.log("show error message");
+        console.log(resultDataJson["message"]);
+        $("#login_error_message").text(resultDataJson["message"]);
+    }
+}
+////////////////////////////////////////////////////////////
+
+function getMovieListStatus(formClickEvent) {
+    console.log("get movie list status");
+    /**
+     * When users click the submit button, the browser will not direct
+     * users to the url defined in HTML form. Instead, it will call this
+     * event handler when the event is triggered.
+     */
+    formClickEvent.preventDefault();
+
+    $.ajax(
+        "cs122b/single-movie", {
+            method: "POST",
+            // Serialize the login form to the data sent by POST request
+            // data: logout_form.serialize(),
+            success: handleGoBackButton
+        }
+    );
+}
+
+
 /**
  * Once this .js is loaded, following scripts will be executed by the browser\
  */
 
 // Get id from URL
 let movieId = getParameterByName('movieId');
+
+let back = document.getElementById('back');
 
 // Makes the HTTP GET request and registers on success callback function handleResult
 jQuery.ajax({
@@ -142,3 +191,5 @@ jQuery.ajax({
     url: "cs122b/single-movie?movieId=" + movieId, // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleStarServlet
 });
+
+back.addEventListener('click', getMovieListStatus);

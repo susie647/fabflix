@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
@@ -48,11 +49,19 @@ public class LoginServlet extends HttpServlet {
             //out.println("<tr><td>ID</td><td>Name</td></tr>");
             if (rs.next()) {
                 if(password.equals(rs.getString("password"))){
-                    request.getSession().setAttribute("user", new User(email));
-                    request.getSession().setAttribute("login", true);// used to check login status
+                    HttpSession session = request.getSession(true);
+                    session.setAttribute("user", new User(email));
+                    session.setAttribute("login", true);// used to check login status
+
+                    // set up movie list status
+                    session.setAttribute("ML_status", "genreId=1");
+                    session.setAttribute("ML_page", 1);
+                    session.setAttribute("ML_moviesPerPage", 10);
+                    session.setAttribute("ML_sort", "tara");
 
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");
+
                 }
                 else{
                     responseJsonObject.addProperty("status", "fail");

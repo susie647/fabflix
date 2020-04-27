@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,6 +34,9 @@ public class MovieListServlet extends HttpServlet {
 
         response.setContentType("application/json"); // Response mime type
 
+        // create/update movie list status
+        HttpSession session = request.getSession(true);
+
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
@@ -44,34 +48,46 @@ public class MovieListServlet extends HttpServlet {
             ResultSet rs;
 
             int page = Integer.parseInt(request.getParameter("page"));
+            session.setAttribute("ML_page", page);
+
             int moviesPerPage = Integer.parseInt(request.getParameter("moviesPerPage"));
+            session.setAttribute("ML_moviesPerPage", moviesPerPage);
+
             int offset = moviesPerPage * (page-1);
 
             String sort = request.getParameter("sort");
             String sortQuery = "";
             if(sort.equals("tara")){
                 sortQuery = "m.title ASC, r.rating ASC";
+                session.setAttribute("ML_sort", "tara");
             }
             else if(sort.equals("tard")){
                 sortQuery = "m.title ASC, r.rating DESC";
+                session.setAttribute("ML_sort", "tard");
             }
             else if(sort.equals("tdra")){
                 sortQuery = "m.title DESC, r.rating ASC";
+                session.setAttribute("ML_sort", "tdra");
             }
             else if(sort.equals("tdrd")){
                 sortQuery = "m.title DESC, r.rating DESC";
+                session.setAttribute("ML_sort", "tdrd");
             }
             else if(sort.equals("rata")){
                 sortQuery = "r.rating ASC, m.title ASC";
+                session.setAttribute("ML_sort", "rata");
             }
             else if(sort.equals("ratd")){
                 sortQuery = "r.rating ASC, m.title DESC";
+                session.setAttribute("ML_sort", "ratd");
             }
             else if(sort.equals("rdta")){
                 sortQuery = "r.rating DESC, m.title ASC";
+                session.setAttribute("ML_sort", "rdta");
             }
             else if(sort.equals("rdtd")){
                 sortQuery = "r.rating DESC, m.title DESC";
+                session.setAttribute("ML_sort", "rdtd");
             }
 
 
@@ -91,6 +107,8 @@ public class MovieListServlet extends HttpServlet {
                         "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", request.getParameter("genreId"),
                         sortQuery, moviesPerPage, offset);
                 rs = statement.executeQuery(query);
+
+                session.setAttribute("ML_status", "genreId="+request.getParameter("genreId"));
             }
             else if(request.getParameter("movieTitle") != null){
                 // query to get all qualifying movieid
@@ -117,19 +135,34 @@ public class MovieListServlet extends HttpServlet {
                         "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
                         "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp,sortQuery, moviesPerPage, offset);
                 rs = statement.executeQuery(query);
+
+                session.setAttribute("ML_status", "movieTitle="+movieTitle);
             }
             else {
                 // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
+
+                String ML_status = "title=";
+
                 String title = "";
                 title = request.getParameter("title");
+                ML_status+=title;
+
+                ML_status+="&year=";
                 int year = -1;
-                if (!request.getParameter("year").equals(""))
+                if (!request.getParameter("year").equals("")) {
                     year = Integer.parseInt(request.getParameter("year"));
+                    ML_status+=Integer.toString(year);
+                }
+
+                ML_status+="&director=";
                 String director = "";
                 director = request.getParameter("director");
+                ML_status+=director;
+
+                ML_status+="&star=";
                 String star = "";
                 star = request.getParameter("star");
-
+                ML_status+=star;
 
                 String temp = "";
                 if (title.compareTo("") > 0) {
@@ -159,6 +192,9 @@ public class MovieListServlet extends HttpServlet {
                         "where m.id=movieIDtable.movie_id and m.id=r.movieId and m.id=gm.movieId and " +
                         "gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id", temp,sortQuery, moviesPerPage, offset);
                 rs = statement.executeQuery(query);
+
+                session.setAttribute("ML_status", ML_status);
+
             }
 
 

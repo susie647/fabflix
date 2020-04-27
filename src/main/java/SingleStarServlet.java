@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -104,6 +105,28 @@ public class SingleStarServlet extends HttpServlet {
         }
         out.close();
 
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        JsonObject responseJsonObject = new JsonObject();
+        try {
+            HttpSession session = request.getSession(true);
+
+            responseJsonObject.addProperty("ML_status", session.getAttribute("ML_status").toString());
+            responseJsonObject.addProperty("ML_page", session.getAttribute("ML_page").toString());
+            responseJsonObject.addProperty("ML_moviesPerPage", session.getAttribute("ML_moviesPerPage").toString());
+            responseJsonObject.addProperty("ML_sort", session.getAttribute("ML_sort").toString());
+
+            responseJsonObject.addProperty("status", "success");
+            responseJsonObject.addProperty("message", "logout successfully");
+        } catch (Exception ex) {
+            responseJsonObject.addProperty("message", "session error");
+            // Output Error Massage to html
+            //out.println(String.format("<html><head><title>MovieDBExample: Error</title></head>\n<body><p>SQL error in doGet: %s</p></body></html>", ex.getMessage()));
+            return;
+        }
+        response.getWriter().write(responseJsonObject.toString());
     }
 
 }
