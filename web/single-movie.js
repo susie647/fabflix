@@ -101,7 +101,7 @@ function handleResult(resultData) {
     }
     sorted_genre.sort();
     for (let i = 0; i < sorted_genre.length; i++){
-        genres += ", " + '<a href="movie-list.html?genreId=' + genres_dict[sorted_genre[i]]+ "&page=1&moviesPerPage=10"
+        genres += ", " + '<a href="movie-list.html?genreId=' + genres_dict[sorted_genre[i]]+ "&page=1&moviesPerPage=10&sort=tara"
             + '">' + sorted_genre[i] + '</a>';
     }
 
