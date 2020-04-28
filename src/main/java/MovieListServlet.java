@@ -110,8 +110,8 @@ public class MovieListServlet extends HttpServlet {
                                 "where sm.movieId = movieIDtable.movie_id and sm.starId=s.id) as s_table, stars_in_movies as sm " +
                                 "where s_table.s_id = sm.starId) as sandm group by sandm.s_id, sandm.movie_id) as sc " +
                                 "where m.id=sc.movie_id and m.id=r.movieId " +
-                                "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id",
-                        request.getParameter("genreId"), sortQuery, moviesPerPage, offset);
+                                "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id order by %s",
+                        request.getParameter("genreId"), sortQuery, moviesPerPage, offset, sortQuery);
 
                 rs = statement.executeQuery(query);
 
@@ -149,8 +149,8 @@ public class MovieListServlet extends HttpServlet {
                                 "where sm.movieId = movieIDtable.movie_id and sm.starId=s.id) as s_table, stars_in_movies as sm " +
                                 "where s_table.s_id = sm.starId) as sandm group by sandm.s_id, sandm.movie_id) as sc " +
                                 "where m.id=sc.movie_id and m.id=r.movieId " +
-                                "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id",
-                        temp, sortQuery, moviesPerPage, offset);
+                                "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id order by %s",
+                        temp, sortQuery, moviesPerPage, offset, sortQuery);
 
                 rs = statement.executeQuery(query);
 
@@ -184,15 +184,18 @@ public class MovieListServlet extends HttpServlet {
 
                 String temp = "";
                 if (title.compareTo("") > 0) {
+                    title = "%"+title+"%";
                     temp += String.format(" and m.title like '%s'", title);
                 }
                 if (year > -1) {
                     temp += String.format(" and m.year='%d'", year);
                 }
                 if (director.compareTo("") > 0) {
+                    director = "%"+director+"%";
                     temp += String.format(" and m.director like '%s'", director);
                 }
                 if (star.compareTo("") > 0) {
+                    star = "%"+star+"%";
                     temp += String.format(" and s.name like '%s'", star);
                 }
 
@@ -213,8 +216,8 @@ public class MovieListServlet extends HttpServlet {
                                 "where sm.movieId = movieIDtable.movie_id and sm.starId=s.id) as s_table, stars_in_movies as sm " +
                                 "where s_table.s_id = sm.starId) as sandm group by sandm.s_id, sandm.movie_id) as sc " +
                                 "where m.id=sc.movie_id and m.id=r.movieId " +
-                                "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id",
-                        temp, sortQuery, moviesPerPage, offset);
+                                "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id order by %s",
+                        temp, sortQuery, moviesPerPage, offset, sortQuery);
                 rs = statement.executeQuery(query);
 
                 session.setAttribute("ML_status", ML_status);
