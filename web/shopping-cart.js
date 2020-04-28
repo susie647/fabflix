@@ -7,10 +7,12 @@ function handleItemsData(resultData) {
     for (let i = 0; i < resultData.length; i++) {
         let rowHTML = "";
         rowHTML += "<tr>";
-        rowHTML += "<th>" + resultData[i]["title"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["quantity"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["price"] + "</th>";
-        rowHTML += "<th>" + "Later" + "</th>";
+        rowHTML += "<td id='title'>" + resultData[i]["title"] + "</td>";
+        rowHTML += "<td id='quantity'>" + resultData[i]["quantity"] + "</td>";
+        rowHTML += "<td id='price'>" + resultData[i]["price"] + "</td>";
+        rowHTML += "<td><button id='add'>Increase Quantity</button><button id='remove'>Decrease Quantity</button></td>";
+        // rowHTML += "<td></td>";
+        rowHTML += "<td><button id='delete'>Delete</button></td>";
         rowHTML += "</tr>";
 
         ItemsTableBody.append(rowHTML);
@@ -22,4 +24,38 @@ $.ajax({
     method: "GET", // Setting request method
     url: "cs122b/shopping-cart",
     success: (resultData) => handleItemsData(resultData)
+});
+
+
+$(document).on('click', '#delete', function() {
+    let title = $(this).parents("tr").find("td").eq(0).text().toString();
+
+    $.ajax("cs122b/shopping-cart?title="+title+"&behavior="+"delete", {
+        method: "POST",
+        success: function () {
+            window.location.reload();
+        }
+    });
+});
+
+$(document).on('click', '#add', function() {
+    let title = $(this).parents("tr").find("td").eq(0).text().toString();
+
+    $.ajax("cs122b/shopping-cart?title="+title+"&behavior="+"add", {
+        method: "POST",
+        success: function () {
+            window.location.reload();
+        }
+    });
+});
+
+$(document).on('click', '#remove', function() {
+    let title = $(this).parents("tr").find("td").eq(0).text().toString();
+
+    $.ajax("cs122b/shopping-cart?title="+title+"&behavior="+"remove", {
+        method: "POST",
+        success: function () {
+            window.location.reload();
+        }
+    });
 });

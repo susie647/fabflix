@@ -31,6 +31,7 @@ public class ShoppingCartServlet extends HttpServlet{
         if(session.getAttribute("items") == null) {
             ArrayList<Item> temp = new ArrayList<Item>();
             temp.add(new Item("12", "test", 12, 100));
+            temp.add(new Item("22", "test2", 123, 10));
             session.setAttribute("items", temp);
         }
 
@@ -52,6 +53,50 @@ public class ShoppingCartServlet extends HttpServlet{
         }
 
         out.write(jsonArray.toString());
+        out.close();
         response.setStatus(200);
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        HttpSession session = request.getSession(true);
+
+        String title = request.getParameter("title");
+        String t = "";
+        String behavior = request.getParameter("behavior");
+
+        if(session.getAttribute("items") != null) {
+            ArrayList<Item> items = (ArrayList<Item>) session.getAttribute("items");
+            int i;
+            for( i = 0; i < items.size(); i++) {
+                t = items.get(i).getMovieTitle();
+                if(t.equals(title)){ break; }
+            }
+            if (i != items.size()) {
+                if (behavior.equals("delete")){
+                    items.remove(i);
+                }
+                if (behavior.equals("add")){
+                    int quality = items.get(i).getQuantity();
+                    quality++;
+                    items.get(i).setQuantity(quality);
+                }
+                if (behavior.equals("remove")){
+                    int quality = items.get(i).getQuantity();
+                    if (quality > 0){
+                        quality--;
+                        if(quality == 0){
+                            items.remove(i);
+                        }
+                        else{
+                            items.get(i).setQuantity(quality);
+                        }
+                    }
+                }
+                session.setAttribute("items", items);
+            }
+        }
+
+        response.getWriter().write("success");
     }
 }

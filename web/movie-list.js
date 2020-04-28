@@ -156,18 +156,6 @@ else if (getParameterByName('movieTitle')) {
     movieTitle = getParameterByName('movieTitle');
 }
 else {
-    // if (getParameterByName('title') !== "") {
-    //     title = getParameterByName('title') + "25";
-    // }
-    // if (getParameterByName('year') !== "") {
-    //     year = getParameterByName('year');
-    // }
-    // if (getParameterByName('director') !== "") {
-    //     director = getParameterByName('director') + "25";
-    // }
-    // if (getParameterByName('star') !== "") {
-    //     star = getParameterByName('star') + "25";
-    // }
     title = getParameterByName('title');
     year = getParameterByName('year');
     director = getParameterByName('director');

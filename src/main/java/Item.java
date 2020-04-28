@@ -25,4 +25,11 @@ public class Item {
 
     public int getPrice() { return this.price; }
 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
 }
