@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 @WebServlet(name = "PaymentServelet", urlPatterns = "/cs122b/payment")
 public class PaymentServlet extends HttpServlet {
@@ -23,6 +24,21 @@ public class PaymentServlet extends HttpServlet {
     // Create a dataSource which registered in web.xml
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        ArrayList<Item> items = (ArrayList<Item>) session.getAttribute("items");
+        int total = 0;
+        for (int i = 0; i < items.size(); i++){
+            total+=items.get(i).getPrice();
+        }
+
+        JsonObject responseJsonObject = new JsonObject();
+        responseJsonObject.addProperty("total_price", total);
+
+        // write all the data into the jsonObject
+        response.getWriter().write(responseJsonObject.toString());
+    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
