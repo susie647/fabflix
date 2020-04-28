@@ -52,6 +52,17 @@ function sort2DimentionalArray(a, b) {
     }
 }
 
+function handleAddToCart(resultData) {
+    console.log("handleAddToCart");
+    if (resultData["status"] === "success") {
+        alert(resultData["message"]);
+        alert(resultData["itemsadded"])
+    } else {
+        console.log("show error message");
+        alert(resultData["message"]);
+    }
+}
+
 function handleResult(resultData) {
 
     console.log("handleResult: populating star info from resultData");
@@ -123,7 +134,7 @@ function handleResult(resultData) {
 
 
     //add to cart button
-    rowHTML += "<th><button id='add'>+</button></th>";
+    //rowHTML += "<th><button id = 'addButton'>+</button></th>";
 
     rowHTML += "</tr>";
 
@@ -198,3 +209,24 @@ jQuery.ajax({
 });
 
 back.addEventListener('click', getMovieListStatus);
+
+
+/**
+ * add to cart
+ */
+
+let button = document.getElementById('addButton');
+button.addEventListener('click', ()=>{
+    $.ajax( {
+        dataType: "json",
+        method: "POST",
+        // Serialize the login form to the data sent by POST request
+        url: "cs122b/add-cart?itemID="+movieId+"&itemTitle=abc",
+        //data: {"item": "abc"}.serialize(),
+        success: (resultData) => handleAddToCart(resultData)
+    });
+
+
+
+    //window.location.href= "cs122b/add-cart?item=abc";
+});

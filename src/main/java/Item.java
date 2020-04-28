@@ -1,16 +1,20 @@
 package main.java;
 
+import java.util.Random;
+
 public class Item {
     private String movie_id;
     private String movie_title;
     private int quantity;
     private int price;
+    private int unitPrice;
 
-    public Item(String movie_id, String movie_title, int quantity, int price) {
+    public Item(String movie_id, String movie_title) {
         this.movie_id = movie_id;
         this.movie_title = movie_title;
-        this.quantity = quantity;
-        this.price = price;
+        this.quantity = 1;
+        this.unitPrice = new Random().nextInt(15)+5;
+        this.price = unitPrice;
     }
 
     public String getMovieTitle() { return this.movie_title; }
@@ -29,7 +33,12 @@ public class Item {
         this.quantity = quantity;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void updatePrice(boolean add) {
+        if(add){
+            this.price += unitPrice;
+        }
+        else{
+            this.price -= unitPrice;
+        }
     }
 }

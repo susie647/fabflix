@@ -30,8 +30,6 @@ public class ShoppingCartServlet extends HttpServlet{
 
         if(session.getAttribute("items") == null) {
             ArrayList<Item> temp = new ArrayList<Item>();
-            temp.add(new Item("12", "test", 12, 100));
-            temp.add(new Item("22", "test2", 123, 10));
             session.setAttribute("items", temp);
         }
 
@@ -80,6 +78,7 @@ public class ShoppingCartServlet extends HttpServlet{
                     int quality = items.get(i).getQuantity();
                     quality++;
                     items.get(i).setQuantity(quality);
+                    items.get(i).updatePrice(true);
                 }
                 if (behavior.equals("remove")){
                     int quality = items.get(i).getQuantity();
@@ -90,6 +89,7 @@ public class ShoppingCartServlet extends HttpServlet{
                         }
                         else{
                             items.get(i).setQuantity(quality);
+                            items.get(i).updatePrice(false);
                         }
                     }
                 }
