@@ -49,7 +49,7 @@ function handleAddToCart(resultData) {
     console.log("handleAddToCart");
     if (resultData["status"] === "success") {
         alert(resultData["message"]);
-        alert(resultData["itemsadded"])
+        // alert(resultData["itemsadded"])
     } else {
         console.log("show error message");
         alert(resultData["message"]);
@@ -274,7 +274,7 @@ listings.addEventListener('change', ()=>{
 
 $(document).on('click', '#add', function() {
     let title = $(this).parents("tr").find("th").eq(0).text().toString();
-    let id = $(this).parents("tr").find("th").eq(0).find("a").attr('href').toString();
+    let id = $(this).parents("tr").find("th").eq(0).find("a").attr('href').toString().substring(26);
 
 
     $.ajax( {

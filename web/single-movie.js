@@ -56,7 +56,7 @@ function handleAddToCart(resultData) {
     console.log("handleAddToCart");
     if (resultData["status"] === "success") {
         alert(resultData["message"]);
-        alert(resultData["itemsadded"])
+        // alert(resultData["itemsadded"])
     } else {
         console.log("show error message");
         alert(resultData["message"]);

@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.time.LocalTime;
+
 
 @WebServlet(name = "PaymentServelet", urlPatterns = "/cs122b/payment")
 public class PaymentServlet extends HttpServlet {
@@ -62,13 +64,12 @@ public class PaymentServlet extends HttpServlet {
 
 
             // Generate a SQL query
-            String query = String.format("SELECT * from creditcards where id = '%s'", creditCardNum);
+            String query = String.format("Select * from creditcards where creditcards.id = '%s'", creditCardNum);
 
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
 
             // Iterate through each row of rs and create a table row <tr>
-            //out.println("<tr><td>ID</td><td>Name</td></tr>");
             if (rs.next()) {
                 if(firstName.equals(rs.getString("firstName")) && lastName.equals(rs.getString("lastName"))&&
                         expiration.equals(rs.getString("expiration"))){
@@ -77,6 +78,40 @@ public class PaymentServlet extends HttpServlet {
                     //session.setAttribute("user", new User(email));
                     session.setAttribute("placeOrder", true);// used to check login status
 
+//                    Statement update = dbCon.createStatement();
+//                    String cid = session.getAttribute("cid").toString();
+//
+//                    String values = "INSERT INTO sales (customerId, movieId, saleDate) VALUES";
+//                    String saleDate = LocalTime.now().toString();
+//                    ArrayList<Item> items = (ArrayList<Item>) session.getAttribute("items");
+//                    for (int i = 0; i < items.size(); i++) {
+//                        int quantity = items.get(i).getQuantity();
+//                        String movieId = items.get(i).getMovieId();
+//                        for (int j = 0; j < quantity; j++){
+//                            values += " (" + cid + "," + movieId + "," + saleDate + "),";
+//                        }
+//                    }
+//                    values = values.substring(0,values.length()-1);
+//
+//                    ResultSet retID = update.executeQuery(values);
+//                    update.close();
+
+
+//                    Statement update = dbCon.createStatement();
+//                    String cid = rs.getString("cid");
+//                    String temp = "INSERT INTO sales (customerId, movieId, saleDate) VALUES";
+//                    String saleDate = LocalTime.now().toString();
+//                    ArrayList<Item> items = (ArrayList<Item>) session.getAttribute("items");
+//                    String values = "";
+//                    for (int i = 0; i < items.size(); i++) {
+//                        int quantity = items.get(i).getQuantity();
+//                        String movieId = items.get(i).getMovieId();
+//                        for (int j = 0; j < quantity; j++){
+//                            values += " (" + cid + "," + movieId + "," + saleDate + "),";
+//                        }
+//                    }
+//                    values = values.substring(0,values.length()-1);
+//                    int retID = update.executeUpdate(values);
 
 
                     responseJsonObject.addProperty("status", "success");

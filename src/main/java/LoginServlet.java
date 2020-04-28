@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
             String password = request.getParameter("password");
 
             // Generate a SQL query
-            String query = String.format("SELECT password from customers where email = '%s'", email);
+            String query = String.format("SELECT password, id from customers where email = '%s'", email);
 
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
@@ -52,6 +52,7 @@ public class LoginServlet extends HttpServlet {
                     HttpSession session = request.getSession(true);
                     session.setAttribute("user", new User(email));
                     session.setAttribute("login", true);// used to check login status
+                    session.setAttribute("cid", rs.getString("id"));
 
                     // set up movie list status
                     session.setAttribute("ML_status", "genreId=1");
