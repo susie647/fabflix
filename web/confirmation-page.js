@@ -1,4 +1,4 @@
-let saleId = 13561;
+// let saleId = 13561;
 
 function handleItemsData(resultData) {
     console.log("handleGenresData: populating genres table from resultData");
@@ -10,8 +10,8 @@ function handleItemsData(resultData) {
     for (i = 0; i < resultData.length; i++) {
         let rowHTML = "";
         rowHTML += "<tr>";
-        rowHTML += "<td id='saleID'>" + saleId+ "</td>";
-        saleId++;
+        rowHTML += "<td id='saleID'>" + resultData[i]["saleID"]+ "</td>";
+        // saleId++;
         rowHTML += "<td id='title'>" + resultData[i]["title"] + "</td>";
         rowHTML += "<td id='quantity'>" + resultData[i]["quantity"] + "</td>";
         rowHTML += "</tr>";
@@ -22,18 +22,10 @@ function handleItemsData(resultData) {
 }
 
 
-$.ajax({
-    dataType: "json", // Setting return data type
-    method: "GET", // Setting request method
-    url: "cs122b/update",
-    success: (resultData) => handleItemsData(resultData)
-});
 
 $.ajax({
     dataType: "json", // Setting return data type
     method: "POST", // Setting request method
     url: "cs122b/update",
-    success: function () {
-        alert("UPDATED!");
-    }
+    success: (resultData) => handleItemsData(resultData)
 });
