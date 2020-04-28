@@ -87,6 +87,7 @@ function handleResult(resultData) {
     let genres = "";
 
     rowHTML += "<tr>";
+    rowHTML += "<th>" + resultData[0]["movie_title"] + "</th>";
     rowHTML += "<th>" + resultData[0]["movie_year"] + "</th>";
     rowHTML += "<th>" + resultData[0]["movie_director"] + "</th>";
 
