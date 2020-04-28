@@ -46,6 +46,22 @@ function submitLoginForm(formSubmitEvent) {
     );
 }
 
+function handleTotalPriceData(resultDataString) {
+    let resultDataJson = JSON.parse(resultDataString);
+
+    console.log("calculating total price");
+    console.log(resultDataJson);
+
+    // show the session information
+    $("#total_price_info").text("Total Price: " + resultDataJson["total_price"]);
+}
+
+$.ajax({
+    method: "GET",
+    url: "cs122b/payment",
+    success: (resultData) => handleTotalPriceData(resultData)
+});
+
 // Bind the submit action of the form to a handler function
 payment_form.submit(submitLoginForm);
 
