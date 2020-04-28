@@ -45,6 +45,17 @@ function sort2DimentionalArray(a, b) {
     }
 }
 
+function handleAddToCart(resultData) {
+    console.log("handleAddToCart");
+    if (resultData["status"] === "success") {
+        alert(resultData["message"]);
+        alert(resultData["itemsadded"])
+    } else {
+        console.log("show error message");
+        alert(resultData["message"]);
+    }
+}
+
 function handleMovieResult(resultData) {
     console.log("handleMovieResult: populating star table from resultData");
 
@@ -259,4 +270,19 @@ listings.addEventListener('change', ()=>{
     else {
         window.location.href = encodeURI("movie-list.html?title=" + title + "&year=" + year + "&director=" + director + "&star=" + star + "&page=" + page + "&moviesPerPage=" + moviesPerPage+"&sort="+sort);
     }
+});
+
+$(document).on('click', '#add', function() {
+    let title = $(this).parents("tr").find("th").eq(0).text().toString();
+    let id = $(this).parents("tr").find("th").eq(0).find("a").attr('href').toString();
+
+
+    $.ajax( {
+        dataType: "json",
+        method: "POST",
+        // Serialize the login form to the data sent by POST request
+        url: "cs122b/add-cart?itemID="+id+"&itemTitle=" + title,
+        //data: {"item": "abc"}.serialize(),
+        success: (resultData) => handleAddToCart(resultData)
+    });
 });

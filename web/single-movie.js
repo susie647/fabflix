@@ -124,7 +124,7 @@ function handleResult(resultData) {
     sorted_star.sort(sort2DimentionalArray);
     for (let i = 0; i < sorted_star.length; i++){
         stars += ", " + '<a href="single-star.html?id=' + stars_dict[sorted_star[i][0]]["id"] + '">'
-            + sorted_star[i][0] + "(" + sorted_star[i][1] + ")" + '</a>';
+            + sorted_star[i][0] + '</a>';
     }
 
     rowHTML += "<th>" + genres.substring(1) + "</th>";
@@ -132,7 +132,7 @@ function handleResult(resultData) {
 
     rowHTML += "<th>" + resultData[0]["movie_rating"] + "</th>";
 
-
+    rowHTML += "<th><button id='add'>+</button></th>";
     //add to cart button
     //rowHTML += "<th><button id = 'addButton'>+</button></th>";
 
@@ -215,7 +215,7 @@ back.addEventListener('click', getMovieListStatus);
  * add to cart
  */
 
-let button = document.getElementById('addButton');
+/*let button = document.getElementById('addButton');
 button.addEventListener('click', ()=>{
     $.ajax( {
         dataType: "json",
@@ -226,7 +226,19 @@ button.addEventListener('click', ()=>{
         success: (resultData) => handleAddToCart(resultData)
     });
 
-
-
     //window.location.href= "cs122b/add-cart?item=abc";
+});
+
+ */
+
+$(document).on('click', '#add', function() {
+    let title = $(this).parents("tr").find("th").eq(0).text().toString();
+    $.ajax( {
+        dataType: "json",
+        method: "POST",
+        // Serialize the login form to the data sent by POST request
+        url: "cs122b/add-cart?itemID="+movieId+"&itemTitle=" + title,
+        //data: {"item": "abc"}.serialize(),
+        success: (resultData) => handleAddToCart(resultData)
+    });
 });
