@@ -103,7 +103,7 @@ public class MovieListServlet extends HttpServlet {
                                 "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
                                 "(select s_id, count(*) as count, sandm.movie_id as movie_id " +
                                 "from (select s_table.s_id, sm.movieId as pmovie, s_table.movie_id as movie_id " +
-                                "from (select s.id as s_id, sm.movieId as movie_id from (SELECT m.id as movie_id " +
+                                "from (select s.id as s_id, sm.movieId as movie_id from (SELECT distinct m.id as movie_id, m.title, r.rating " +
                                 "from movies as m, genres as g, genres_in_movies as gm, ratings as r " +
                                 "where g.id = %s and gm.genreId=g.id and m.id=gm.movieId and m.id=r.movieId " +
                                 "order by %s limit %d offset %d) as movieIDtable, stars_in_movies as sm, stars as s " +
@@ -133,7 +133,7 @@ public class MovieListServlet extends HttpServlet {
                 }
 
                 else{
-                    temp = "where m.title NOT LIKE '[a-z0-9A-Z]%' ";
+                    temp = "where m.title regexp '^[^0-9A-Z]' ";
                 }
 
 
@@ -144,7 +144,7 @@ public class MovieListServlet extends HttpServlet {
                                 "(select s_id, count(*) as count, sandm.movie_id as movie_id " +
                                 "from (select s_table.s_id, sm.movieId as pmovie, s_table.movie_id as movie_id " +
                                 "from (select s.id as s_id, sm.movieId as movie_id from " +
-                                "(SELECT m.id as movie_id from movies as m, ratings as r %s and m.id=r.movieId " +
+                                "(SELECT distinct m.id as movie_id, m.title, r.rating from movies as m, ratings as r %s and m.id=r.movieId " +
                                 "order by %s limit %d offset %d) as movieIDtable, stars_in_movies as sm, stars as s " +
                                 "where sm.movieId = movieIDtable.movie_id and sm.starId=s.id) as s_table, stars_in_movies as sm " +
                                 "where s_table.s_id = sm.starId) as sandm group by sandm.s_id, sandm.movie_id) as sc " +
@@ -209,7 +209,7 @@ public class MovieListServlet extends HttpServlet {
                                 "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
                                 "(select s_id, count(*) as count, sandm.movie_id as movie_id " +
                                 "from (select s_table.s_id, sm.movieId as pmovie, s_table.movie_id as movie_id " +
-                                "from (select s.id as s_id, sm.movieId as movie_id from (SELECT m.id as movie_id " +
+                                "from (select s.id as s_id, sm.movieId as movie_id from (SELECT distinct m.id as movie_id, m.title, r.rating " +
                                 "from movies as m, stars as s, stars_in_movies as sm, ratings as r " +
                                 "where m.id=sm.movieId and sm.starId=s.id and m.id=r.movieId " +
                                 "%s order by %s limit %d offset %d) as movieIDtable, stars_in_movies as sm, stars as s " +

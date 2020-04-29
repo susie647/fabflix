@@ -338,7 +338,10 @@ $(document).on('click', '#next', function() {
             dataType: "json", // Setting return data type
             method: "GET", // Setting request method
             url: encodeURI("cs122b/movie-list?title="+ title +"&year="+ year + "&director="+ director + "&star="+star+"&page="+page+"&moviesPerPage="+moviesPerPage+"&sort="+sort), // Setting request url, which is mapped by StarsServlet in Stars.java
-            success: (resultData) => checkPage(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+            success: (resultData) => checkPage(resultData), // Setting callback function to handle data returned successfully by the StarsServlet
+            error: function(){
+                alert("failure adding to cart");
+            }
         });
     }
 });
