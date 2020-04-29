@@ -270,7 +270,7 @@ function checkPage(resultData){
  * select sort and listings
  */
 
-let sortings= document.getElementById('sort');
+let sortings= document.getElementById('sortings');
 let listings = document.getElementById('listings');
 
 sortings.addEventListener('change', ()=>{
