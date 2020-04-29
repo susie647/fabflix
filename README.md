@@ -5,7 +5,10 @@ Kanglan Tang;
 Susie Liu
 
 
-1. Demo video URL (Project 1): https://www.youtube.com/watch?v=xq9lA9oqXO4&feature=youtu.be
+1. Demo video URL 
+	(Project 1): https://www.youtube.com/watch?v=xq9lA9oqXO4&feature=youtu.be
+	(Project 2): https://youtu.be/Xd9wJLdDiis
+(In the demo video, We accidentally showed the wrong saleDate in the beginning of the video! Later, we demonstrated adding to cart again and showed the updated table. Sorry for the inconvenience!)
 
 
 2. How to deploy our application with Tomcat: 
@@ -23,8 +26,13 @@ Susie Liu
 	f. copy the .war file into Tomcat webapp folder to deploy the application
 
 
+3. Substring matching design
+	Users keyword will be searched via the following substring matching design:
+		like 'ABC%': All strings that start with 'ABC'. E.g. 'ABCD' and 'ABCABC'.
+		like '%XYZ': All strings that end with 'XYZ'. E.g. 'WXYZ' and 'ZZXYZ'.
+		like '%AN%': All strings that contain the pattern 'AN' anywhere. E.g. 'LOS ANGELES' and 'SAN FRANCISCO'.
 
-3. Each Member's Contribution:
+4. Project1 Each Member's Contribution:
 
 		Kanglan Tang: 
 
@@ -53,3 +61,10 @@ Susie Liu
 
 
 
+   Project 2 Each Member's Contribution:
+	Kanglan Tang: 
+		Logout, main page, browsing, single page sorting, jump functionality, shopping cart page, confirmation page, place order action
+		
+
+	Susie Liu:
+		Login, login filter, searching, prev/next button, number of listings, movielist sorting, payment page, place order action
