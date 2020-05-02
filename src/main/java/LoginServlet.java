@@ -24,9 +24,33 @@ public class LoginServlet extends HttpServlet {
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
 
+    private static final long serialVersionUID = 1L;
+
+    public String getServletInfo() {
+        return "Servlet connects to MySQL database and displays result of a SELECT";
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         JsonObject responseJsonObject = new JsonObject();
+
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+
+        // Verify reCAPTCHA
+        try {
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+        } catch (Exception e) {
+            responseJsonObject.addProperty("status", "fail");
+            responseJsonObject.addProperty("message", "recaptcha verification error");
+            return;
+        }
+
+
+
+
+
+
         try {
 
             // Create a new connection to database
@@ -70,6 +94,7 @@ public class LoginServlet extends HttpServlet {
                 }
             }
             else{ // resultSet is empty
+                responseJsonObject.addProperty("status", "fail");
                 responseJsonObject.addProperty("message", "user " + email + " doesn't exist");
             }
 
@@ -79,6 +104,7 @@ public class LoginServlet extends HttpServlet {
             dbCon.close();
 
         } catch (Exception ex) {
+            responseJsonObject.addProperty("status", "fail");
             responseJsonObject.addProperty("message", "Sql error");
             // Output Error Massage to html
             //out.println(String.format("<html><head><title>MovieDBExample: Error</title></head>\n<body><p>SQL error in doGet: %s</p></body></html>", ex.getMessage()));
