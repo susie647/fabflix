@@ -1,4 +1,13 @@
 let login_form = $("#login_form");
+/*var onloadCallback = function() {
+    // Renders the HTML element with id 'example1' as a reCAPTCHA widget.
+    // The id of the reCAPTCHA widget is assigned to 'widgetId1'.
+    widgetId2 = grecaptcha.render(document.getElementById('gr'), {
+        'sitekey' : 'your_site_key'
+    });
+};
+
+ */
 
 /**
  * Handle the data returned by LoginServlet
@@ -15,11 +24,15 @@ function handleLoginResult(resultDataString) {
     if (resultDataJson["status"] === "success") {
         window.location.replace("index.html");
     } else {
-        // If login fails, the web page will display 
+        // If login fails, the web page will display
         // error messages on <div> with id "login_error_message"
         console.log("show error message");
         console.log(resultDataJson["message"]);
+
         $("#login_error_message").text(resultDataJson["message"]);
+        grecaptcha.reset();
+        //$(".g-recaptcha").reset();
+        //https://developers.google.com/recaptcha/docs/display
     }
 }
 

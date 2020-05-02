@@ -44,6 +44,7 @@ public class LoginServlet extends HttpServlet {
         } catch (Exception e) {
             responseJsonObject.addProperty("status", "fail");
             responseJsonObject.addProperty("message", "recaptcha verification error");
+            response.getWriter().write(responseJsonObject.toString());
             return;
         }
 
@@ -104,6 +105,7 @@ public class LoginServlet extends HttpServlet {
         } catch (Exception ex) {
             responseJsonObject.addProperty("status", "fail");
             responseJsonObject.addProperty("message", "Sql error");
+            response.getWriter().write(responseJsonObject.toString());
             // Output Error Massage to html
             //out.println(String.format("<html><head><title>MovieDBExample: Error</title></head>\n<body><p>SQL error in doGet: %s</p></body></html>", ex.getMessage()));
             return;
