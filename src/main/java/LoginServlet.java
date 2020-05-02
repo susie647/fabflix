@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/cs122b/login")
 public class LoginServlet extends HttpServlet {
@@ -70,8 +72,12 @@ public class LoginServlet extends HttpServlet {
 
             // Iterate through each row of rs and create a table row <tr>
             //out.println("<tr><td>ID</td><td>Name</td></tr>");
+            boolean success = false;
             if (rs.next()) {
-                if(password.equals(rs.getString("password"))){
+                String encryptedPassword = rs.getString("password");
+                success = new StrongPasswordEncryptor().checkPassword(password, encryptedPassword);
+
+                if(success == true){
                     HttpSession session = request.getSession(true);
                     session.setAttribute("user", new User(email));
                     session.setAttribute("login", true);// used to check login status
