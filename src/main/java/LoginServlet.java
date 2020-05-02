@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/cs122b/login")
 public class LoginServlet extends HttpServlet {
@@ -37,7 +38,7 @@ public class LoginServlet extends HttpServlet {
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
         System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
 
-        // Verify reCAPTCHA
+//         Verify reCAPTCHA
         try {
             RecaptchaVerifyUtils.verify(gRecaptchaResponse);
         } catch (Exception e) {
@@ -47,27 +48,24 @@ public class LoginServlet extends HttpServlet {
         }
 
 
-
-
-
-
         try {
 
             // Create a new connection to database
             Connection dbCon = dataSource.getConnection();
-
-            // Declare a new statement
-            Statement statement = dbCon.createStatement();
 
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String email = request.getParameter("email");
             String password = request.getParameter("password");
 
             // Generate a SQL query
-            String query = String.format("SELECT password, id from customers where email = '%s'", email);
+            String query = "SELECT password, id from customers where email = ?";
+
+            PreparedStatement statement = dbCon.prepareStatement(query);
+
+            statement.setString(1, email);
 
             // Perform the query
-            ResultSet rs = statement.executeQuery(query);
+            ResultSet rs = statement.executeQuery();
 
             // Iterate through each row of rs and create a table row <tr>
             //out.println("<tr><td>ID</td><td>Name</td></tr>");

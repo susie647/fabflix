@@ -12,10 +12,7 @@ import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.time.LocalDate;
 
@@ -38,33 +35,37 @@ public class UpdateSalesServlet extends HttpServlet {
 
         try {
             Connection dbCon = dataSource.getConnection();
-            Statement update = dbCon.createStatement();
             String cid = session.getAttribute("cid").toString();
-
+            String saleDate = LocalDate.now().toString();
 
             // Update Sales Table
-            String values = "INSERT INTO sales (customerId, movieId, saleDate) VALUES";
-            String saleDate = LocalDate.now().toString();
+            String values = "INSERT INTO sales (customerId, movieId, saleDate) VALUES (?, ?, ?)";
+
+            PreparedStatement update = dbCon.prepareStatement(values);
+
             ArrayList<Item> items = (ArrayList<Item>) session.getAttribute("items");
             for (int i = 0; i < items.size(); i++) {
                 int quantity = items.get(i).getQuantity();
                 String movieId = items.get(i).getMovieId();
-                for (int j = 0; j < quantity; j++){
-                    values += " (" + cid + "," + "'" + movieId + "', '" + saleDate + "'),";
+                for (int j = 0; j < quantity; j++) {
+                    update.setInt(1, Integer.parseInt(cid));
+                    update.setString(2, movieId);
+                    update.setString(3, saleDate);
+                    update.executeUpdate();
                 }
             }
-            values = values.substring(0,values.length()-1);
-            int retID = update.executeUpdate(values);
 
-            // Get Sales ID
+//          Get Sales ID
             int items_num = 0;
             for (int i = 0; i < items.size(); i++) {
                 items_num += items.get(i).getQuantity();
             }
 
-            Statement get = dbCon.createStatement();
-            String select = "SELECT id from sales order by id DESC limit " + items_num;
-            ResultSet saleIds = get.executeQuery(select);
+//            Statement get = dbCon.createStatement();
+            String select = "SELECT id from sales order by id DESC limit ?";
+            PreparedStatement get = dbCon.prepareStatement(select);
+            get.setInt(1, items_num);
+            ResultSet saleIds = get.executeQuery();
 
             JsonArray jsonArray = new JsonArray();
             int total = 0;

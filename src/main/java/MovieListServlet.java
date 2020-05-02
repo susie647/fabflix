@@ -16,6 +16,8 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
+
 
 
 // Declaring a WebServlet called StarsServlet, which maps to url "/api/stars"
@@ -26,6 +28,48 @@ public class MovieListServlet extends HttpServlet {
     // Create a dataSource which registered in web.xml
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
+
+    private String checkSortingOrder(String sort, HttpSession session){
+        String sortQuery = "";
+
+        if(sort.equals("tara")){
+            sortQuery = "m.title ASC, r.rating ASC";
+            session.setAttribute("ML_sort", "tara");
+        }
+        else if(sort.equals("tard")){
+            sortQuery = "m.title ASC, r.rating DESC";
+            session.setAttribute("ML_sort", "tard");
+        }
+        else if(sort.equals("tdra")){
+            sortQuery = "m.title DESC, r.rating ASC";
+            session.setAttribute("ML_sort", "tdra");
+        }
+        else if(sort.equals("tdrd")){
+            sortQuery = "m.title DESC, r.rating DESC";
+            session.setAttribute("ML_sort", "tdrd");
+        }
+        else if(sort.equals("rata")){
+            sortQuery = "r.rating ASC, m.title ASC";
+            session.setAttribute("ML_sort", "rata");
+        }
+        else if(sort.equals("ratd")){
+            sortQuery = "r.rating ASC, m.title DESC";
+            session.setAttribute("ML_sort", "ratd");
+        }
+        else if(sort.equals("rdta")){
+            sortQuery = "r.rating DESC, m.title ASC";
+            session.setAttribute("ML_sort", "rdta");
+        }
+        else if(sort.equals("rdtd")){
+            sortQuery = "r.rating DESC, m.title DESC";
+            session.setAttribute("ML_sort", "rdtd");
+        }
+        else{
+            return null;
+        }
+
+        return sortQuery;
+    }
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response
@@ -44,7 +88,7 @@ public class MovieListServlet extends HttpServlet {
             // Get a connection from dataSource
             Connection dbcon = dataSource.getConnection();
 
-            Statement statement;
+            PreparedStatement statement;
             ResultSet rs;
 
             int page = Integer.parseInt(request.getParameter("page"));
@@ -56,48 +100,13 @@ public class MovieListServlet extends HttpServlet {
             int offset = moviesPerPage * (page-1);
 
             String sort = request.getParameter("sort");
-            String sortQuery = "";
-            if(sort.equals("tara")){
-                sortQuery = "m.title ASC, r.rating ASC";
-                session.setAttribute("ML_sort", "tara");
+            String sortQuery = checkSortingOrder(sort, session);
+            if(sortQuery == null) {
+                throw new Exception("invalid sorting order");
             }
-            else if(sort.equals("tard")){
-                sortQuery = "m.title ASC, r.rating DESC";
-                session.setAttribute("ML_sort", "tard");
-            }
-            else if(sort.equals("tdra")){
-                sortQuery = "m.title DESC, r.rating ASC";
-                session.setAttribute("ML_sort", "tdra");
-            }
-            else if(sort.equals("tdrd")){
-                sortQuery = "m.title DESC, r.rating DESC";
-                session.setAttribute("ML_sort", "tdrd");
-            }
-            else if(sort.equals("rata")){
-                sortQuery = "r.rating ASC, m.title ASC";
-                session.setAttribute("ML_sort", "rata");
-            }
-            else if(sort.equals("ratd")){
-                sortQuery = "r.rating ASC, m.title DESC";
-                session.setAttribute("ML_sort", "ratd");
-            }
-            else if(sort.equals("rdta")){
-                sortQuery = "r.rating DESC, m.title ASC";
-                session.setAttribute("ML_sort", "rdta");
-            }
-            else if(sort.equals("rdtd")){
-                sortQuery = "r.rating DESC, m.title DESC";
-                session.setAttribute("ML_sort", "rdtd");
-            }
-
 
             if(request.getParameter("genreId") != null){
-                // query to get all qualifying movieid
-                statement = dbcon.createStatement();
                 // Generate a SQL query
-
-
-
                 String query = String.format("SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
                                 "g.name as genre, gm.genreId as genre_id, r.rating as rating, s.id as star_id, s.name as star_name, sc.count as count " +
                                 "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
@@ -105,38 +114,37 @@ public class MovieListServlet extends HttpServlet {
                                 "from (select s_table.s_id, sm.movieId as pmovie, s_table.movie_id as movie_id " +
                                 "from (select s.id as s_id, sm.movieId as movie_id from (SELECT distinct m.id as movie_id, m.title, r.rating " +
                                 "from movies as m, genres as g, genres_in_movies as gm, ratings as r " +
-                                "where g.id = %s and gm.genreId=g.id and m.id=gm.movieId and m.id=r.movieId " +
+                                "where g.id = ? and gm.genreId=g.id and m.id=gm.movieId and m.id=r.movieId " +
                                 "order by %s limit %d offset %d) as movieIDtable, stars_in_movies as sm, stars as s " +
                                 "where sm.movieId = movieIDtable.movie_id and sm.starId=s.id) as s_table, stars_in_movies as sm " +
                                 "where s_table.s_id = sm.starId) as sandm group by sandm.s_id, sandm.movie_id) as sc " +
                                 "where m.id=sc.movie_id and m.id=r.movieId " +
                                 "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id order by %s",
-                        request.getParameter("genreId"), sortQuery, moviesPerPage, offset, sortQuery);
+                        sortQuery, moviesPerPage, offset, sortQuery);
 
-                rs = statement.executeQuery(query);
+                statement = dbcon.prepareStatement(query);
+                statement.setString(1, request.getParameter("genreId"));
+                rs = statement.executeQuery();
 
                 session.setAttribute("ML_status", "genreId="+request.getParameter("genreId"));
             }
             else if(request.getParameter("movieTitle") != null){
-                // query to get all qualifying movieid
-                statement = dbcon.createStatement();
                 // Generate a SQL query
                 String movieTitle = request.getParameter("movieTitle");
                 String temp;
 
                 if (movieTitle.matches("[A-Z]")){
-                    temp = "where m.title LIKE '" + movieTitle + "%' ";
+                    temp = "^[" + movieTitle + movieTitle.toLowerCase() + "]";
                 }
-
                 else if (movieTitle.matches("[0-9]")){
-                    temp = "where m.title LIKE '" + movieTitle + "%' ";
+                    temp = "^" + movieTitle;
                 }
-
+                else if (movieTitle.equals("*")){
+                    temp = "^[^0-9A-Za-z]";
+                }
                 else{
-                    temp = "where m.title regexp '^[^0-9A-Z]' ";
+                    throw new Exception("invalid movie title");
                 }
-
-
 
                 String query = String.format("SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
                                 "g.name as genre, gm.genreId as genre_id, r.rating as rating, s.id as star_id, s.name as star_name, sc.count as count " +
@@ -144,15 +152,18 @@ public class MovieListServlet extends HttpServlet {
                                 "(select s_id, count(*) as count, sandm.movie_id as movie_id " +
                                 "from (select s_table.s_id, sm.movieId as pmovie, s_table.movie_id as movie_id " +
                                 "from (select s.id as s_id, sm.movieId as movie_id from " +
-                                "(SELECT distinct m.id as movie_id, m.title, r.rating from movies as m, ratings as r %s and m.id=r.movieId " +
+                                "(SELECT distinct m.id as movie_id, m.title, r.rating from movies as m, ratings as r where m.title regexp ? and m.id=r.movieId " +
                                 "order by %s limit %d offset %d) as movieIDtable, stars_in_movies as sm, stars as s " +
                                 "where sm.movieId = movieIDtable.movie_id and sm.starId=s.id) as s_table, stars_in_movies as sm " +
                                 "where s_table.s_id = sm.starId) as sandm group by sandm.s_id, sandm.movie_id) as sc " +
                                 "where m.id=sc.movie_id and m.id=r.movieId " +
                                 "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id order by %s",
-                        temp, sortQuery, moviesPerPage, offset, sortQuery);
+                        sortQuery, moviesPerPage, offset, sortQuery);
 
-                rs = statement.executeQuery(query);
+                statement = dbcon.prepareStatement(query);
+
+                statement.setString(1, temp);
+                rs = statement.executeQuery();
 
                 session.setAttribute("ML_status", "movieTitle="+movieTitle);
             }
@@ -184,26 +195,21 @@ public class MovieListServlet extends HttpServlet {
 
                 String temp = "";
                 if (title.compareTo("") > 0) {
-                    title = "%"+title+"%";
-                    temp += String.format(" and m.title like '%s'", title);
+                    temp += " and m.title like ? ";
                 }
                 if (year > -1) {
-                    temp += String.format(" and m.year='%d'", year);
+                    temp += " and m.year= ? ";
                 }
                 if (director.compareTo("") > 0) {
-                    director = "%"+director+"%";
-                    temp += String.format(" and m.director like '%s'", director);
+                    temp += " and m.director like ? ";
                 }
                 if (star.compareTo("") > 0) {
-                    star = "%"+star+"%";
-                    temp += String.format(" and s.name like '%s'", star);
+                    temp += " and s.name like ? ";
                 }
 
                 // query to get all qualifying movieid
-                statement = dbcon.createStatement();
+//                statement = dbcon.createStatement();
                 // Generate a SQL query
-
-
                 String query = String.format("SELECT m.id as movie_id, m.title as title, m.year as year, m.director as director, " +
                                 "g.name as genre, gm.genreId as genre_id, r.rating as rating, s.id as star_id, s.name as star_name, sc.count as count " +
                                 "from movies as m, genres as g, genres_in_movies as gm, stars as s, stars_in_movies as sm, ratings as r, " +
@@ -218,10 +224,28 @@ public class MovieListServlet extends HttpServlet {
                                 "where m.id=sc.movie_id and m.id=r.movieId " +
                                 "and m.id=gm.movieId and gm.genreId=g.id and m.id=sm.movieId and sm.starId=s.id and sc.s_id = s.id order by %s",
                         temp, sortQuery, moviesPerPage, offset, sortQuery);
-                rs = statement.executeQuery(query);
 
+
+                statement = dbcon.prepareStatement(query);
+
+                int num = 0;
+                if (title.compareTo("") > 0) {
+                    title = "%"+title+"%";
+                    statement.setString(++num, title);
+                }
+                if (year > -1) {
+                    statement.setInt(++num, year);
+                }
+                if (director.compareTo("") > 0) {
+                    director = "%"+director+"%";
+                    statement.setString(++num, director);
+                }
+                if (star.compareTo("") > 0) {
+                    star = "%"+star+"%";
+                    statement.setString(++num, star);
+                }
+                rs = statement.executeQuery();
                 session.setAttribute("ML_status", ML_status);
-
             }
 
 
@@ -260,7 +284,6 @@ public class MovieListServlet extends HttpServlet {
             out.write(jsonArray.toString());
             // set response status to 200 (OK)
             response.setStatus(200);
-
 
             rs.close();
             statement.close();

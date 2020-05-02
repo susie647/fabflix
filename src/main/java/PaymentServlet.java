@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.time.LocalTime;
+import java.sql.PreparedStatement;
 
 
 @WebServlet(name = "PaymentServelet", urlPatterns = "/cs122b/payment")
@@ -50,9 +51,6 @@ public class PaymentServlet extends HttpServlet {
             // Create a new connection to database
             Connection dbCon = dataSource.getConnection();
 
-            // Declare a new statement
-            Statement statement = dbCon.createStatement();
-
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String firstName = request.getParameter("firstName");
             String lastName = request.getParameter("lastName");
@@ -62,12 +60,15 @@ public class PaymentServlet extends HttpServlet {
             String day = request.getParameter("day");
             String expiration = year + "-" + month + "-" + day;
 
-
             // Generate a SQL query
-            String query = String.format("Select * from creditcards where creditcards.id = '%s'", creditCardNum);
+            String query = "Select * from creditcards where creditcards.id = ?";
+
+            PreparedStatement statement = dbCon.prepareStatement(query);
+
+            statement.setString(1, creditCardNum);
 
             // Perform the query
-            ResultSet rs = statement.executeQuery(query);
+            ResultSet rs = statement.executeQuery();
 
             // Iterate through each row of rs and create a table row <tr>
             if (rs.next()) {
@@ -77,42 +78,6 @@ public class PaymentServlet extends HttpServlet {
                     HttpSession session = request.getSession(true);
                     //session.setAttribute("user", new User(email));
                     session.setAttribute("placeOrder", true);// used to check login status
-
-//                    Statement update = dbCon.createStatement();
-//                    String cid = session.getAttribute("cid").toString();
-//
-//                    String values = "INSERT INTO sales (customerId, movieId, saleDate) VALUES";
-//                    String saleDate = LocalTime.now().toString();
-//                    ArrayList<Item> items = (ArrayList<Item>) session.getAttribute("items");
-//                    for (int i = 0; i < items.size(); i++) {
-//                        int quantity = items.get(i).getQuantity();
-//                        String movieId = items.get(i).getMovieId();
-//                        for (int j = 0; j < quantity; j++){
-//                            values += " (" + cid + "," + movieId + "," + saleDate + "),";
-//                        }
-//                    }
-//                    values = values.substring(0,values.length()-1);
-//
-//                    ResultSet retID = update.executeQuery(values);
-//                    update.close();
-
-
-//                    Statement update = dbCon.createStatement();
-//                    String cid = rs.getString("cid");
-//                    String temp = "INSERT INTO sales (customerId, movieId, saleDate) VALUES";
-//                    String saleDate = LocalTime.now().toString();
-//                    ArrayList<Item> items = (ArrayList<Item>) session.getAttribute("items");
-//                    String values = "";
-//                    for (int i = 0; i < items.size(); i++) {
-//                        int quantity = items.get(i).getQuantity();
-//                        String movieId = items.get(i).getMovieId();
-//                        for (int j = 0; j < quantity; j++){
-//                            values += " (" + cid + "," + movieId + "," + saleDate + "),";
-//                        }
-//                    }
-//                    values = values.substring(0,values.length()-1);
-//                    int retID = update.executeUpdate(values);
-
 
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");
