@@ -61,6 +61,26 @@ function handleDashboardData(resultData) {
 }
 
 
+function submitAddStarForm(formSubmitEvent) {
+    console.log("submit add star form");
+    /**
+     * When users click the submit button, the browser will not direct
+     * users to the url defined in HTML form. Instead, it will call this
+     * event handler when the event is triggered.
+     */
+    // formSubmitEvent.preventDefault();
+    //
+    // $.ajax(
+    //     "cs122b/dashboard", {
+    //         method: "POST",
+    //         // Serialize the login form to the data sent by POST request
+    //         data: add_star_form.serialize(),
+    //         success: handleLoginResult
+    //     }
+    // );
+}
+
+let add_star_form = $("#add_star_form");
 
 $.ajax({
     dataType: "json", // Setting return data type
@@ -68,3 +88,5 @@ $.ajax({
     url: "cs122b/dashboard",
     success: (resultData) => handleDashboardData(resultData)
 });
+
+add_star_form.submit(submitAddStarForm);

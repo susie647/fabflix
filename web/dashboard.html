@@ -16,6 +16,20 @@
 <body>
 <h1 style="color:blue;text-align:center;">Dashboard Page</h1>
 
+<form id="add_star_form" method="post" action="#">
+    <legend>Add Star</legend>
+    <label><b>Star Name</b></label>
+    <label>
+        <input name="star_name" placeholder="(required)" type="text">
+    </label>
+    <br>
+    <label><b>Star's Birth Year</b></label>
+    <label>
+        <input name="star_birthYear" placeholder="(optional)" type="text">
+    </label>
+    <br>
+    <input type="submit" value="Add Star">
+</form>
 
 <table id=dashboard_table class="table table-striped">
     <!-- Create a table header -->
