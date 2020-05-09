@@ -31,7 +31,7 @@ public class AddStarServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //HttpSession session = request.getSession(true);
-        response.setContentType("application/json"); // Response mime type
+//        response.setContentType("application/json"); // Response mime type
         JsonObject responseJsonObject = new JsonObject();
         //PrintWriter out = response.getWriter();
 
@@ -50,7 +50,8 @@ public class AddStarServlet extends HttpServlet {
             while(rsMax.next()){
                 maxStarId = rsMax.getString("maxStarId");
             }
-            String newStarId = maxStarId.substring(0,2) + Integer.parseInt(maxStarId.substring(2))+1;
+            int newIDNum = Integer.parseInt(maxStarId.substring(2))+1;
+            String newStarId = String.format("%s%d", maxStarId.substring(0, 2), newIDNum);
 
             rsMax.close();
             statement.close();
@@ -61,7 +62,13 @@ public class AddStarServlet extends HttpServlet {
 
             update.setString(1, newStarId);
             update.setString(2, star_name);
-            update.setString(3, star_birthYear);
+
+            if(star_birthYear == "" || star_birthYear == null){
+                update.setString(3, null);
+            }
+            else{
+                update.setString(3, star_birthYear);
+            }
             update.executeUpdate();
 
             responseJsonObject.addProperty("status", "success");
