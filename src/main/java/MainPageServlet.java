@@ -26,8 +26,6 @@ public class MainPageServlet extends HttpServlet{
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
-        String sessionId = session.getId();
-        long lastAccessTime = session.getLastAccessedTime();
 //        String username = (String) session.getAttribute("user");
 
         String heading;
@@ -42,13 +40,17 @@ public class MainPageServlet extends HttpServlet{
             heading = "Welcome back to Fabflix!";
         }
 
+        String admin = "false";
+        if(session.getAttribute("admin") != null && session.getAttribute("admin").equals(true)){
+            admin = "true";
+        }
+
         // Update the new accessCount to session, replacing the old value if existed
 //        session.setAttribute("new_user", newUser);
 
         JsonObject responseJsonObject = new JsonObject();
         responseJsonObject.addProperty("welcomeInfo", heading);
-        responseJsonObject.addProperty("sessionID", sessionId);
-        responseJsonObject.addProperty("lastAccessTime", new Date(lastAccessTime).toString());
+        responseJsonObject.addProperty("admin", admin);
 
         // write all the data into the jsonObject
         response.getWriter().write(responseJsonObject.toString());
@@ -60,6 +62,9 @@ public class MainPageServlet extends HttpServlet{
         try {
             HttpSession session = request.getSession(true);
             session.setAttribute("login", false);
+            if(session.getAttribute("admin") != null){
+                session.setAttribute("admin", false);
+            }
             responseJsonObject.addProperty("status", "success");
             responseJsonObject.addProperty("message", "logout successfully");
         } catch (Exception ex) {

@@ -59,29 +59,39 @@ public class LoginServlet extends HttpServlet {
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String email = request.getParameter("email");
             String password = request.getParameter("password");
+            String identity = request.getParameter("identity");
 
             // Generate a SQL query
-            String query = "SELECT password, id from customers where email = ?";
+            String query = "";
+            if(identity.equals("user")) {
+                query = "SELECT password, id from customers where email = ?";
+            }
+            else{
+                query = "SELECT password from employees where email = ?";
+            }
 
             PreparedStatement statement = dbCon.prepareStatement(query);
-
             statement.setString(1, email);
-
             // Perform the query
             ResultSet rs = statement.executeQuery();
 
             // Iterate through each row of rs and create a table row <tr>
-            //out.println("<tr><td>ID</td><td>Name</td></tr>");
             boolean success = false;
             if (rs.next()) {
                 String encryptedPassword = rs.getString("password");
                 success = new StrongPasswordEncryptor().checkPassword(password, encryptedPassword);
 
-                if(success == true){
+                if (success == true) {
                     HttpSession session = request.getSession(true);
                     session.setAttribute("user", new User(email));
                     session.setAttribute("login", true);// used to check login status
-                    session.setAttribute("cid", rs.getString("id"));
+                    if(identity.equals("user")){
+                        session.setAttribute("cid", rs.getString("id"));
+                    }
+                    else{
+                        session.setAttribute("admin", true);
+                        session.setAttribute("cid", "000");
+                    }
 
                     // set up movie list status
                     session.setAttribute("ML_status", "genreId=1");
@@ -93,24 +103,24 @@ public class LoginServlet extends HttpServlet {
                     responseJsonObject.addProperty("message", "success");
 
                 }
-                else{
+                else {
                     responseJsonObject.addProperty("status", "fail");
                     responseJsonObject.addProperty("message", "incorrect password");
                 }
             }
-            else{ // resultSet is empty
+            else { // resultSet is empty
                 responseJsonObject.addProperty("status", "fail");
                 responseJsonObject.addProperty("message", "user " + email + " doesn't exist");
             }
-
             // Close all structures
             rs.close();
             statement.close();
             dbCon.close();
 
+
         } catch (Exception ex) {
             responseJsonObject.addProperty("status", "fail");
-            responseJsonObject.addProperty("message", "Sql error");
+            responseJsonObject.addProperty("message", ex.getMessage());
             response.getWriter().write(responseJsonObject.toString());
             // Output Error Massage to html
             //out.println(String.format("<html><head><title>MovieDBExample: Error</title></head>\n<body><p>SQL error in doGet: %s</p></body></html>", ex.getMessage()));

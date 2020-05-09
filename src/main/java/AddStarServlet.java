@@ -31,7 +31,6 @@ public class AddStarServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //HttpSession session = request.getSession(true);
-//        response.setContentType("application/json"); // Response mime type
         JsonObject responseJsonObject = new JsonObject();
         //PrintWriter out = response.getWriter();
 

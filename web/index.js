@@ -41,8 +41,13 @@ function handleMainPageData(resultDataString) {
 
     // show the session information
     $("#welcomeInfo").text(resultDataJson["welcomeInfo"]);
-    $("#sessionID").text("Session ID: " + resultDataJson["sessionID"]);
-    $("#lastAccessTime").text("Last access time: " + resultDataJson["lastAccessTime"]);
+
+    if(resultDataJson["admin"] == "true"){
+        let dashboard = $("#adminDashboard");
+        let HTML = "";
+        HTML += '<a href = \"dashboard.html\"><button>Go to Dashboard</button></a>';
+        dashboard.append(HTML);
+    }
 }
 
 function handleGenresData(resultData) {

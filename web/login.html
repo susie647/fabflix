@@ -10,6 +10,12 @@
 <!-- Set the method to POST to avoid showing the username/password in the URL
      The default action is disabled to allow your own implementation. -->
 <form id="login_form" method="post" action="#">
+    <label for="identity">Login as a User/Admin:</label>
+    <select id="identity" name="identity">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+    </select>
+    <br>
     <label><b>Email</b></label>
     <label>
         <input name="email" placeholder="Enter Email" type="text">
@@ -25,6 +31,7 @@
 </form>
 
 <div id="login_error_message"></div>
+
 
 <!-- include jQuery-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
