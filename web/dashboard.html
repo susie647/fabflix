@@ -16,7 +16,7 @@
 <body>
 <h1 style="color:blue;text-align:center;">Dashboard Page</h1>
 
-<form id="add_star_form" method="post" action="#">
+<form id="add_star_form" method="get" action="#" style="margin: 25px;">
     <legend>Add Star</legend>
     <label><b>Star Name</b></label>
     <label>
@@ -30,6 +30,38 @@
     <br>
     <input type="submit" value="Add Star">
 </form>
+
+
+<form id="add_movie_form" method="post" action="#" style="margin: 25px;">
+    <legend>Add Movie</legend>
+    <label><b>Movie Title</b></label>
+    <label>
+        <input name="movie_title" placeholder="(required)" type="text">
+    </label>
+    <br>
+    <label><b>Movie Year</b></label>
+    <label>
+        <input name="movie_year" placeholder="(required)" type="text">
+    </label>
+    <br><label><b>Movie Director</b></label>
+    <label>
+        <input name="movie_director" placeholder="(required)" type="text">
+    </label>
+    <br>
+    <label><b>Movie Genre</b></label>
+    <label>
+        <input name="movie_genre" placeholder="(required)" type="text">
+    </label>
+    <br>
+    <label><b>Star Name</b></label>
+    <label>
+        <input name="star_name" placeholder="(required)" type="text">
+    </label>
+    <br>
+    <input type="submit" value="Add Movie">
+</form>
+
+
 
 <table id=dashboard_table class="table table-striped">
     <!-- Create a table header -->
