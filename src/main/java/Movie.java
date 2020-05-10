@@ -1,5 +1,8 @@
 package main.java;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Movie {
 
 	private String id;
@@ -10,10 +13,10 @@ public class Movie {
 
 	private String director;
 
-
+	private List<String> genres;
 
 	public Movie(){
-
+		genres = new ArrayList<String>();
 	}
 
 	public Movie(String id, String title, int year, String director) {
@@ -21,7 +24,8 @@ public class Movie {
 		this.title = title;
 		this.year = year;
 		this.director = director;
-		
+
+		genres = new ArrayList<String>();
 	}
 
 
@@ -53,6 +57,12 @@ public class Movie {
 	public void setDirector(String director) {
 		this.director = director;
 	}
+
+	public ArrayList<String> getGenres() {
+		return (ArrayList<String>) genres;
+	}
+
+	public void addGenres(String genre) { genres.add(genre);}
 	
 	
 	public String toString() {
@@ -65,6 +75,8 @@ public class Movie {
 		sb.append("Title:" + getTitle());
 		sb.append(", ");
 		sb.append("Director:" + getDirector());
+		sb.append(",");
+		sb.append("Genres:" + getGenres());
 		sb.append(".");
 		
 		return sb.toString();
