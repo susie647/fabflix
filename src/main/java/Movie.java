@@ -15,8 +15,11 @@ public class Movie {
 
 	private List<String> genres;
 
+	private List<String> stars;
+
 	public Movie(){
 		genres = new ArrayList<String>();
+		stars = new ArrayList<String>();
 	}
 
 	public Movie(String id, String title, int year, String director) {
@@ -26,6 +29,7 @@ public class Movie {
 		this.director = director;
 
 		genres = new ArrayList<String>();
+		stars = new ArrayList<String>();
 	}
 
 
@@ -62,7 +66,11 @@ public class Movie {
 		return (ArrayList<String>) genres;
 	}
 
+	public ArrayList<String> getStars() { return (ArrayList<String>) stars; }
+
 	public void addGenres(String genre) { genres.add(genre);}
+
+	public void addStars(String star ) { stars.add(star); }
 	
 	
 	public String toString() {
@@ -77,6 +85,8 @@ public class Movie {
 		sb.append("Director:" + getDirector());
 		sb.append(",");
 		sb.append("Genres:" + getGenres());
+		sb.append(",");
+		sb.append("Stars:" + getStars());
 		sb.append(".");
 		
 		return sb.toString();

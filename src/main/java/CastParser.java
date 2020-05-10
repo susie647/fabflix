@@ -4,13 +4,22 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.swing.plaf.nimbus.State;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 public class CastParser extends DefaultHandler {
 
@@ -21,7 +30,6 @@ public class CastParser extends DefaultHandler {
 
     //to maintain context
     private Movie tempMovie;
-    private Genre tempGenre;
 
     private String tempDirector;
     private String tempFid;
@@ -29,18 +37,21 @@ public class CastParser extends DefaultHandler {
     //private int tempYear;
 
 
-    //@Resource(name = "jdbc/moviedb")
-    //private Datasource datasource;
-
     public CastParser() {
 
         myMovies = new ArrayList<Movie>();
         myStars = new ArrayList<Star>();
     }
 
-    public void runExample() {
-        parseDocument();
-        printData();
+    public void run() {
+        try {
+            parseDocument();
+//            printData();
+            updateDB();
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     private void parseDocument() {
@@ -83,6 +94,57 @@ public class CastParser extends DefaultHandler {
         while (it2.hasNext()) {
             System.out.println(it2.next().toString());
         }
+    }
+
+    private void updateDB() throws Exception {
+        String loginUser = "mytestuser";
+        String loginPasswd = "mypassword";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
+
+        Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+
+        String find_movie_s = "select * from movies as m where m.id = ?";
+        String find_star_s = "select * from stars as s where s.name = ?";
+        String add_s_in_m_s = "insert into stars_in_movies values (?, ?)";
+
+        PreparedStatement find_movie = connection.prepareStatement(find_movie_s);
+        PreparedStatement find_star = connection.prepareStatement(find_star_s);
+        PreparedStatement add_s_in_m = connection.prepareStatement(add_s_in_m_s);
+
+        for(int i=0; i < myMovies.size(); i++){
+            // check whether the movie exists
+            find_movie.setString(1, myMovies.get(i).getId());
+            ResultSet fmrs = find_movie.executeQuery();
+            // if exists
+            if(fmrs.next()){
+                ArrayList<String> movieStars = myMovies.get(i).getStars();
+                for(int j=0; j<movieStars.size(); j++){
+                    find_star.setString(1, movieStars.get(j));
+                    ResultSet fsrs = find_star.executeQuery();
+                    if(fsrs.next()){
+                        // both movie and star exists
+                        add_s_in_m.setString(1, fsrs.getString("id"));
+                        add_s_in_m.setString(2, fmrs.getString("id"));
+                        add_s_in_m.executeUpdate();
+//                        System.out.println(movieStars.get(j) + " in " + myMovies.get(i).getTitle());
+                    }
+                    else{
+//                        System.out.println(movieStars.get(j) + "does not exist in stars table");
+                    }
+                }
+            }
+            else{
+//                System.out.println(myMovies.get(i).getTitle() + "does not exist in movies table");
+            }
+        }
+        find_movie.close();
+        find_star.close();
+        add_s_in_m.close();
+        connection.close();
+
+
     }
 
 
@@ -138,9 +200,8 @@ public class CastParser extends DefaultHandler {
         else if (qName.equalsIgnoreCase("a")) {
             //add to database star
             myStars.add(new Star(tempVal,-1));
-
             //add to database stars in movies
-
+            tempMovie.addStars(tempVal);
         }
         else{
 
@@ -149,21 +210,9 @@ public class CastParser extends DefaultHandler {
     }
 
     public static void main(String[] args) throws Exception{
-//        Class.forName("com.mysql.jdbc.Driver").newInstance();
-//
-//        // Connect to the test database
-//        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/moviedb" + "?autoReconnect=true&useSSL=false",
-//                "mytestuser", "mypassword");
-//
-//        if (connection != null) {
-//            System.out.println("Connection established!!");
-//            System.out.println();
-//        }
-
-
 
         CastParser spe = new CastParser();
-        spe.runExample();
+        spe.run();
     }
 
 }

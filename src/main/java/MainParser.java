@@ -11,6 +11,12 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+
+
 public class MainParser extends DefaultHandler {
 
     List<Movie> myMovies;
@@ -59,10 +65,10 @@ public class MainParser extends DefaultHandler {
         }};
     }
 
-    public void runExample() {
+    public void run() {
         try {
             parseDocument();
-            printData();
+//            printData();
             updateDB();
         }
         catch (Exception e){
@@ -147,21 +153,6 @@ public class MainParser extends DefaultHandler {
         rsGenre.close();
 
 
-
-//        /**
-//         * retrieve all genres and store in map
-//         */
-//        Statement statement = connection.createStatement();
-//        String maxId = "SELECT max(g.id) as maxGenreId from genres as g";
-//        ResultSet rsMax = statement.executeQuery(maxId);
-//
-//        //retrieve max genre id
-//        int maxGenreId;
-//        if(rsMax.next()){
-//            maxGenreId = rsMax.getInt("maxGenreId");
-//        }
-
-
         /**
          * add to genres table
          */
@@ -190,32 +181,26 @@ public class MainParser extends DefaultHandler {
 
 
 
-
-
-
-
         /**
-         * add to movies table
+         * add to movies table and genres_in_movies table
          */
-//        String add_movie = "insert into movies values (?, ?, ?, ?)";
-//        PreparedStatement update = connection.prepareStatement(add_movie);
+        String add_movie = "insert into movies values (?, ?, ?, ?)";
+        PreparedStatement update = connection.prepareStatement(add_movie);
 
         String add_genres_in_movies = "insert into genres_in_movies values(?,?)";
         PreparedStatement updateGIM = connection.prepareStatement(add_genres_in_movies);
 
         for(int i=0; i < myMovies.size(); i++){
-//            newIDNum++;
-            //String newStarId = String.format("%s%d", maxStarId.substring(0, 2), ++newIDNum);
-//            update.setString(1, myMovies.get(i).getId());
-//            update.setString(2, myMovies.get(i).getTitle());
-//            if(myMovies.get(i).getYear() == -1){
-//                update.setString(3, null);
-//            }
-//            else {
-//                update.setInt(3, myMovies.get(i).getYear());
-//            }
-//            update.setString(4, myMovies.get(i).getDirector());
-//            //update.executeUpdate();
+            update.setString(1, myMovies.get(i).getId());
+            update.setString(2, myMovies.get(i).getTitle());
+            if(myMovies.get(i).getYear() == -1){
+                update.setString(3, null);
+            }
+            else {
+                update.setInt(3, myMovies.get(i).getYear());
+            }
+            update.setString(4, myMovies.get(i).getDirector());
+            update.executeUpdate();
 
 
             //add each genre in this movie into genres_in_movies
@@ -237,10 +222,7 @@ public class MainParser extends DefaultHandler {
 
         }
         updateGIM.close();
-//        update.close();
-
-
-
+        update.close();
 
 
         connection.close();
@@ -313,7 +295,7 @@ public class MainParser extends DefaultHandler {
 
 
         MainParser spe = new MainParser();
-        spe.runExample();
+        spe.run();
     }
 
 }

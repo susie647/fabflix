@@ -13,8 +13,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
 
-public class StarSAXParser extends DefaultHandler{
+
+public class StarParser extends DefaultHandler{
 
     List<Star> myStars;
 
@@ -23,14 +28,14 @@ public class StarSAXParser extends DefaultHandler{
     //to maintain context
     private Star tempStar;
 
-    public StarSAXParser() {
+    public StarParser() {
         myStars = new ArrayList<Star>();
     }
 
-    public void runExample() {
+    public void run() {
         try {
             parseDocument();
-            printData();
+//            printData();
             updateDB();
         }
         catch (Exception e){
@@ -153,16 +158,13 @@ public class StarSAXParser extends DefaultHandler{
             else {
                 tempStar.setDob(Integer.parseInt(tempVal));
             }
-        }else{
-
         }
-
     }
 
     public static void main(String[] args) throws Exception {
 
-        StarSAXParser spe = new StarSAXParser();
-        spe.runExample();
+        StarParser spe = new StarParser();
+        spe.run();
     }
 
 
