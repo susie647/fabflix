@@ -13,10 +13,10 @@ newStarsInMovies.txt
 .metadata
 bin/
 tmp/
-XMLs/
+#XMLs/
 stanford-movies/
 *.dtd
-*.xml
+#*.xml
 *.tmp
 *.bak
 *.swp
