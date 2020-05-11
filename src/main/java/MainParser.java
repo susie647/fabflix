@@ -4,6 +4,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -24,6 +25,7 @@ public class MainParser extends DefaultHandler {
 
     Map<String, Integer> existingGenres;
     Map<String, String> genreTable;
+    Map<String, String> FidMidDict;
 
     private String tempVal;
 
@@ -42,6 +44,7 @@ public class MainParser extends DefaultHandler {
         myMovies = new ArrayList<Movie>();
         myGenres = new HashSet<String>();
         existingGenres = new HashMap<String, Integer>();
+        FidMidDict = new HashMap<String, String>();
         genreTable = new HashMap<String, String>(){{
             put("susp", "thriller");
             put("cnr", "cops and robbers");
@@ -73,6 +76,10 @@ public class MainParser extends DefaultHandler {
         catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public Map<String, String> getFidMidDict(){
+        return FidMidDict;
     }
 
     private void parseDocument() {
@@ -177,10 +184,21 @@ public class MainParser extends DefaultHandler {
         }
         updateGenre.close();
 
-
         /**
          * add to movies table and genres_in_movies table
          */
+        // get max movie id
+        String maxMovieId_s = "select SUBSTRING(max(id),3,10) as idNum from movies";
+        Statement maxMovieId = connection.createStatement();
+        ResultSet maxMid = maxMovieId.executeQuery(maxMovieId_s);
+        String newMid = "";
+        int maxIdNum = 0;
+        if(maxMid.next()){
+            maxIdNum = maxMid.getInt("idNum");
+        }
+        maxMid.close();
+        maxMovieId.close();
+
         String find_movie_s = "select * from movies as m where m.title = ? and m.year = ? and m.director = ?";
         PreparedStatement find_movie = connection.prepareStatement(find_movie_s);
 
@@ -209,21 +227,37 @@ public class MainParser extends DefaultHandler {
                 continue;
             }
 
+            String movieId = "";
             // CHECK DUPLICATE MOVIES
-            find_movie.setString(1, myMovies.get(i).getTitle());
-            find_movie.setInt(2, myMovies.get(i).getYear());
-            find_movie.setString(3, myMovies.get(i).getDirector());
-            ResultSet fmrs = find_movie.executeQuery();
-            String movieId = myMovies.get(i).getId();
-            if(fmrs.next()){
-                movieId = fmrs.getString("id");
+            if(FidMidDict.containsKey(myMovies.get(i).getId())){
+                movieId = FidMidDict.get(myMovies.get(i).getId());
             }
-            else {
-                update.setString(1, movieId);
-                update.setString(2, myMovies.get(i).getTitle());
-                update.setInt(3, myMovies.get(i).getYear());
-                update.setString(4, myMovies.get(i).getDirector());
-                update.executeUpdate();
+            else{
+                find_movie.setString(1, myMovies.get(i).getTitle());
+                find_movie.setInt(2, myMovies.get(i).getYear());
+                find_movie.setString(3, myMovies.get(i).getDirector());
+                ResultSet fmrs = find_movie.executeQuery();
+                if(fmrs.next()){
+                    movieId = fmrs.getString("id");
+                }
+                else {
+                    // update movie id
+                    maxIdNum++;
+                    newMid = Integer.toString(maxIdNum);
+                    if(newMid.length() < 7){
+                        newMid = "0" + newMid;
+                    }
+                    movieId = "tt" + newMid;
+
+                    // store movie id - fid for cast.xml
+                    FidMidDict.put(myMovies.get(i).getId(), movieId);
+
+                    update.setString(1, movieId);
+                    update.setString(2, myMovies.get(i).getTitle());
+                    update.setInt(3, myMovies.get(i).getYear());
+                    update.setString(4, myMovies.get(i).getDirector());
+                    update.executeUpdate();
+                }
             }
 
             //add each genre in this movie into genres_in_movies
@@ -241,15 +275,12 @@ public class MainParser extends DefaultHandler {
                     updateGIM.executeUpdate();
                 }
             }
-
         }
         updateGIM.close();
         update.close();
         find_movie.close();
         connection.close();
-
     }
-
 
     //Event Handlers
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -310,17 +341,12 @@ public class MainParser extends DefaultHandler {
             //add to database fid and genre
 
         }
-        else{
-
-        }
-
     }
 
-    public static void main(String[] args) throws Exception{
-
-
-        MainParser spe = new MainParser();
-        spe.run();
-    }
+//    public static void main(String[] args) throws Exception{
+//        MainParser spe = new MainParser();
+//        spe.run();
+//        Map<String, String> fmd = spe.getFidMidDict();
+//    }
 
 }
