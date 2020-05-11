@@ -112,7 +112,7 @@ public class StarParser extends DefaultHandler{
         for(int i=0; i < myStars.size(); i++){
             String newStarId = String.format("%s%d", maxStarId.substring(0, 2), ++newIDNum);
             if(myStars.get(i).getName() == null || myStars.get(i).getName().equals("") ){
-                System.out.println("Star not added, NO STAGE NAME. " + myStars.get(i).toString());
+                //System.out.println("Star not added, NO STAGE NAME. " + myStars.get(i).toString());
                 try {
                     reportWriter.write("\nStar not added, NO STAGE NAME. " + myStars.get(i).toString());
                 }catch (IOException e) { e.printStackTrace(); }

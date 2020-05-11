@@ -26,6 +26,7 @@ public class CastParser extends DefaultHandler {
     List<Movie> myMovies;
     List<Star> myStars;
     Map<String, String> FidMidDict;
+    Map<String, String> existingStars;//key(name):value(id)
 
     private String tempVal;
 
@@ -43,6 +44,7 @@ public class CastParser extends DefaultHandler {
 
         myMovies = new ArrayList<Movie>();
         myStars = new ArrayList<Star>();
+        existingStars = new HashMap<String, String>();
         FidMidDict = fmd;
 //        FidMidDict = new HashMap<String, String>();
 //        for (Map.Entry<String, String> entry : fmd.entrySet()) {
@@ -118,12 +120,30 @@ public class CastParser extends DefaultHandler {
 
         Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 
-//        String find_movie_s = "select * from movies as m where m.id = ?";
-        String find_star_s = "select * from stars as s where s.name = ?";
-//        String add_s_in_m_s = "insert into stars_in_movies values (?, ?)";
+        //retrieve and store into hashmap
+        Statement retrieve = connection.createStatement();
+        String query = "SELECT id, name from stars";
+        ResultSet rsStar = retrieve.executeQuery(query);
 
-//        PreparedStatement find_movie = connection.prepareStatement(find_movie_s);
-        PreparedStatement find_star = connection.prepareStatement(find_star_s);
+        while(rsStar.next()){
+            String starId = rsStar.getString("id");
+            String starName = rsStar.getString("name").toLowerCase();
+            existingStars.put(starName, starId);
+        }
+        //System.out.println("Maxgenreid:"+maxGenreId);
+        //System.out.println(existingGenres.toString());
+
+        retrieve.close();
+        rsStar.close();
+
+
+
+////        String find_movie_s = "select * from movies as m where m.id = ?";
+//        String find_star_s = "select * from stars as s where s.name = ?";
+////        String add_s_in_m_s = "insert into stars_in_movies values (?, ?)";
+//
+////        PreparedStatement find_movie = connection.prepareStatement(find_movie_s);
+//        PreparedStatement find_star = connection.prepareStatement(find_star_s);
 //        PreparedStatement add_s_in_m = connection.prepareStatement(add_s_in_m_s);
         FileWriter mySMWriter = new FileWriter("newStarsInMovies.txt");
         String newSMLine = "";
@@ -134,7 +154,7 @@ public class CastParser extends DefaultHandler {
             if(myMovies.get(i).getId() == null || myMovies.get(i).getId().equals("") ){
                 //System.out.println("movie id is empty; skip");
 
-                System.out.println("Star in Movie not added, NO MOVIE ID. " + myMovies.get(i).toString());
+                //System.out.println("Star in Movie not added, NO MOVIE ID. " + myMovies.get(i).toString());
                 try {
                     myWriter.write("\nStar in Movie not added, NO MOVIE ID. " + myMovies.get(i).toString());
                 }catch (IOException e) { e.printStackTrace(); }
@@ -153,18 +173,25 @@ public class CastParser extends DefaultHandler {
                     if(movieStars.get(j) == null || movieStars.get(j).equals("")){
                         //System.out.println("star stage name is empty; skip");
 
-                        System.out.println("Star in Movie not added, NO STAGE NAME. " + myMovies.get(i).toString());
+                        //System.out.println("Star in Movie not added, NO STAGE NAME. " + myMovies.get(i).toString());
                         try {
                             myWriter.write("\nStar in Movie not added, NO STAGE NAME. " + myMovies.get(i).toString());
                         }catch (IOException e) { e.printStackTrace(); }
 
                         continue;
                     }
-                    find_star.setString(1, movieStars.get(j));
-                    ResultSet fsrs = find_star.executeQuery();
-                    if(fsrs.next()){
+//                    find_star.setString(1, movieStars.get(j));
+//                    ResultSet fsrs = find_star.executeQuery();
+
+                    String star_name = movieStars.get(j).toLowerCase();
+                    String star_id = existingStars.get(star_name);
+
+
+
+                    if(star_id != null && !star_id.equals("")){
                         // both movie and star exists
-                        newSMLine += fsrs.getString("id");
+                        newSMLine += star_id;
+                        //newSMLine += fsrs.getString("id");
                         newSMLine += ",";
                         newSMLine += movieId;
                         newSMLine += "\n";
@@ -178,7 +205,7 @@ public class CastParser extends DefaultHandler {
                     }
                     else{
                         //System.out.println(movieStars.get(j) + "does not exist in stars table");
-                        System.out.println("Star in Movie not added, " + movieStars.get(j) + "does not exist in stars table. "+ myMovies.get(i).toString());
+                        //System.out.println("Star in Movie not added, " + movieStars.get(j) + "does not exist in stars table. "+ myMovies.get(i).toString());
                         try {
                             myWriter.write("\nStar in Movie not added, " + movieStars.get(j) + "does not exist in stars table. " + myMovies.get(i).toString());
                         }catch (IOException e) { e.printStackTrace(); }
@@ -187,7 +214,7 @@ public class CastParser extends DefaultHandler {
             }
             else{
                 //System.out.println(myMovies.get(i).getTitle() + "does not exist in movies table");
-                System.out.println("Star in Movie not added, " + myMovies.get(i).getTitle() + "does not exist in movies table."+ myMovies.get(i).toString());
+                //System.out.println("Star in Movie not added, " + myMovies.get(i).getTitle() + "does not exist in movies table."+ myMovies.get(i).toString());
                 try {
                     myWriter.write("\nStar in Movie not added, " + myMovies.get(i).getTitle() + "does not exist in movies table." + myMovies.get(i).toString());
                 }catch (IOException e) { e.printStackTrace(); }
@@ -202,7 +229,7 @@ public class CastParser extends DefaultHandler {
         updateSM.close();
         rs.close();
 //        find_movie.close();
-        find_star.close();
+//        find_star.close();
 //        add_s_in_m.close();
         connection.close();
     }
