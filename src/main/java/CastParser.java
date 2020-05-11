@@ -9,6 +9,7 @@ import javax.swing.plaf.nimbus.State;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -36,6 +37,7 @@ public class CastParser extends DefaultHandler {
     //private String tempTitle;
     //private int tempYear;
 
+    private FileWriter myWriter;
 
     public CastParser( Map<String, String> fmd ) {
 
@@ -51,8 +53,15 @@ public class CastParser extends DefaultHandler {
     public void run() {
         try {
             parseDocument();
-//            printData();
+            //open report writer
+            myWriter = new FileWriter("report.txt",true);
+            myWriter.write("\nInconsistent data for parsing cast124.xml and adding to database:\n");
+
             updateDB();
+
+            myWriter.close();
+            System.out.println("Successfully save inconsistent data into report.");
+
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -120,7 +129,13 @@ public class CastParser extends DefaultHandler {
         for(int i=0; i < myMovies.size(); i++){
             // check whether the space is empty
             if(myMovies.get(i).getId() == null || myMovies.get(i).getId().equals("") ){
-                System.out.println("movie id is empty; skip");
+                //System.out.println("movie id is empty; skip");
+
+                System.out.println("Star in Movie not added, NO MOVIE ID. " + myMovies.get(i).toString());
+                try {
+                    myWriter.write("\nStar in Movie not added, NO MOVIE ID. " + myMovies.get(i).toString());
+                }catch (IOException e) { e.printStackTrace(); }
+
                 continue;
             }
 
@@ -133,7 +148,13 @@ public class CastParser extends DefaultHandler {
                 ArrayList<String> movieStars = myMovies.get(i).getStars();
                 for(int j=0; j<movieStars.size(); j++){
                     if(movieStars.get(j) == null || movieStars.get(j).equals("")){
-                        System.out.println("star stage name is empty; skip");
+                        //System.out.println("star stage name is empty; skip");
+
+                        System.out.println("Star in Movie not added, NO STAGE NAME. " + myMovies.get(i).toString());
+                        try {
+                            myWriter.write("\nStar in Movie not added, NO STAGE NAME. " + myMovies.get(i).toString());
+                        }catch (IOException e) { e.printStackTrace(); }
+
                         continue;
                     }
                     find_star.setString(1, movieStars.get(j));
@@ -146,12 +167,22 @@ public class CastParser extends DefaultHandler {
 //                        System.out.println(movieStars.get(j) + " in " + myMovies.get(i).getTitle());
                     }
                     else{
-                        System.out.println(movieStars.get(j) + "does not exist in stars table");
+                        //System.out.println(movieStars.get(j) + "does not exist in stars table");
+                        System.out.println("Star in Movie not added, " + movieStars.get(j) + "does not exist in stars table. "+ myMovies.get(i).toString());
+                        try {
+                            myWriter.write("\nStar in Movie not added, " + movieStars.get(j) + "does not exist in stars table. " + myMovies.get(i).toString());
+                        }catch (IOException e) { e.printStackTrace(); }
+
+
                     }
                 }
             }
             else{
-                System.out.println(myMovies.get(i).getTitle() + "does not exist in movies table");
+                //System.out.println(myMovies.get(i).getTitle() + "does not exist in movies table");
+                System.out.println("Star in Movie not added, " + myMovies.get(i).getTitle() + "does not exist in movies table."+ myMovies.get(i).toString());
+                try {
+                    myWriter.write("\nStar in Movie not added, " + myMovies.get(i).getTitle() + "does not exist in movies table." + myMovies.get(i).toString());
+                }catch (IOException e) { e.printStackTrace(); }
             }
         }
 //        find_movie.close();

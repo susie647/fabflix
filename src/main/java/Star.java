@@ -40,7 +40,7 @@ public class Star {
 		sb.append("Star Details - ");
 		sb.append("Name:" + getName());
 		sb.append(", ");
-		sb.append("Dob:" + getDob());
+		sb.append("Birth Year:" + getDob());
 		sb.append(".");
 		
 		return sb.toString();

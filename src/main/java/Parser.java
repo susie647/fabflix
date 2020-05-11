@@ -1,6 +1,8 @@
 package main.java;
 
 import java.util.*;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Parser {
 
@@ -16,6 +18,17 @@ public class Parser {
 
         CastParser cp = new CastParser( fmd );
         cp.run();
+
+//        try {
+//            FileWriter myWriter = new FileWriter("report.txt",true);
+//            myWriter.write("Inconsistent data");
+//            myWriter.close();
+//            System.out.println("Successfully save inconsistent data into report.");
+//        } catch (IOException e) {
+//            System.out.println("An error occurred.");
+//            e.printStackTrace();
+//        }
+
 
         long endTime   = System.nanoTime();
         long totalTime = endTime - startTime;

@@ -8,6 +8,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
@@ -35,6 +36,8 @@ public class MainParser extends DefaultHandler {
 
     private String tempDirector;
     private String tempFid;
+
+    private FileWriter myWriter;
 
 
 
@@ -70,8 +73,15 @@ public class MainParser extends DefaultHandler {
     public void run() {
         try {
             parseDocument();
-//            printData();
+            //open report writer
+            myWriter = new FileWriter("report.txt",true);
+            myWriter.write("\nInconsistent data for parsing main243.xml and adding to database:\n");
+
             updateDB();
+
+            myWriter.close();
+            System.out.println("Successfully save inconsistent data into report.");
+
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -211,19 +221,44 @@ public class MainParser extends DefaultHandler {
         for(int i=0; i < myMovies.size(); i++){
             //System.out.println(myMovies.get(i).getId());
             if(myMovies.get(i).getId() == null || myMovies.get(i).getId().equals("")){
-                System.out.println("NO FID" + myMovies.get(i).toString());
+                System.out.println("Movie not added, NO FID. " + myMovies.get(i).toString());
+
+                try {
+                    myWriter.write("\nMovie not added, NO FID. " + myMovies.get(i).toString());
+                }catch (IOException e) { e.printStackTrace(); }
+
                 continue;
             }
             if(myMovies.get(i).getYear() == -1){
-                System.out.println("NO YEAR/WRONG TYPE" + myMovies.get(i).toString());
+                System.out.println("Movie not added, NO YEAR/WRONG TYPE. " + myMovies.get(i).toString());
+                try {
+                    myWriter.write("\nMovie not added, NO YEAR/WRONG TYPE.  " + myMovies.get(i).toString());
+                }catch (IOException e) { e.printStackTrace(); }
                 continue;
             }
             if(myMovies.get(i).getDirector() == null || myMovies.get(i).getDirector().equals("")){
-                System.out.println("NO DIRECTOR" + myMovies.get(i).toString());
+                System.out.println("Movie not added, NO DIRECTOR. " + myMovies.get(i).toString());
+                try {
+                    myWriter.write("\nMovie not added, NO DIRECTOR. " + myMovies.get(i).toString());
+                }catch (IOException e) { e.printStackTrace(); }
                 continue;
             }
-            if(myMovies.get(i).getTitle() == null || myMovies.get(i).getTitle().equals("")){
-                System.out.println("NO TITLE" + myMovies.get(i).toString());
+            //movie will not be added if no title is provided or "NKT" stand for unknown title
+            if(myMovies.get(i).getTitle() == null || myMovies.get(i).getTitle().equals("") || myMovies.get(i).getTitle().equals("NKT")){
+                System.out.println("Movie not added, NO TITLE. " + myMovies.get(i).toString());
+                try {
+                    myWriter.write("\nMovie not added, NO TITLE. " + myMovies.get(i).toString());
+                }catch (IOException e) { e.printStackTrace(); }
+                continue;
+            }
+            //movie will not be added if no genre is provided
+            ArrayList<String> tempGenres = myMovies.get(i).getGenres();
+            //System.out.println(tempGenres);
+            if(tempGenres==null || tempGenres.isEmpty()){
+                System.out.println("Movie not added, NO GENRE. " + myMovies.get(i).toString());
+                try {
+                    myWriter.write("\nMovie not added, NO GENRE. " + myMovies.get(i).toString());
+                }catch (IOException e) { e.printStackTrace(); }
                 continue;
             }
 
@@ -261,7 +296,7 @@ public class MainParser extends DefaultHandler {
             }
 
             //add each genre in this movie into genres_in_movies
-            ArrayList<String> tempGenres = myMovies.get(i).getGenres();
+            //ArrayList<String> tempGenres = myMovies.get(i).getGenres();
             //System.out.println(tempGenres);
             if(tempGenres!=null && !tempGenres.isEmpty()){
                 for(int j=0; j<tempGenres.size(); j++){
@@ -270,7 +305,10 @@ public class MainParser extends DefaultHandler {
                     String genre = genreTable.get(tempGenres.get(j));
                     //System.out.println(genre);
                     if(genre == null || genre.equals("")){
-                        System.out.println("genre not valid" + myMovies.get(i).toString());
+                        System.out.println("Movie not added, GENRE NOT VALID. " + myMovies.get(i).toString());
+                        try {
+                            myWriter.write("\nMovie not added, GENRE NOT VALID. " + myMovies.get(i).toString());
+                        }catch (IOException e) { e.printStackTrace(); }
                         continue;
                     }
                     int genreId = existingGenres.get(genre.toLowerCase());

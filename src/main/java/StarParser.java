@@ -7,6 +7,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class StarParser extends DefaultHandler{
     //to maintain context
     private Star tempStar;
 
+    private FileWriter myWriter;
+
     public StarParser() {
         myStars = new ArrayList<Star>();
     }
@@ -35,8 +38,15 @@ public class StarParser extends DefaultHandler{
     public void run() {
         try {
             parseDocument();
-//            printData();
+            //open report writer
+            myWriter = new FileWriter("report.txt",true);
+            myWriter.write("\nInconsistent data for parsing actor63.xml and adding to database:\n");
+
             updateDB();
+
+            myWriter.close();
+            System.out.println("Successfully save inconsistent data into report.");
+
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -108,8 +118,12 @@ public class StarParser extends DefaultHandler{
         for(int i=0; i < myStars.size(); i++){
 //            newIDNum++;
             String newStarId = String.format("%s%d", maxStarId.substring(0, 2), ++newIDNum);
-            if(myStars.get(i).getName().equals("") || myStars.get(i).getName() == null ){
-                System.out.println("star stage name is empty; skip");
+            if(myStars.get(i).getName() == null || myStars.get(i).getName().equals("") ){
+                System.out.println("Star not added, NO STAGE NAME. " + myStars.get(i).toString());
+                try {
+                    myWriter.write("\nStar not added, NO STAGE NAME. " + myStars.get(i).toString());
+                }catch (IOException e) { e.printStackTrace(); }
+
                 continue;
             }
             update.setString(1, newStarId);

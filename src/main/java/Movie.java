@@ -91,9 +91,9 @@ public class Movie {
 		sb.append("Title:" + getTitle());
 		sb.append(", ");
 		sb.append("Director:" + getDirector());
-		sb.append(",");
+		sb.append(", ");
 		sb.append("Genres:" + getGenres());
-		sb.append(",");
+		sb.append(", ");
 		sb.append("Stars:" + getStars());
 		sb.append(".");
 		
