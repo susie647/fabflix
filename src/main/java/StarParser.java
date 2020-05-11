@@ -29,8 +29,6 @@ public class StarParser extends DefaultHandler{
     //to maintain context
     private Star tempStar;
 
-    private FileWriter myWriter;
-
     public StarParser() {
         myStars = new ArrayList<Star>();
     }
@@ -39,13 +37,11 @@ public class StarParser extends DefaultHandler{
         try {
             parseDocument();
             //open report writer
-            myWriter = new FileWriter("report.txt",true);
-            myWriter.write("\nInconsistent data for parsing actor63.xml and adding to database:\n");
+//            myWriter = new FileWriter("report.txt",true);
+//            myWriter.write("\nInconsistent data for parsing actor63.xml and adding to database:\n");
 
             updateDB();
 
-            myWriter.close();
-            System.out.println("Successfully save inconsistent data into report.");
 
         }
         catch (Exception e){
@@ -112,34 +108,53 @@ public class StarParser extends DefaultHandler{
         }
         int newIDNum = Integer.parseInt(maxStarId.substring(2));
 
-        String add_star = "insert into stars values (?, ?, ?)";
-        PreparedStatement update = connection.prepareStatement(add_star);
+        FileWriter myWriter = new FileWriter("newStars.txt");
+        String newLine = "";
+
+        FileWriter reportWriter = new FileWriter("report.txt",true);
+        reportWriter.write("\nInconsistent data for parsing actor63.xml and adding to database:\n");
+
 
         for(int i=0; i < myStars.size(); i++){
-//            newIDNum++;
             String newStarId = String.format("%s%d", maxStarId.substring(0, 2), ++newIDNum);
             if(myStars.get(i).getName() == null || myStars.get(i).getName().equals("") ){
                 System.out.println("Star not added, NO STAGE NAME. " + myStars.get(i).toString());
                 try {
-                    myWriter.write("\nStar not added, NO STAGE NAME. " + myStars.get(i).toString());
+                    reportWriter.write("\nStar not added, NO STAGE NAME. " + myStars.get(i).toString());
                 }catch (IOException e) { e.printStackTrace(); }
-
                 continue;
             }
-            update.setString(1, newStarId);
-            update.setString(2, myStars.get(i).getName());
+
+            newLine += newStarId;
+            newLine += ",";
+            newLine += myStars.get(i).getName();
+            newLine += ",";
+
             if(myStars.get(i).getDob() == -1){
-                update.setString(3, null);
+                newLine += "\\N\n";
             }
             else {
-                update.setInt(3, myStars.get(i).getDob());
+                newLine += myStars.get(i).getDob();
+                newLine += "\n";
             }
-            update.executeUpdate();
+            myWriter.write(newLine);
+            newLine = "";
         }
+
+        myWriter.close();
+
+        String load = "LOAD DATA LOCAL INFILE 'newStars.txt' INTO TABLE stars FIELDS TERMINATED BY ',';";
+        Statement statement2 = connection.createStatement();
+        ResultSet rs = statement2.executeQuery(load);
+
+        reportWriter.close();
+        System.out.println("Successfully save inconsistent data into report.");
 
         statement.close();
         rsMax.close();
-        update.close();
+        statement2.close();
+        rs.close();
+//        update.close();
         connection.close();
 
     }
@@ -185,7 +200,6 @@ public class StarParser extends DefaultHandler{
     }
 
     public static void main(String[] args) throws Exception {
-
         StarParser spe = new StarParser();
         spe.run();
     }

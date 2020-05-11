@@ -2,6 +2,8 @@
 # Created by https://www.gitignore.io/api/java,maven,eclipse,java-web,intellij
 .idea
 *.iml
+
+newStars.txt
 ### Eclipse ###
 
 .metadata

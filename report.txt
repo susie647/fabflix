@@ -1,3 +1,9 @@
 Report for CS 122B: Projects in Databases and Web Applications 
 
 Inconsistent data:
+
+Inconsistent data for parsing actor63.xml and adding to database:
+
+Inconsistent data for parsing actor63.xml and adding to database:
+
+Inconsistent data for parsing actor63.xml and adding to database:

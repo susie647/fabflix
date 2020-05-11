@@ -41,7 +41,6 @@ public class MainParser extends DefaultHandler {
 
 
 
-
     public MainParser() {
 
         myMovies = new ArrayList<Movie>();
