@@ -67,7 +67,7 @@ public class CastParser extends DefaultHandler {
             SAXParser sp = spf.newSAXParser();
 
             //parse the file and also register this class for call backs
-            sp.parse("XMLs/cast.xml", this);
+            sp.parse("stanford/casts124.xml", this);
 
         } catch (SAXException se) {
             se.printStackTrace();
@@ -118,7 +118,7 @@ public class CastParser extends DefaultHandler {
 
         for(int i=0; i < myMovies.size(); i++){
             // check whether the space is empty
-            if(myMovies.get(i).getId().equals("") || myMovies.get(i).getId() == null){
+            if(myMovies.get(i).getId() == null || myMovies.get(i).getId().equals("") ){
                 System.out.println("movie id is empty; skip");
                 continue;
             }
@@ -131,7 +131,7 @@ public class CastParser extends DefaultHandler {
                 String movieId = FidMidDict.get(myMovies.get(i).getId());
                 ArrayList<String> movieStars = myMovies.get(i).getStars();
                 for(int j=0; j<movieStars.size(); j++){
-                    if(movieStars.get(j).equals("") || movieStars.get(j) == null){
+                    if(movieStars.get(j) == null || movieStars.get(j).equals("")){
                         System.out.println("star stage name is empty; skip");
                         continue;
                     }

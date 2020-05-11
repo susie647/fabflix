@@ -151,8 +151,8 @@ public class MainParser extends DefaultHandler {
                 maxGenreId = genreId;
             }
         }
-        System.out.println("Maxgenreid:"+maxGenreId);
-        System.out.println(existingGenres.toString());
+        //System.out.println("Maxgenreid:"+maxGenreId);
+        //System.out.println(existingGenres.toString());
 
         retrieve.close();
         rsGenre.close();
@@ -174,7 +174,7 @@ public class MainParser extends DefaultHandler {
             //System.out.println(genreName);
 
             //check if genre name already exists, add to database if key does not exist
-            if(genreName!=null && !existingGenres.containsKey(genreName)) {
+            if(genreName!=null && !existingGenres.containsKey(genreName.toLowerCase())) {
                 maxGenreId++;
                 updateGenre.setInt(1, maxGenreId);
                 updateGenre.setString(2, genreName);
@@ -209,8 +209,8 @@ public class MainParser extends DefaultHandler {
         PreparedStatement updateGIM = connection.prepareStatement(add_genres_in_movies);
 
         for(int i=0; i < myMovies.size(); i++){
-
-            if(myMovies.get(i).getId().equals("") || myMovies.get(i).getId() == null){
+            //System.out.println(myMovies.get(i).getId());
+            if(myMovies.get(i).getId() == null || myMovies.get(i).getId().equals("")){
                 System.out.println("NO FID" + myMovies.get(i).toString());
                 continue;
             }
@@ -218,11 +218,11 @@ public class MainParser extends DefaultHandler {
                 System.out.println("NO YEAR/WRONG TYPE" + myMovies.get(i).toString());
                 continue;
             }
-            if(myMovies.get(i).getDirector().equals("") || myMovies.get(i).getDirector() == null){
+            if(myMovies.get(i).getDirector() == null || myMovies.get(i).getDirector().equals("")){
                 System.out.println("NO DIRECTOR" + myMovies.get(i).toString());
                 continue;
             }
-            if(myMovies.get(i).getTitle().equals("") || myMovies.get(i).getTitle() == null){
+            if(myMovies.get(i).getTitle() == null || myMovies.get(i).getTitle().equals("")){
                 System.out.println("NO TITLE" + myMovies.get(i).toString());
                 continue;
             }
@@ -262,15 +262,20 @@ public class MainParser extends DefaultHandler {
 
             //add each genre in this movie into genres_in_movies
             ArrayList<String> tempGenres = myMovies.get(i).getGenres();
-
+            //System.out.println(tempGenres);
             if(tempGenres!=null && !tempGenres.isEmpty()){
                 for(int j=0; j<tempGenres.size(); j++){
+                    //System.out.println("loop"+j);
+
                     String genre = genreTable.get(tempGenres.get(j));
-                    if(genre.equals("") || genre == null){
-                        System.out.println("genre is empty; skip");
+                    //System.out.println(genre);
+                    if(genre == null || genre.equals("")){
+                        System.out.println("genre not valid" + myMovies.get(i).toString());
                         continue;
                     }
-                    updateGIM.setInt(1, existingGenres.get(genre));
+                    int genreId = existingGenres.get(genre.toLowerCase());
+                    //System.out.println(genreId);
+                    updateGIM.setInt(1, genreId);
                     updateGIM.setString(2, movieId);
                     updateGIM.executeUpdate();
                 }
@@ -335,10 +340,11 @@ public class MainParser extends DefaultHandler {
             }
         }
         else if (qName.equalsIgnoreCase("cat")) {
-            //add to database genre with genreid increment
-            myGenres.add(tempVal.toLowerCase());
-            tempMovie.addGenres(tempVal.toLowerCase());
-            //add to database fid and genre
+            if(!tempVal.equals("")){
+                //add to database genre with genreid increment
+                myGenres.add(tempVal.toLowerCase());
+                tempMovie.addGenres(tempVal.toLowerCase());
+            }
 
         }
     }

@@ -8,6 +8,8 @@
 bin/
 tmp/
 XMLs/
+stanford-movies/
+*.dtd
 *.xml
 *.tmp
 *.bak
