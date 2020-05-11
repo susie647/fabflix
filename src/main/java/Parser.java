@@ -16,8 +16,8 @@ public class Parser {
         mp.run();
         Map<String, String> fmd = mp.getFidMidDict();
 
-//        CastParser cp = new CastParser( fmd );
-//        cp.run();
+        CastParser cp = new CastParser( fmd );
+        cp.run();
 
 //        try {
 //            FileWriter myWriter = new FileWriter("report.txt",true);

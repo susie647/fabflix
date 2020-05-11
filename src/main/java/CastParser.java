@@ -120,11 +120,14 @@ public class CastParser extends DefaultHandler {
 
 //        String find_movie_s = "select * from movies as m where m.id = ?";
         String find_star_s = "select * from stars as s where s.name = ?";
-        String add_s_in_m_s = "insert into stars_in_movies values (?, ?)";
+//        String add_s_in_m_s = "insert into stars_in_movies values (?, ?)";
 
 //        PreparedStatement find_movie = connection.prepareStatement(find_movie_s);
         PreparedStatement find_star = connection.prepareStatement(find_star_s);
-        PreparedStatement add_s_in_m = connection.prepareStatement(add_s_in_m_s);
+//        PreparedStatement add_s_in_m = connection.prepareStatement(add_s_in_m_s);
+        FileWriter mySMWriter = new FileWriter("newStarsInMovies.txt");
+        String newSMLine = "";
+
 
         for(int i=0; i < myMovies.size(); i++){
             // check whether the space is empty
@@ -161,9 +164,16 @@ public class CastParser extends DefaultHandler {
                     ResultSet fsrs = find_star.executeQuery();
                     if(fsrs.next()){
                         // both movie and star exists
-                        add_s_in_m.setString(1, fsrs.getString("id"));
-                        add_s_in_m.setString(2, movieId);
-                        add_s_in_m.executeUpdate();
+                        newSMLine += fsrs.getString("id");
+                        newSMLine += ",";
+                        newSMLine += movieId;
+                        newSMLine += "\n";
+
+                        mySMWriter.write(newSMLine);
+                        newSMLine = "";
+//                        add_s_in_m.setString(1, fsrs.getString("id"));
+//                        add_s_in_m.setString(2, movieId);
+//                        add_s_in_m.executeUpdate();
 //                        System.out.println(movieStars.get(j) + " in " + myMovies.get(i).getTitle());
                     }
                     else{
@@ -172,8 +182,6 @@ public class CastParser extends DefaultHandler {
                         try {
                             myWriter.write("\nStar in Movie not added, " + movieStars.get(j) + "does not exist in stars table. " + myMovies.get(i).toString());
                         }catch (IOException e) { e.printStackTrace(); }
-
-
                     }
                 }
             }
@@ -185,9 +193,17 @@ public class CastParser extends DefaultHandler {
                 }catch (IOException e) { e.printStackTrace(); }
             }
         }
+        mySMWriter.close();
+
+        String updateSM_s = "LOAD DATA LOCAL INFILE 'newStarsInMovies.txt' INTO TABLE stars_in_movies FIELDS TERMINATED BY ',';";
+        Statement updateSM = connection.createStatement();
+        ResultSet rs = updateSM.executeQuery(updateSM_s);
+
+        updateSM.close();
+        rs.close();
 //        find_movie.close();
         find_star.close();
-        add_s_in_m.close();
+//        add_s_in_m.close();
         connection.close();
     }
 
