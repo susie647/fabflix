@@ -36,13 +36,7 @@ public class StarParser extends DefaultHandler{
     public void run() {
         try {
             parseDocument();
-            //open report writer
-//            myWriter = new FileWriter("report.txt",true);
-//            myWriter.write("\nInconsistent data for parsing actor63.xml and adding to database:\n");
-
             updateDB();
-
-
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -199,10 +193,10 @@ public class StarParser extends DefaultHandler{
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        StarParser spe = new StarParser();
-        spe.run();
-    }
+//    public static void main(String[] args) throws Exception {
+//        StarParser spe = new StarParser();
+//        spe.run();
+//    }
 
 
 }

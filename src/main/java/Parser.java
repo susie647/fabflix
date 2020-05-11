@@ -16,8 +16,8 @@ public class Parser {
         mp.run();
         Map<String, String> fmd = mp.getFidMidDict();
 
-        CastParser cp = new CastParser( fmd );
-        cp.run();
+//        CastParser cp = new CastParser( fmd );
+//        cp.run();
 
 //        try {
 //            FileWriter myWriter = new FileWriter("report.txt",true);
@@ -32,7 +32,8 @@ public class Parser {
 
         long endTime   = System.nanoTime();
         long totalTime = endTime - startTime;
-        System.out.println("Total runtime: " + totalTime);
+        double totalTimeSec = (double) totalTime / 1_000_000_000;
+        System.out.println("Total runtime: " + totalTimeSec);
 
     }
 }

@@ -37,8 +37,6 @@ public class MainParser extends DefaultHandler {
     private String tempDirector;
     private String tempFid;
 
-    private FileWriter myWriter;
-
 
 
     public MainParser() {
@@ -72,14 +70,8 @@ public class MainParser extends DefaultHandler {
     public void run() {
         try {
             parseDocument();
-            //open report writer
-            myWriter = new FileWriter("report.txt",true);
-            myWriter.write("\nInconsistent data for parsing main243.xml and adding to database:\n");
 
             updateDB();
-
-            myWriter.close();
-            System.out.println("Successfully save inconsistent data into report.");
 
         }
         catch (Exception e){
@@ -211,16 +203,25 @@ public class MainParser extends DefaultHandler {
         String find_movie_s = "select * from movies as m where m.title = ? and m.year = ? and m.director = ?";
         PreparedStatement find_movie = connection.prepareStatement(find_movie_s);
 
-        String add_movie = "insert into movies values (?, ?, ?, ?)";
-        PreparedStatement update = connection.prepareStatement(add_movie);
+        FileWriter myMovieWriter = new FileWriter("newMovies.txt");
+        String newMovieLine = "";
+        FileWriter myGMWriter = new FileWriter("newGenresInMovies.txt");
+        String newGMLine = "";
 
-        String add_genres_in_movies = "insert into genres_in_movies values(?,?)";
-        PreparedStatement updateGIM = connection.prepareStatement(add_genres_in_movies);
+//        String add_movie = "insert into movies values (?, ?, ?, ?)";
+//        PreparedStatement update = connection.prepareStatement(add_movie);
+
+//        String add_genres_in_movies = "insert into genres_in_movies values(?,?)";
+//        PreparedStatement updateGIM = connection.prepareStatement(add_genres_in_movies);
+
+        //open report writer
+        FileWriter myWriter = new FileWriter("report.txt",true);
+        myWriter.write("\nInconsistent data for parsing main243.xml and adding to database:\n");
 
         for(int i=0; i < myMovies.size(); i++){
             //System.out.println(myMovies.get(i).getId());
             if(myMovies.get(i).getId() == null || myMovies.get(i).getId().equals("")){
-                System.out.println("Movie not added, NO FID. " + myMovies.get(i).toString());
+//                System.out.println("Movie not added, NO FID. " + myMovies.get(i).toString());
 
                 try {
                     myWriter.write("\nMovie not added, NO FID. " + myMovies.get(i).toString());
@@ -229,14 +230,14 @@ public class MainParser extends DefaultHandler {
                 continue;
             }
             if(myMovies.get(i).getYear() == -1){
-                System.out.println("Movie not added, NO YEAR/WRONG TYPE. " + myMovies.get(i).toString());
+//                System.out.println("Movie not added, NO YEAR/WRONG TYPE. " + myMovies.get(i).toString());
                 try {
                     myWriter.write("\nMovie not added, NO YEAR/WRONG TYPE.  " + myMovies.get(i).toString());
                 }catch (IOException e) { e.printStackTrace(); }
                 continue;
             }
             if(myMovies.get(i).getDirector() == null || myMovies.get(i).getDirector().equals("")){
-                System.out.println("Movie not added, NO DIRECTOR. " + myMovies.get(i).toString());
+//                System.out.println("Movie not added, NO DIRECTOR. " + myMovies.get(i).toString());
                 try {
                     myWriter.write("\nMovie not added, NO DIRECTOR. " + myMovies.get(i).toString());
                 }catch (IOException e) { e.printStackTrace(); }
@@ -244,7 +245,7 @@ public class MainParser extends DefaultHandler {
             }
             //movie will not be added if no title is provided or "NKT" stand for unknown title
             if(myMovies.get(i).getTitle() == null || myMovies.get(i).getTitle().equals("") || myMovies.get(i).getTitle().equals("NKT")){
-                System.out.println("Movie not added, NO TITLE. " + myMovies.get(i).toString());
+//                System.out.println("Movie not added, NO TITLE. " + myMovies.get(i).toString());
                 try {
                     myWriter.write("\nMovie not added, NO TITLE. " + myMovies.get(i).toString());
                 }catch (IOException e) { e.printStackTrace(); }
@@ -254,12 +255,13 @@ public class MainParser extends DefaultHandler {
             ArrayList<String> tempGenres = myMovies.get(i).getGenres();
             //System.out.println(tempGenres);
             if(tempGenres==null || tempGenres.isEmpty()){
-                System.out.println("Movie not added, NO GENRE. " + myMovies.get(i).toString());
+//                System.out.println("Movie not added, NO GENRE. " + myMovies.get(i).toString());
                 try {
                     myWriter.write("\nMovie not added, NO GENRE. " + myMovies.get(i).toString());
                 }catch (IOException e) { e.printStackTrace(); }
                 continue;
             }
+
 
             String movieId = "";
             // CHECK DUPLICATE MOVIES
@@ -286,11 +288,23 @@ public class MainParser extends DefaultHandler {
                     // store movie id - fid for cast.xml
                     FidMidDict.put(myMovies.get(i).getId(), movieId);
 
-                    update.setString(1, movieId);
-                    update.setString(2, myMovies.get(i).getTitle());
-                    update.setInt(3, myMovies.get(i).getYear());
-                    update.setString(4, myMovies.get(i).getDirector());
-                    update.executeUpdate();
+                    newMovieLine += movieId;
+                    newMovieLine += ",";
+                    newMovieLine += myMovies.get(i).getTitle();
+                    newMovieLine += ",";
+                    newMovieLine += myMovies.get(i).getYear();
+                    newMovieLine += ",";
+                    newMovieLine += myMovies.get(i).getDirector();
+                    newMovieLine += "\n";
+
+                    myMovieWriter.write(newMovieLine);
+                    newMovieLine = "";
+
+//                    update.setString(1, movieId);
+//                    update.setString(2, myMovies.get(i).getTitle());
+//                    update.setInt(3, myMovies.get(i).getYear());
+//                    update.setString(4, myMovies.get(i).getDirector());
+//                    update.executeUpdate();
                 }
             }
 
@@ -304,7 +318,7 @@ public class MainParser extends DefaultHandler {
                     String genre = genreTable.get(tempGenres.get(j));
                     //System.out.println(genre);
                     if(genre == null || genre.equals("")){
-                        System.out.println("Movie not added, GENRE NOT VALID. " + myMovies.get(i).toString());
+//                        System.out.println("Movie not added, GENRE NOT VALID. " + myMovies.get(i).toString());
                         try {
                             myWriter.write("\nMovie not added, GENRE NOT VALID. " + myMovies.get(i).toString());
                         }catch (IOException e) { e.printStackTrace(); }
@@ -312,14 +326,40 @@ public class MainParser extends DefaultHandler {
                     }
                     int genreId = existingGenres.get(genre.toLowerCase());
                     //System.out.println(genreId);
-                    updateGIM.setInt(1, genreId);
-                    updateGIM.setString(2, movieId);
-                    updateGIM.executeUpdate();
+
+                    newGMLine += genreId;
+                    newGMLine += ",";
+                    newGMLine += movieId;
+                    newGMLine += "\n";
+
+                    myGMWriter.write(newGMLine);
+                    newGMLine = "";
+//                    updateGIM.setInt(1, genreId);
+//                    updateGIM.setString(2, movieId);
+//                    updateGIM.executeUpdate();
                 }
             }
         }
-        updateGIM.close();
-        update.close();
+        myMovieWriter.close();
+        myGMWriter.close();
+
+        String updateMovies_s = "LOAD DATA LOCAL INFILE 'newMovies.txt' INTO TABLE movies FIELDS TERMINATED BY ',';";
+        Statement updateMovies = connection.createStatement();
+        ResultSet rs = updateMovies.executeQuery(updateMovies_s);
+
+        String updateGM_s = "LOAD DATA LOCAL INFILE 'newGenresInMovies.txt' INTO TABLE genres_in_movies FIELDS TERMINATED BY ',';";
+        Statement updateGM = connection.createStatement();
+        ResultSet rs2 = updateGM.executeQuery(updateGM_s);
+
+        myWriter.close();
+        System.out.println("Successfully save inconsistent data into report.");
+
+        updateMovies.close();
+        rs.close();
+        updateGM.close();
+        rs2.close();
+//        updateGIM.close();
+//        update.close();
         find_movie.close();
         connection.close();
     }
@@ -389,7 +429,7 @@ public class MainParser extends DefaultHandler {
 //    public static void main(String[] args) throws Exception{
 //        MainParser spe = new MainParser();
 //        spe.run();
-//        Map<String, String> fmd = spe.getFidMidDict();
+////        Map<String, String> fmd = spe.getFidMidDict();
 //    }
 
 }
