@@ -146,7 +146,7 @@ public class MainParser extends DefaultHandler {
         while(rsGenre.next()){
             int genreId = rsGenre.getInt("id");
             String genreName = rsGenre.getString("name").toLowerCase();
-            existingGenres.put(genreName, genreId);
+            existingGenres.put(genreName.toLowerCase(), genreId);
             if(genreId>maxGenreId){
                 maxGenreId = genreId;
             }
@@ -179,7 +179,7 @@ public class MainParser extends DefaultHandler {
                 updateGenre.setInt(1, maxGenreId);
                 updateGenre.setString(2, genreName);
                 updateGenre.executeUpdate();
-                existingGenres.put(genreName, maxGenreId);
+                existingGenres.put(genreName.toLowerCase(), maxGenreId);
             }
         }
         updateGenre.close();

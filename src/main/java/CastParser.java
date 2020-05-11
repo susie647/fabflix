@@ -1,5 +1,6 @@
 package main.java;
 
+import com.sun.javafx.collections.MappingChange;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -12,15 +13,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
-import java.util.Map;
 
 public class CastParser extends DefaultHandler {
 
@@ -44,6 +42,10 @@ public class CastParser extends DefaultHandler {
         myMovies = new ArrayList<Movie>();
         myStars = new ArrayList<Star>();
         FidMidDict = fmd;
+//        FidMidDict = new HashMap<String, String>();
+//        for (Map.Entry<String, String> entry : fmd.entrySet()) {
+//            FidMidDict.put(entry.getKey(), entry.getValue());
+//        }
     }
 
     public void run() {
@@ -62,12 +64,11 @@ public class CastParser extends DefaultHandler {
         //get a factory
         SAXParserFactory spf = SAXParserFactory.newInstance();
         try {
-
             //get a new instance of parser
             SAXParser sp = spf.newSAXParser();
 
             //parse the file and also register this class for call backs
-            sp.parse("stanford/casts124.xml", this);
+            sp.parse("stanford-movies/casts124.xml", this);
 
         } catch (SAXException se) {
             se.printStackTrace();
@@ -157,8 +158,6 @@ public class CastParser extends DefaultHandler {
         find_star.close();
         add_s_in_m.close();
         connection.close();
-
-
     }
 
 
