@@ -33,8 +33,7 @@ public class MainParser extends DefaultHandler {
 
     private String tempDirector;
     private String tempFid;
-    //private String tempTitle;
-    //private int tempYear;
+
 
 
 
@@ -86,7 +85,7 @@ public class MainParser extends DefaultHandler {
             SAXParser sp = spf.newSAXParser();
 
             //parse the file and also register this class for call backs
-            sp.parse("XMLs/main.xml", this);
+            sp.parse("stanford-movies/mains243.xml", this);
 
         } catch (SAXException se) {
             se.printStackTrace();
@@ -126,7 +125,6 @@ public class MainParser extends DefaultHandler {
         Class.forName("com.mysql.jdbc.Driver").newInstance();
 
         Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-
 
 
         /**
@@ -180,10 +178,12 @@ public class MainParser extends DefaultHandler {
         updateGenre.close();
 
 
-
         /**
          * add to movies table and genres_in_movies table
          */
+        String find_movie_s = "select * from movies as m where m.title = ? and m.year = ? and m.director = ?";
+        PreparedStatement find_movie = connection.prepareStatement(find_movie_s);
+
         String add_movie = "insert into movies values (?, ?, ?, ?)";
         PreparedStatement update = connection.prepareStatement(add_movie);
 
@@ -191,31 +191,53 @@ public class MainParser extends DefaultHandler {
         PreparedStatement updateGIM = connection.prepareStatement(add_genres_in_movies);
 
         for(int i=0; i < myMovies.size(); i++){
-            update.setString(1, myMovies.get(i).getId());
-            update.setString(2, myMovies.get(i).getTitle());
+
+            if(myMovies.get(i).getId().equals("") || myMovies.get(i).getId() == null){
+                System.out.println("NO FID" + myMovies.get(i).toString());
+                continue;
+            }
             if(myMovies.get(i).getYear() == -1){
-                update.setString(3, null);
+                System.out.println("NO YEAR/WRONG TYPE" + myMovies.get(i).toString());
+                continue;
+            }
+            if(myMovies.get(i).getDirector().equals("") || myMovies.get(i).getDirector() == null){
+                System.out.println("NO DIRECTOR" + myMovies.get(i).toString());
+                continue;
+            }
+            if(myMovies.get(i).getTitle().equals("") || myMovies.get(i).getTitle() == null){
+                System.out.println("NO TITLE" + myMovies.get(i).toString());
+                continue;
+            }
+
+            // CHECK DUPLICATE MOVIES
+            find_movie.setString(1, myMovies.get(i).getTitle());
+            find_movie.setInt(2, myMovies.get(i).getYear());
+            find_movie.setString(3, myMovies.get(i).getDirector());
+            ResultSet fmrs = find_movie.executeQuery();
+            String movieId = myMovies.get(i).getId();
+            if(fmrs.next()){
+                movieId = fmrs.getString("id");
             }
             else {
+                update.setString(1, movieId);
+                update.setString(2, myMovies.get(i).getTitle());
                 update.setInt(3, myMovies.get(i).getYear());
+                update.setString(4, myMovies.get(i).getDirector());
+                update.executeUpdate();
             }
-            update.setString(4, myMovies.get(i).getDirector());
-            update.executeUpdate();
-
 
             //add each genre in this movie into genres_in_movies
             ArrayList<String> tempGenres = myMovies.get(i).getGenres();
 
-            //System.out.println("aasaaaaaa");
-            //System.out.println(tempGenres);
             if(tempGenres!=null && !tempGenres.isEmpty()){
-                //System.out.println(tempGenres.size());
                 for(int j=0; j<tempGenres.size(); j++){
                     String genre = genreTable.get(tempGenres.get(j));
-                    //System.out.println(existingGenres.get(genre));
-                    //System.out.println("a");
+                    if(genre.equals("") || genre == null){
+                        System.out.println("genre is empty; skip");
+                        continue;
+                    }
                     updateGIM.setInt(1, existingGenres.get(genre));
-                    updateGIM.setString(2, myMovies.get(i).getId());
+                    updateGIM.setString(2, movieId);
                     updateGIM.executeUpdate();
                 }
             }
@@ -223,8 +245,7 @@ public class MainParser extends DefaultHandler {
         }
         updateGIM.close();
         update.close();
-
-
+        find_movie.close();
         connection.close();
 
     }
@@ -274,14 +295,18 @@ public class MainParser extends DefaultHandler {
                 tempMovie.setYear(-1);
             }
             else {
-                tempMovie.setYear(Integer.parseInt(tempVal));
+                try {
+                    tempMovie.setYear(Integer.parseInt(tempVal));
+                }
+                catch (Exception e){
+                    tempMovie.setYear(-1);
+                }
             }
         }
         else if (qName.equalsIgnoreCase("cat")) {
             //add to database genre with genreid increment
             myGenres.add(tempVal.toLowerCase());
             tempMovie.addGenres(tempVal.toLowerCase());
-
             //add to database fid and genre
 
         }

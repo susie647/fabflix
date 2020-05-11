@@ -57,7 +57,7 @@ public class StarParser extends DefaultHandler{
             SAXParser sp = spf.newSAXParser();
 
             //parse the file and also register this class for call backs
-            sp.parse("XMLs/actor.xml", this);
+            sp.parse("stanford-movies/actors63.xml", this);
 
         } catch (SAXException se) {
             se.printStackTrace();
@@ -108,6 +108,10 @@ public class StarParser extends DefaultHandler{
         for(int i=0; i < myStars.size(); i++){
 //            newIDNum++;
             String newStarId = String.format("%s%d", maxStarId.substring(0, 2), ++newIDNum);
+            if(myStars.get(i).getName().equals("") || myStars.get(i).getName() == null ){
+                System.out.println("star stage name is empty; skip");
+                continue;
+            }
             update.setString(1, newStarId);
             update.setString(2, myStars.get(i).getName());
             if(myStars.get(i).getDob() == -1){
@@ -156,7 +160,12 @@ public class StarParser extends DefaultHandler{
                 tempStar.setDob(-1);
             }
             else {
-                tempStar.setDob(Integer.parseInt(tempVal));
+                try {
+                    tempStar.setDob(Integer.parseInt(tempVal));
+                }
+                catch (Exception e){
+                    tempStar.setDob(-1);
+                }
             }
         }
     }

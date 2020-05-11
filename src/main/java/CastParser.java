@@ -114,6 +114,11 @@ public class CastParser extends DefaultHandler {
         PreparedStatement add_s_in_m = connection.prepareStatement(add_s_in_m_s);
 
         for(int i=0; i < myMovies.size(); i++){
+            // check whether the space is empty
+            if(myMovies.get(i).getId().equals("") || myMovies.get(i).getId() == null){
+                System.out.println("movie id is empty; skip");
+            }
+
             // check whether the movie exists
             find_movie.setString(1, myMovies.get(i).getId());
             ResultSet fmrs = find_movie.executeQuery();
@@ -121,6 +126,9 @@ public class CastParser extends DefaultHandler {
             if(fmrs.next()){
                 ArrayList<String> movieStars = myMovies.get(i).getStars();
                 for(int j=0; j<movieStars.size(); j++){
+                    if(movieStars.get(j).equals("") || movieStars.get(j) == null){
+                        System.out.println("star stage name is empty; skip");
+                    }
                     find_star.setString(1, movieStars.get(j));
                     ResultSet fsrs = find_star.executeQuery();
                     if(fsrs.next()){
@@ -131,12 +139,12 @@ public class CastParser extends DefaultHandler {
 //                        System.out.println(movieStars.get(j) + " in " + myMovies.get(i).getTitle());
                     }
                     else{
-//                        System.out.println(movieStars.get(j) + "does not exist in stars table");
+                        System.out.println(movieStars.get(j) + "does not exist in stars table");
                     }
                 }
             }
             else{
-//                System.out.println(myMovies.get(i).getTitle() + "does not exist in movies table");
+                System.out.println(myMovies.get(i).getTitle() + "does not exist in movies table");
             }
         }
         find_movie.close();
@@ -189,14 +197,6 @@ public class CastParser extends DefaultHandler {
         else if (qName.equalsIgnoreCase("t")) {
             tempMovie.setTitle(tempVal);
         }
-//        else if (qName.equalsIgnoreCase("year")) {
-//            if(tempVal.equals("")){
-//                tempMovie.setYear(-1);
-//            }
-//            else {
-//                tempMovie.setYear(Integer.parseInt(tempVal));
-//            }
-//        }
         else if (qName.equalsIgnoreCase("a")) {
             //add to database star
             myStars.add(new Star(tempVal,-1));

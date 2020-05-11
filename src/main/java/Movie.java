@@ -1,6 +1,8 @@
 package main.java;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Movie {
@@ -13,9 +15,9 @@ public class Movie {
 
 	private String director;
 
-	private List<String> genres;
+	private ArrayList<String> genres;
 
-	private List<String> stars;
+	private ArrayList<String> stars;
 
 	public Movie(){
 		genres = new ArrayList<String>();
@@ -68,9 +70,15 @@ public class Movie {
 
 	public ArrayList<String> getStars() { return (ArrayList<String>) stars; }
 
-	public void addGenres(String genre) { genres.add(genre);}
+	public void addGenres(String genre) {
+		if(!genres.contains(genre))
+		{ genres.add(genre);}
+	}
 
-	public void addStars(String star ) { stars.add(star); }
+	public void addStars(String star ) {
+		if(!stars.contains(star)){
+			stars.add(star); }
+	}
 	
 	
 	public String toString() {
