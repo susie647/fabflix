@@ -46,24 +46,17 @@ public class AddMovieServlet extends HttpServlet {
             statement.setString(5, movie_genre);
 
             ResultSet rs = statement.executeQuery();
-            int status = 0;
+            String status = "";
             if(rs.next()){
 //                status = Integer.parseInt(rs.getString("status"));
-                status = rs.getInt("status");
+                status = rs.getString("status");
             }
 
 
-            if(status == 1){
-                String get = "select max(id) as mid from movies";
-                Statement statement2 = dbCon.createStatement();
-                ResultSet rs2 = statement2.executeQuery(get);
-
+            if(!status.equals("0")){
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "success");
-                if(rs2.next()){
-                    responseJsonObject.addProperty("mid", rs2.getString("mid"));
-                }
-
+                responseJsonObject.addProperty("newIds", status);
             }
             else{
                 responseJsonObject.addProperty("status", "fail");

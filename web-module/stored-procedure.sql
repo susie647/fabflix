@@ -8,7 +8,7 @@ BEGIN
 	DECLARE starId varchar(10) DEFAULT '0';
 	DECLARE maxStarId varchar(10) DEFAULT '0';
 	DECLARE genreId integer DEFAULT 0;
-	DECLARE status integer DEFAULT 0;
+	DECLARE status varchar(30) DEFAULT '0';
 
 	SELECT m.id into movieId from movies as m where m.title = title and m.year = year and m.director = director limit 1;
 	IF (movieId = '0') THEN
@@ -31,8 +31,9 @@ BEGIN
 
 		INSERT INTO stars_in_movies VALUES (starId, movieId);
 		INSERT INTO genres_in_movies VALUES (genreId, movieId);
+		INSERT INTO ratings VALUES (movieId, -1.0, 0);
 
-		SET status = 1;
+		SELECT CONCAT(movieId, ',', genreId, ',', starId) INTO status;
 
 
 	END IF;
