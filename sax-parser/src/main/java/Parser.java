@@ -1,3 +1,5 @@
+package main.java;
+
 import java.util.*;
 import java.io.FileWriter;
 import java.io.IOException;

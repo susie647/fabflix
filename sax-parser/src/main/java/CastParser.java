@@ -1,3 +1,5 @@
+package main.java;
+
 import com.sun.javafx.collections.MappingChange;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

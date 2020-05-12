@@ -1,3 +1,5 @@
+package main.java;
+
 public class Star {
 
 	private String name;
