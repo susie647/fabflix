@@ -207,6 +207,8 @@ public class MainParser extends DefaultHandler {
         String newMovieLine = "";
         FileWriter myGMWriter = new FileWriter("newGenresInMovies.txt");
         String newGMLine = "";
+        FileWriter myRatingWrite = new FileWriter("newRatings.txt");
+        String newRating = "";
 
 //        String add_movie = "insert into movies values (?, ?, ?, ?)";
 //        PreparedStatement update = connection.prepareStatement(add_movie);
@@ -300,6 +302,9 @@ public class MainParser extends DefaultHandler {
                     myMovieWriter.write(newMovieLine);
                     newMovieLine = "";
 
+                    newRating = movieId + ",-1.0,0\n";
+                    myRatingWrite.write(newRating);
+
 //                    update.setString(1, movieId);
 //                    update.setString(2, myMovies.get(i).getTitle());
 //                    update.setInt(3, myMovies.get(i).getYear());
@@ -342,6 +347,7 @@ public class MainParser extends DefaultHandler {
         }
         myMovieWriter.close();
         myGMWriter.close();
+        myRatingWrite.close();
 
         String updateMovies_s = "LOAD DATA LOCAL INFILE 'newMovies.txt' INTO TABLE movies FIELDS TERMINATED BY ',';";
         Statement updateMovies = connection.createStatement();
@@ -351,6 +357,10 @@ public class MainParser extends DefaultHandler {
         Statement updateGM = connection.createStatement();
         ResultSet rs2 = updateGM.executeQuery(updateGM_s);
 
+        String updateRating_s = "LOAD DATA LOCAL INFILE 'newRatings.txt' INTO TABLE ratings FIELDS TERMINATED BY ',';";
+        Statement updateRating = connection.createStatement();
+        ResultSet rs3 = updateRating.executeQuery(updateRating_s);
+
         myWriter.close();
         System.out.println("Successfully save inconsistent data into report.");
 
@@ -358,6 +368,8 @@ public class MainParser extends DefaultHandler {
         rs.close();
         updateGM.close();
         rs2.close();
+        updateRating.close();
+        rs3.close();
 //        updateGIM.close();
 //        update.close();
         find_movie.close();

@@ -54,9 +54,15 @@ public class AddMovieServlet extends HttpServlet {
 
 
             if(status == 1){
+                String get = "select max(id) as mid from movies";
+                Statement statement2 = dbCon.createStatement();
+                ResultSet rs2 = statement2.executeQuery(get);
 
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "success");
+                if(rs2.next()){
+                    responseJsonObject.addProperty("mid", rs2.getString("mid"));
+                }
 
             }
             else{
