@@ -7,6 +7,7 @@ newGenresInMovies.txt
 newMovies.txt
 newStarsInMovies.txt
 #report.txt
+web-module/src/main/java/RecaptchaConstants.java
 
 ### Eclipse ###
 
