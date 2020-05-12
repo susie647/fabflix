@@ -11,7 +11,7 @@ Susie Liu
 	
 	    (Project 2): https://youtu.be/Xd9wJLdDiis
 	
-        (project 3):
+            (project 3):
 
 2. How to deploy our application with Tomcat: 
 
@@ -39,26 +39,24 @@ Susie Liu
 
 4. Queries with Prepared Statements
 
-	    MainParser.java ()
-		    select movies matching condition
 
         AddMovieServlet.java
-        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/src/main/java/AddMovieServlet.java
+        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddMovieServlet.java
 
         AddStarServlet.java
-        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/src/main/java/AddStarServlet.java
+        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddStarServlet.java
         
         LoginServlet.java
-        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/src/main/java/LoginServlet.java
+        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/LoginServlet.java
 
         MovieListServlet.java
-        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/src/main/java/MovieListServlet.java
+        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/MovieListServlet.java
         
         PaymentServlet.java
-        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/src/main/java/PaymentServlet.java
+        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/PaymentServlet.java
         
         UpdateSalesServlet.java
-        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/src/main/java/UpdateSalesServlet.java
+        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/UpdateSalesServlet.java
         
 
 5. Parsing Time Optimization
