@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.*;
+import java.sql.Statement;
 
 
 @WebServlet(name = "AddMovieServlet", urlPatterns = "/cs122b/add-movie")
@@ -51,9 +52,12 @@ public class AddMovieServlet extends HttpServlet {
                 status = rs.getInt("status");
             }
 
+
             if(status == 1){
+
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "success");
+
             }
             else{
                 responseJsonObject.addProperty("status", "fail");

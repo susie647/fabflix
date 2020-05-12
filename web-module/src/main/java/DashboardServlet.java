@@ -36,6 +36,7 @@ public class DashboardServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
+
             Connection dbCon = dataSource.getConnection();
             //databaseMetaData = dbCon.getMetaData();
             //ResultSet rs = databaseMetaData.getTables(null,null,null,new String[]{"TABLE"});
@@ -46,8 +47,6 @@ public class DashboardServlet extends HttpServlet {
             String query = "show tables";
 
             ResultSet rs = statement.executeQuery(query);
-
-
 
 
 
@@ -80,29 +79,12 @@ public class DashboardServlet extends HttpServlet {
 
 
 
-
-
                 rsTable.close();
                 statementTable.close();
             }
             // write JSON string to output
             out.write(jsonArray.toString());
 
-
-
-
-
-
-/*
-            JsonArray jsonArray = new JsonArray();
-            while(rs.next()){
-                String table = rs.getString("TABLE_NAME");
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("table",table);
-                jsonArray.add(jsonObject);
-            }
-            out.write(jsonArray.toString());
-*/
 
             // set response status to 200 (OK)
             response.setStatus(200);
@@ -112,7 +94,7 @@ public class DashboardServlet extends HttpServlet {
             dbCon.close();
 
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             // write error message JSON object to output
             JsonObject jsonObject = new JsonObject();

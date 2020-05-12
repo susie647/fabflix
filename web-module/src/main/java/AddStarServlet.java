@@ -72,6 +72,7 @@ public class AddStarServlet extends HttpServlet {
 
             responseJsonObject.addProperty("status", "success");
             responseJsonObject.addProperty("message", "success");
+            responseJsonObject.addProperty("newStarId", newStarId);
 
             update.close();
             dbCon.close();

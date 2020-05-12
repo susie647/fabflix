@@ -71,7 +71,7 @@ function handleAddStarResult(resultDataString) {
 
     // If login succeeds, it will redirect the user to index.html
     if (resultDataJson["status"] === "success") {
-        alert("success adding star");
+        alert("success adding star (new starId: " + resultDataJson["newStarId"] + ")");
     } else {
         // If login fails, the web page will display
         // error messages on <div> with id "login_error_message"
