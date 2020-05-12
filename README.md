@@ -11,7 +11,7 @@ Susie Liu
 	
 	    (Project 2): https://youtu.be/Xd9wJLdDiis
 	
-            (project 3): https://youtu.be/xt2HGkhLpQY
+            (project 3): https://youtu.be/nEmwS-B2_bA
 
 2. How to deploy our application with Tomcat: 
 
@@ -51,6 +51,9 @@ Susie Liu
 
         MovieListServlet.java
         https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/MovieListServlet.java
+
+	MainParser.java
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/sax-parser/src/main/java/MainParser.java
         
         PaymentServlet.java
         https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/PaymentServlet.java
@@ -76,7 +79,7 @@ Susie Liu
 		1. After enabled "load data": 
 			566.95s   ~approximately: 9m25s 
 		2. After enabled hash table and "load data"
-			54.04s
+			38.04s
 	
 
 
