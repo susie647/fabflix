@@ -1,4 +1,4 @@
-package main.java;
+//package main.java;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -46,24 +46,37 @@ public class MainParser extends DefaultHandler {
         existingGenres = new HashMap<String, Integer>();
         FidMidDict = new HashMap<String, String>();
         genreTable = new HashMap<String, String>(){{
-            put("susp", "thriller");
-            put("cnr", "cops and robbers");
-            put("dram", "drama");
-            put("west", "western");
-            put("myst", "mystery");
-            put("s.f.", "science fiction");
-            put("advt", "adventure");
-            put("horr", "horror");
-            put("romt", "romantic");
-            put("comd", "comedy");
-            put("musc", "musical");
-            put("docu", "documentary");
-            put("porn", "pornography, including soft");
-            put("noir", "black");
-            put("biop", "biographical Picture");
+            put("susp", "Thriller");
+            put("cnr", "Cops and robbers");
+            put("dram", "Drama");
+            put("west", "Western");
+            put("myst", "Mystery");
+            put("s.f.", "Science fiction");
+            put("advt", "Adventure");
+            put("horr", "Horror");
+            put("romt", "Romantic");
+            put("comd", "Comedy");
+            put("musc", "Musical");
+            put("docu", "Documentary");
+            put("porn", "Pornography");
+            put("noir", "Black");
+            put("biop", "Biographical Picture");
             put("tv", "TV show");
             put("tvs", "TV series");
             put("tvm", "TV miniseries");
+            put("actn", "Violence");
+            put("scfi", "Science fiction");
+            put("ctxx","Uncategorized");
+            put("camp", "Now - camp");
+            put("disa", "Disaster");
+            put("epic", "Epic");
+            put("West", "Western");
+            put("cart", "Cartoon");
+            put("faml", "Family");
+            put("surl", "sureal");
+            put("avga", "Avant Garde");
+
+
         }};
     }
 
@@ -256,10 +269,30 @@ public class MainParser extends DefaultHandler {
             //movie will not be added if no genre is provided
             ArrayList<String> tempGenres = myMovies.get(i).getGenres();
             //System.out.println(tempGenres);
-            if(tempGenres==null || tempGenres.isEmpty()){
-//                System.out.println("Movie not added, NO GENRE. " + myMovies.get(i).toString());
+//            if(tempGenres==null || tempGenres.isEmpty()){
+////                System.out.println("Movie not added, NO GENRE. " + myMovies.get(i).toString());
+//                try {
+//                    myWriter.write("\nMovie not added, NO GENRE. " + myMovies.get(i).toString());
+//                }catch (IOException e) { e.printStackTrace(); }
+//                continue;
+//            }
+
+            boolean existValidGenre = false;
+
+            if(tempGenres!=null && !tempGenres.isEmpty()) {
+                for (int j = 0; j < tempGenres.size(); j++) {
+
+                    String genre = genreTable.get(tempGenres.get(j));
+                    //System.out.println(genre);
+                    if (genre != null && !genre.equals("")) {
+                        existValidGenre = true;
+                    }
+                }
+            }
+
+            if(!existValidGenre){
                 try {
-                    myWriter.write("\nMovie not added, NO GENRE. " + myMovies.get(i).toString());
+                    myWriter.write("\nMovie not added, NO VALID GENRE. " + myMovies.get(i).toString());
                 }catch (IOException e) { e.printStackTrace(); }
                 continue;
             }
@@ -291,18 +324,18 @@ public class MainParser extends DefaultHandler {
                     FidMidDict.put(myMovies.get(i).getId(), movieId);
 
                     newMovieLine += movieId;
-                    newMovieLine += ",";
+                    newMovieLine += "|:";
                     newMovieLine += myMovies.get(i).getTitle();
-                    newMovieLine += ",";
+                    newMovieLine += "|:";
                     newMovieLine += myMovies.get(i).getYear();
-                    newMovieLine += ",";
+                    newMovieLine += "|:";
                     newMovieLine += myMovies.get(i).getDirector();
                     newMovieLine += "\n";
 
                     myMovieWriter.write(newMovieLine);
                     newMovieLine = "";
 
-                    newRating = movieId + ",-1.0,0\n";
+                    newRating = movieId + "|:-1.0|:0\n";
                     myRatingWrite.write(newRating);
 
 //                    update.setString(1, movieId);
@@ -325,7 +358,7 @@ public class MainParser extends DefaultHandler {
                     if(genre == null || genre.equals("")){
 //                        System.out.println("Movie not added, GENRE NOT VALID. " + myMovies.get(i).toString());
                         try {
-                            myWriter.write("\nMovie not added, GENRE NOT VALID. " + myMovies.get(i).toString());
+                            myWriter.write("\nGenre in Movie not added, GENRE NOT VALID. " + myMovies.get(i).toString());
                         }catch (IOException e) { e.printStackTrace(); }
                         continue;
                     }
@@ -333,7 +366,7 @@ public class MainParser extends DefaultHandler {
                     //System.out.println(genreId);
 
                     newGMLine += genreId;
-                    newGMLine += ",";
+                    newGMLine += "|:";
                     newGMLine += movieId;
                     newGMLine += "\n";
 
@@ -349,15 +382,15 @@ public class MainParser extends DefaultHandler {
         myGMWriter.close();
         myRatingWrite.close();
 
-        String updateMovies_s = "LOAD DATA LOCAL INFILE 'newMovies.txt' INTO TABLE movies FIELDS TERMINATED BY ',';";
+        String updateMovies_s = "LOAD DATA LOCAL INFILE 'newMovies.txt' INTO TABLE movies FIELDS TERMINATED BY '|:';";
         Statement updateMovies = connection.createStatement();
         ResultSet rs = updateMovies.executeQuery(updateMovies_s);
 
-        String updateGM_s = "LOAD DATA LOCAL INFILE 'newGenresInMovies.txt' INTO TABLE genres_in_movies FIELDS TERMINATED BY ',';";
+        String updateGM_s = "LOAD DATA LOCAL INFILE 'newGenresInMovies.txt' INTO TABLE genres_in_movies FIELDS TERMINATED BY '|:';";
         Statement updateGM = connection.createStatement();
         ResultSet rs2 = updateGM.executeQuery(updateGM_s);
 
-        String updateRating_s = "LOAD DATA LOCAL INFILE 'newRatings.txt' INTO TABLE ratings FIELDS TERMINATED BY ',';";
+        String updateRating_s = "LOAD DATA LOCAL INFILE 'newRatings.txt' INTO TABLE ratings FIELDS TERMINATED BY '|:';";
         Statement updateRating = connection.createStatement();
         ResultSet rs3 = updateRating.executeQuery(updateRating_s);
 

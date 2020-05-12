@@ -1,6 +1,6 @@
-package main.java;
+//package main.java;
 
-import com.sun.javafx.collections.MappingChange;
+//import com.sun.javafx.collections.MappingChange;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -192,7 +192,7 @@ public class CastParser extends DefaultHandler {
                         // both movie and star exists
                         newSMLine += star_id;
                         //newSMLine += fsrs.getString("id");
-                        newSMLine += ",";
+                        newSMLine += "|:";
                         newSMLine += movieId;
                         newSMLine += "\n";
 
@@ -222,7 +222,7 @@ public class CastParser extends DefaultHandler {
         }
         mySMWriter.close();
 
-        String updateSM_s = "LOAD DATA LOCAL INFILE 'newStarsInMovies.txt' INTO TABLE stars_in_movies FIELDS TERMINATED BY ',';";
+        String updateSM_s = "LOAD DATA LOCAL INFILE 'newStarsInMovies.txt' INTO TABLE stars_in_movies FIELDS TERMINATED BY '|:';";
         Statement updateSM = connection.createStatement();
         ResultSet rs = updateSM.executeQuery(updateSM_s);
 

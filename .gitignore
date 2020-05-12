@@ -2,10 +2,14 @@
 # Created by https://www.gitignore.io/api/java,maven,eclipse,java-web,intellij
 .idea
 *.iml
-newStars.txt
-newGenresInMovies.txt
-newMovies.txt
-newStarsInMovies.txt
+sax-parser/newStars.txt
+sax-parser/newGenresInMovies.txt
+sax-parser/newMovies.txt
+sax-parser/newStarsInMovies.txt
+sax-parser/newRatings.txt
+
+sax-parser/stanford-movies/
+
 #report.txt
 web-module/src/main/java/RecaptchaConstants.java
 
@@ -15,7 +19,6 @@ web-module/src/main/java/RecaptchaConstants.java
 bin/
 tmp/
 #XMLs/
-stanford-movies/
 *.dtd
 #*.xml
 *.tmp

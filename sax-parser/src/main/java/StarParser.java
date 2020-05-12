@@ -1,4 +1,4 @@
-package main.java;
+//package main.java;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -120,9 +120,9 @@ public class StarParser extends DefaultHandler{
             }
 
             newLine += newStarId;
-            newLine += ",";
+            newLine += "|:";
             newLine += myStars.get(i).getName();
-            newLine += ",";
+            newLine += "|:";
 
             if(myStars.get(i).getDob() == -1){
                 newLine += "\\N\n";
@@ -137,7 +137,7 @@ public class StarParser extends DefaultHandler{
 
         myWriter.close();
 
-        String load = "LOAD DATA LOCAL INFILE 'newStars.txt' INTO TABLE stars FIELDS TERMINATED BY ',';";
+        String load = "LOAD DATA LOCAL INFILE 'newStars.txt' INTO TABLE stars FIELDS TERMINATED BY '|:';";
         Statement statement2 = connection.createStatement();
         ResultSet rs = statement2.executeQuery(load);
 
