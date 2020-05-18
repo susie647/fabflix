@@ -6,7 +6,8 @@ create table movies(
 id varchar(10) primary key,
 title varchar(100) not null,
 year integer not null,
-director varchar(100) not null
+director varchar(100) not null,
+fulltext(title)
 );
 
 create table stars (

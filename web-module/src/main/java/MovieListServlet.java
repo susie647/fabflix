@@ -195,7 +195,7 @@ public class MovieListServlet extends HttpServlet {
 
                 String temp = "";
                 if (title.compareTo("") > 0) {
-                    temp += " and m.title like ? ";
+                    temp += " and MATCH (m.title) AGAINST (? IN BOOLEAN MODE)";
                 }
                 if (year > -1) {
                     temp += " and m.year= ? ";
@@ -230,8 +230,15 @@ public class MovieListServlet extends HttpServlet {
 
                 int num = 0;
                 if (title.compareTo("") > 0) {
-                    title = "%"+title+"%";
-                    statement.setString(++num, title);
+                    //split search into array "good a" -> [good,a] -> '+good* +a*'
+                    String [] titleArr = title.split(" ");
+
+                    String ftTitle = "";
+                    for (String word: titleArr){
+                        ftTitle += "+"+word+"* ";
+                    }
+
+                    statement.setString(++num, ftTitle);
                 }
                 if (year > -1) {
                     statement.setInt(++num, year);
