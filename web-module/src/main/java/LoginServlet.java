@@ -2,6 +2,7 @@ package main.java;
 
 import com.google.gson.JsonObject;
 
+import java.util.*;
 import javax.annotation.Resource;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -98,6 +99,12 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("ML_page", 1);
                     session.setAttribute("ML_moviesPerPage", 10);
                     session.setAttribute("ML_sort", "tara");
+
+                    //initialize empty suggestion list hashmap
+                    HashMap<String,ArrayList<String>> suggestion_title =new HashMap<String,ArrayList<String>>();
+                    HashMap<String,ArrayList<String>> suggestion_id =new HashMap<String,ArrayList<String>>();
+                    session.setAttribute("suggestion_title", suggestion_title);
+                    session.setAttribute("suggestion_id", suggestion_id);
 
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");

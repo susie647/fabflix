@@ -8,11 +8,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.PreparedStatement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -59,6 +59,11 @@ public class TitleSuggestion extends HttpServlet {
         try {
             // setup the response json arrray
             JsonArray jsonArray = new JsonArray();
+            HttpSession session = request.getSession();
+
+            //get suggestion list from session
+            HashMap<String,ArrayList<String>> suggestion_title = (HashMap<String,ArrayList<String>> ) session.getAttribute("suggestion_title");
+            HashMap<String,ArrayList<String>> suggestion_id = (HashMap<String,ArrayList<String>> ) session.getAttribute("suggestion_id");
 
             // get the query string from parameter
             String title = request.getParameter("query");
@@ -67,6 +72,23 @@ public class TitleSuggestion extends HttpServlet {
             if (title == null || title.trim().isEmpty()) {
                 response.getWriter().write(jsonArray.toString());
                 return;
+            }
+            title = title.trim();
+
+            if (title.compareTo("") > 0) {
+                ArrayList<String> title_list = suggestion_title.get(title);
+                ArrayList<String> id_list = suggestion_id.get(title);
+                //title is searched before and suggestion is cached
+                if(title_list!=null && id_list!=null){
+
+                    for (int i=0; i<title_list.size(); i++){
+                        jsonArray.add(generateJsonObject(id_list.get(i), title_list.get(i)));
+                    }
+                    response.getWriter().write(jsonArray.toString());
+                    return;
+
+                }
+
             }
 
             // search on superheroes and add the results to JSON Array
@@ -89,11 +111,22 @@ public class TitleSuggestion extends HttpServlet {
             }
 
             ResultSet resultSet = statement.executeQuery();
+
+            ArrayList<String> titleList = new ArrayList<String>();
+            ArrayList<String> idList = new ArrayList<String>();
             while(resultSet.next()){
                 String movieTitle = resultSet.getString("title");
                 String id = resultSet.getString("id");
                 jsonArray.add(generateJsonObject(id, movieTitle));
+                titleList.add(movieTitle);
+                idList.add(id);
             }
+            suggestion_title.put(title, titleList);
+            suggestion_id.put(title, idList);
+
+            session.setAttribute("suggestion_title", suggestion_title);
+            session.setAttribute("suggestion_id", suggestion_id);
+
 
 //            for (Integer id : superHeroMap.keySet()) {
 //                String heroName = superHeroMap.get(id);
