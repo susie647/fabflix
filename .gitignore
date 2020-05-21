@@ -7,11 +7,11 @@ sax-parser/newGenresInMovies.txt
 sax-parser/newMovies.txt
 sax-parser/newStarsInMovies.txt
 sax-parser/newRatings.txt
-
 sax-parser/stanford-movies/
 
 #report.txt
 web-module/src/main/java/RecaptchaConstants.java
+web-module/movie-data.sql
 
 ### Eclipse ###
 
