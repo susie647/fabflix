@@ -101,10 +101,10 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("ML_sort", "tara");
 
                     //initialize empty suggestion list hashmap
-                    HashMap<String,ArrayList<String>> suggestion_title =new HashMap<String,ArrayList<String>>();
-                    HashMap<String,ArrayList<String>> suggestion_id =new HashMap<String,ArrayList<String>>();
-                    session.setAttribute("suggestion_title", suggestion_title);
-                    session.setAttribute("suggestion_id", suggestion_id);
+//                    HashMap<String,ArrayList<String>> suggestion_title =new HashMap<String,ArrayList<String>>();
+//                    HashMap<String,ArrayList<String>> suggestion_id =new HashMap<String,ArrayList<String>>();
+//                    session.setAttribute("suggestion_title", suggestion_title);
+//                    session.setAttribute("suggestion_id", suggestion_id);
 
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");
