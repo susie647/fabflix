@@ -8,11 +8,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +41,7 @@ public class Login extends ActionBarActivity {
          * In Android, localhost is the address of the device or the emulator.
          * To connect to your machine, you need to use the below IP address
          * **/
-        url = "http://10.0.2.2:8080/cs122b-spring20-project2-login-cart-example/api/";
+        url = "http://10.0.2.2:8080/cs122b-spring20-team125/cs122b/";
 
         //assign a listener to call a function to handle the user request when clicking a button
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -59,11 +62,27 @@ public class Login extends ActionBarActivity {
             @Override
             public void onResponse(String response) {
                 //TODO should parse the json response to redirect to appropriate functions.
-                Log.d("login.success", response);
-                //initialize the activity(page)/destination
-                Intent listPage = new Intent(Login.this, ListViewActivity.class);
-                //without starting the activity/page, nothing would happen
-                startActivity(listPage);
+                try {
+                    JSONObject reader = new JSONObject(response);
+
+                    String status = reader.getString("status");
+                    if(status.equals("success")) {
+                        Log.d("login.success", response);
+                        //initialize the activity(page)/destination
+                        Intent listPage = new Intent(Login.this, ListViewActivity.class);
+                        //without starting the activity/page, nothing would happen
+                        startActivity(listPage);
+                    }
+                    else{
+                        String message = reader.getString("message");
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    String message = "not json object";
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                }
             }
         },
                 new Response.ErrorListener() {
@@ -77,9 +96,9 @@ public class Login extends ActionBarActivity {
             protected Map<String, String> getParams() {
                 // Post request form data
                 final Map<String, String> params = new HashMap<>();
-                params.put("username", username.getText().toString());
+                params.put("email", username.getText().toString());
                 params.put("password", password.getText().toString());
-
+                params.put("identity", "user");
                 return params;
             }
         };
