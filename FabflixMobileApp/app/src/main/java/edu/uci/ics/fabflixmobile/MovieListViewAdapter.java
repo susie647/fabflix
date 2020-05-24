@@ -27,10 +27,40 @@ public class MovieListViewAdapter extends ArrayAdapter<Movie> {
         Movie movie = movies.get(position);
 
         TextView titleView = view.findViewById(R.id.title);
-        TextView subtitleView = view.findViewById(R.id.subtitle);
+        TextView yearView = view.findViewById(R.id.year);
+        TextView genresView = view.findViewById(R.id.genres);
+        TextView starsView = view.findViewById(R.id.stars);
 
         titleView.setText(movie.getTitle());
-        subtitleView.setText(movie.getYear() + "");// need to cast the year to a string to set the label
+        yearView.setText(movie.getYear() + "");// need to cast the year to a string to set the label
+
+        //parse genre, limit to 3
+        String genreNames = movie.getGenres();
+        int index =0;
+        for (int i=0; i<3; i++) {
+            index = genreNames.indexOf(',', index+1);
+            if (index == -1) {//less than 3
+                break;
+            }
+        }
+        if (index>-1){genreNames = genreNames.substring(0,index);}
+
+        genresView.setText(genreNames);
+
+
+
+        //parse star, limit to 3
+        String starNames = movie.getStars();
+        index =0;
+        for (int i=0; i<3; i++) {
+            index = starNames.indexOf(',', index+1);
+            if (index == -1) {//less than 3
+                break;
+            }
+        }
+        if(index==-1){starNames = starNames.substring(0,starNames.length()-1);}
+        else{starNames = starNames.substring(0,index);}
+        starsView.setText(starNames);
 
         return view;
     }

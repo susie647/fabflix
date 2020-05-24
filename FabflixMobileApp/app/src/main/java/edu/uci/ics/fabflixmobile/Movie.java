@@ -42,12 +42,22 @@ public class Movie {
             genres.put(gid, name);
     }
 
-    public HashMap<Integer, String> getGenres() { return genres; }
+    public String getGenres() {
+        String result = genres.values().toString();
+        return result.substring(1,result.length()-1);
+    }
 
-    public void addStar(String starId, String star, Integer playCount) {
+    public void addStar( String star, String starId, Integer playCount) {
         if(!this.stars.containsKey(starId))
             this.stars.put(starId, new Star(star, starId, playCount));
     }
 
-    public HashMap<String, Star> getStars() { return stars; }
+    public String getStars() {
+        String names = "";
+        for (Star star: stars.values()){
+            names+=star.getName() + ", ";
+        }
+        return names;
+    }
+
 }
