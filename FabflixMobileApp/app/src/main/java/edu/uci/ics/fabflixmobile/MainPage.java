@@ -72,37 +72,9 @@ public class MainPage extends ActionBarActivity {
                     Log.d("search.success", response);
                     //initialize the activity(page)/destination
                     Intent listPage = new Intent(MainPage.this, ListViewActivity.class);
+                    listPage.putExtra("movies", jsonArray.toString());
                     //without starting the activity/page, nothing would happen
                     startActivity(listPage);
-
-
-//                    for (int i=0; i<jsonArray.length(); i++) {
-//                        JSONObject item = jsonArray.getJSONObject(i);
-//                        String movie_id = item.getString("movie_id");
-//                        String movie_title = item.getString("movie_title");
-//                        String movie_year = item.getString("movie_year");
-//                        String movie_director = item.getString("movie_director");
-//                        String movie_genre = item.getString("movie_genre");
-//                        String movie_genre_id = item.getString("movie_genre_id");
-//                        String movie_rating = item.getString("movie_rating");
-//                        String star_id = item.getString("star_id");
-//                        String star_name = item.getString("star_name");
-//                        String star_played_count = item.getString("star_played_count");
-//                    }
-
-
-//                    String status = reader.getString("status");
-//                    if(status.equals("success")) {
-//                        Log.d("search.success", response);
-//                        //initialize the activity(page)/destination
-//                        Intent listPage = new Intent(MainPage.this, ListViewActivity.class);
-//                        //without starting the activity/page, nothing would happen
-//                        startActivity(listPage);
-//                    }
-//                    else{
-//                        String message = reader.getString("message");
-//                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-//                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -118,25 +90,7 @@ public class MainPage extends ActionBarActivity {
                         Log.d("search.error", error.toString());
                     }
                 }) {
-//            @Override
-//            protected Map<String, String> getParams() {
-//                // Post request form data
-//                final Map<String, String> params = new HashMap<>();
-////                params.put("email", username.getText().toString());
-////                params.put("password", password.getText().toString());
-////                params.put("identity", "user");
-////                "?title=" + search_box.getText().toString() + "&year=&director=&star=&page=1&moviesPerPage=10&sort=tara"
-//                params.put("title", search_box.getText().toString());
-//
-//                params.put("year", "");
-//                params.put("director", "");
-//                params.put("star", "");
-//                params.put("page", "1");
-//                params.put("moviesPerPage", "10");
-//                params.put("sort", "tara");
-//
-//                return params;
-//            }
+
         };
 
         // !important: queue.add is where the search request is actually sent
