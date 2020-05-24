@@ -222,18 +222,25 @@ public class ListViewActivity extends Activity {
             public void onResponse(String response) {
                 //TODO should parse the json response to redirect to appropriate functions.
                 try {
+                    //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                     jsonArrayReturn = new JSONArray(response);
-                    Log.d("search.success", response);
-                    //initialize the activity(page)/destination
-                    Intent listPage = new Intent(ListViewActivity.this, ListViewActivity.class);
-                    listPage.putExtra("movies", jsonArrayReturn.toString());
-                    listPage.putExtra("searchText", searchText);
-                    listPage.putExtra("page", page);
+                    //Toast.makeText(getApplicationContext(), response + jsonArrayReturn, Toast.LENGTH_SHORT).show();
+                    if(jsonArrayReturn!=null && jsonArrayReturn.length()!=0) {
+
+                        Log.d("search.success", response);
+                        //initialize the activity(page)/destination
+                        Intent listPage = new Intent(ListViewActivity.this, ListViewActivity.class);
+                        listPage.putExtra("movies", jsonArrayReturn.toString());
+                        listPage.putExtra("searchText", searchText);
+                        listPage.putExtra("page", page);
 
 
-
-                    //without starting the activity/page, nothing would happen
-                    startActivity(listPage);
+                        //without starting the activity/page, nothing would happen
+                        startActivity(listPage);
+                    }
+                    else{
+                        page -=1;
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

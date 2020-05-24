@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,6 +45,15 @@ public class MainPage extends ActionBarActivity {
          * **/
         url = "http://10.0.2.2:8080/cs122b-spring20-team125/cs122b/";
 
+        search_box.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // TODO Auto-generated method stub
+                if (keyCode==KeyEvent.KEYCODE_ENTER) { //Whenever you got user click enter. Get text in edittext and check it equal test1. If it's true do your code in listenerevent of button3
+                    search();
+                }
+
+                return false;
+            }});
         //assign a listener to call a function to handle the user request when clicking a button
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
