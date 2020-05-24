@@ -60,7 +60,7 @@ public class MovieListViewAdapter extends ArrayAdapter<Movie> {
                 break;
             }
         }
-        if(index==-1){starNames = starNames.substring(0,starNames.length()-1);}
+        if(index==-1){starNames = starNames.substring(0,starNames.length()-2);}
         else{starNames = starNames.substring(0,index);}
         starsView.setText("Stars: " + starNames);
 

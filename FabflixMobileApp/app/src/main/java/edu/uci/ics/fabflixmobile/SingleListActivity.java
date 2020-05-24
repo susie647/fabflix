@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -26,13 +23,22 @@ import java.util.Map;
 public class SingleListActivity extends Activity {
 //    private JSONArray jsonArray;
     private TextView pageTitle;
+    private Button backButton;
+    private Button previousButton;
+    private Button nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listview);
         pageTitle = findViewById(R.id.pageTitle);
+        backButton = findViewById(R.id.back_button);
+        previousButton = findViewById(R.id.previous_button);
+        nextButton = findViewById(R.id.next_button);
+
         pageTitle.setText("Single Movie Page");
+        previousButton.setVisibility(View.INVISIBLE);
+        nextButton.setVisibility(View.INVISIBLE);
         //this should be retrieved from the database and the backend server
 
         Bundle extras = getIntent().getExtras();
@@ -140,29 +146,25 @@ public class SingleListActivity extends Activity {
 //                    }
 //                });
 
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "cannot convert to jsonArray", Toast.LENGTH_SHORT).show();
             }
         }
 
-//        final ArrayList<Movie> movies = new ArrayList<>();
-//        movies.add(new Movie("The Terminal", (short) 2004));
-//        movies.add(new Movie("The Final Season", (short) 2007));
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent listPage = new Intent(SingleListActivity.this, MainPage.class);
+                //listPage.putExtra("movies", jsonArrayReturn.toString());
+                //without starting the activity/page, nothing would happen
+                startActivity(listPage);
+            }
+        });
 
-//        MovieListViewAdapter adapter = new MovieListViewAdapter(movies, this);
 
-//        ListView listView = findViewById(R.id.list);
-//        listView.setAdapter(adapter);
-
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Movie movie = movies.get(position);
-//                String message = String.format("Clicked on position: %d, title: %s, %d", position, movie.getTitle(), movie.getYear());
-//                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
 

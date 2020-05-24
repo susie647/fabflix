@@ -54,7 +54,7 @@ public class Login extends ActionBarActivity {
 
     public void login() {
 
-        message.setText("Trying to login");
+//        message.setText("Trying to login");
         // Use the same network queue across our application
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
         //request type is POST
@@ -68,14 +68,20 @@ public class Login extends ActionBarActivity {
                     String status = reader.getString("status");
                     if(status.equals("success")) {
                         Log.d("login.success", response);
+                        String message1 = reader.getString("message");
+                        message.setText("log in " + message1);
+                        //Toast.makeText(getApplicationContext(), message1, Toast.LENGTH_SHORT).show();
+
                         //initialize the activity(page)/destination
                         Intent mainPage = new Intent(Login.this, MainPage.class);
                         //without starting the activity/page, nothing would happen
                         startActivity(mainPage);
                     }
                     else{
-                        String message = reader.getString("message");
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+                        String message1 = reader.getString("message");
+                        message.setText(message1);
+                        //Toast.makeText(getApplicationContext(), message1, Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (JSONException e) {

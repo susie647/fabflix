@@ -55,11 +55,13 @@ public class MainPage extends ActionBarActivity {
 
     public void search() {
 
-        message.setText("Trying to search");
+        message.setText("Searching Movie Title...");
         // Use the same network queue across our application
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
 
-        String query = "?title=" + search_box.getText().toString() + "&year=&director=&star=&page=1&moviesPerPage=10&sort=tara";
+        String searchtext = search_box.getText().toString();
+
+        String query = "?title=" + searchtext + "&year=&director=&star=&page=1&moviesPerPage=20&sort=tara";
 
         //request type is GET
         final StringRequest searchRequest = new StringRequest(Request.Method.GET, url + "movie-list"+query, new Response.Listener<String>() {
@@ -73,6 +75,8 @@ public class MainPage extends ActionBarActivity {
                     //initialize the activity(page)/destination
                     Intent listPage = new Intent(MainPage.this, ListViewActivity.class);
                     listPage.putExtra("movies", jsonArray.toString());
+                    listPage.putExtra("searchText", searchtext);
+                    listPage.putExtra("page", 1);
                     //without starting the activity/page, nothing would happen
                     startActivity(listPage);
 

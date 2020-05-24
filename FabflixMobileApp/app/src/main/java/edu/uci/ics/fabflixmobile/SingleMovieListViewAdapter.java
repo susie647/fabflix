@@ -27,6 +27,7 @@ public class SingleMovieListViewAdapter extends ArrayAdapter<Movie> {
 
         Movie movie = movies.get(position);
 
+
 //        TextView pageTitleView = view.findViewById(R.id.pageTitle);
         TextView titleView = view.findViewById(R.id.title);
         TextView yearView = view.findViewById(R.id.year);
@@ -67,7 +68,7 @@ public class SingleMovieListViewAdapter extends ArrayAdapter<Movie> {
 //        else{starNames = starNames.substring(0,index);}
 //        starsView.setText(starNames);
 
-        starNames = starNames.substring(0,starNames.length()-1);
+        starNames = starNames.substring(0,starNames.length()-2);
         starsView.setText("Stars: " + starNames);
 
         return view;
