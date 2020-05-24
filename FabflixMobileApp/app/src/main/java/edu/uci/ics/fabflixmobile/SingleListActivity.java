@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,11 +25,14 @@ import java.util.Map;
 
 public class SingleListActivity extends Activity {
 //    private JSONArray jsonArray;
+    private TextView pageTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listview);
+        pageTitle = findViewById(R.id.pageTitle);
+        pageTitle.setText("Single Movie Page");
         //this should be retrieved from the database and the backend server
 
         Bundle extras = getIntent().getExtras();
@@ -114,7 +118,7 @@ public class SingleListActivity extends Activity {
 //                    movieList.add((Movie) entry.getValue());
 //                }
 
-                MovieListViewAdapter adapter = new MovieListViewAdapter(movieList, this);
+                SingleMovieListViewAdapter adapter = new SingleMovieListViewAdapter(movieList, this);
 
                 ListView listView = findViewById(R.id.list);
                 listView.setAdapter(adapter);

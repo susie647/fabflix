@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,13 +26,18 @@ import java.util.Map;
 public class ListViewActivity extends Activity {
     private JSONArray jsonArrayReturn;
     private String url;
+    private TextView pageTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.listview);
+        pageTitle = findViewById(R.id.pageTitle);
+        pageTitle.setText("Movie List Page");
         url = "http://10.0.2.2:8080/cs122b-spring20-team125/cs122b/";
         //this should be retrieved from the database and the backend server
+
+
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -139,7 +145,7 @@ public class ListViewActivity extends Activity {
         String query = "?movieId=" + movieId ;
 
         //request type is GET
-        final StringRequest searchRequest = new StringRequest(Request.Method.GET, url + "movie-list"+query, new Response.Listener<String>() {
+        final StringRequest searchRequest = new StringRequest(Request.Method.GET, url + "single-movie"+query, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 //TODO should parse the json response to redirect to appropriate functions.
