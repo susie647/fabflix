@@ -195,7 +195,12 @@ public class MovieListServlet extends HttpServlet {
 
                 String temp = "";
                 if (title.compareTo("") > 0) {
-                    temp += " and MATCH (m.title) AGAINST (? IN BOOLEAN MODE)";
+
+                    // full text search
+//                    temp += " and MATCH (m.title) AGAINST (? IN BOOLEAN MODE)";
+
+                    // full text search(match against) + fuzzy search(like + ed(SimilarTo))
+                    temp += " and ( (MATCH (m.title) AGAINST (? IN BOOLEAN MODE)) OR (m.title like ?) OR (ed(m.title, ?) <= ?) )";
                 }
                 if (year > -1) {
                     temp += " and m.year= ? ";
@@ -230,15 +235,29 @@ public class MovieListServlet extends HttpServlet {
 
                 int num = 0;
                 if (title.compareTo("") > 0) {
+
+                    // full text search
                     //split search into array "good a" -> [good,a] -> '+good* +a*'
                     String [] titleArr = title.split(" ");
-
                     String ftTitle = "";
                     for (String word: titleArr){
                         ftTitle += "+"+word+"* ";
                     }
-
                     statement.setString(++num, ftTitle);
+
+                    // fuzzy search
+                    String likeItem = "%" + title + "%";
+                    // allow users to make 1 typo if the length is less than 4
+                    //                     2 typos if the length is greater than 3 and less than 7
+                    //                     3 typos otherwise
+                    Integer edNum = 1;
+                    if(title.length() > 3 && title.length() < 7)
+                        edNum = 2;
+                    else if(title.length() > 6)
+                        edNum = 3;
+                    statement.setString(++num, likeItem);
+                    statement.setString(++num, title);
+                    statement.setInt(++num, edNum);
                 }
                 if (year > -1) {
                     statement.setInt(++num, year);

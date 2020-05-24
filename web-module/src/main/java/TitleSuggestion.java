@@ -95,7 +95,9 @@ public class TitleSuggestion extends HttpServlet {
             // this example only does a substring match
             // TODO: in project 4, you should do full text search with MySQL to find the matches on movies and stars
 
-            String query = "SELECT * FROM movies WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE) limit 10";
+            // full text search and fuzzy search
+            String query = "SELECT * FROM movies as m WHERE ( (MATCH (m.title) AGAINST (? IN BOOLEAN MODE)) " +
+                    "OR (m.title like ?) OR (ed(m.title, ?) <= ?) ) limit 10";
             Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
 
@@ -108,6 +110,20 @@ public class TitleSuggestion extends HttpServlet {
                     ftTitle += "+"+word+"* ";
                 }
                 statement.setString(1, ftTitle);
+
+                // fuzzy search
+                String likeItem = "%" + title + "%";
+                // allow users to make 1 typo if the length is less than 4
+                //                     2 typos if the length is greater than 3 and less than 7
+                //                     3 typos otherwise
+                Integer edNum = 1;
+                if(title.length() > 3 && title.length() < 7)
+                    edNum = 2;
+                else if(title.length() > 6)
+                    edNum = 3;
+                statement.setString(2, likeItem);
+                statement.setString(3, title);
+                statement.setInt(4, edNum);
             }
 
             ResultSet resultSet = statement.executeQuery();
