@@ -43,7 +43,7 @@ public class MainPage extends ActionBarActivity {
          * In Android, localhost is the address of the device or the emulator.
          * To connect to your machine, you need to use the below IP address
          * **/
-        url = "http://10.0.2.2:8080/cs122b-spring20-team125/cs122b/";
+        url = "https://ec2-3-15-38-179.us-east-2.compute.amazonaws.com:8443/cs122b-spring20-team125/cs122b/";
 
         search_box.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
