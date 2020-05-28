@@ -7,11 +7,22 @@ Susie Liu
 
 1. Demo video URL 
 
-	    (Project 1): https://www.youtube.com/watch?v=xq9lA9oqXO4&feature=youtu.be
+	    (Project 1): 
 	
-	    (Project 2): https://youtu.be/Xd9wJLdDiis
+	https://www.youtube.com/watch?v=xq9lA9oqXO4&feature=youtu.be
 	
-            (project 3): https://youtu.be/nEmwS-B2_bA
+	    (Project 2): 
+	
+	https://youtu.be/Xd9wJLdDiis
+	
+            (project 3): 
+	
+	https://youtu.be/nEmwS-B2_bA
+	    
+	    (project 4): 
+	
+	https://youtu.be/YknaC1sOyK4
+
 
 2. How to deploy our application with Tomcat: 
 
@@ -26,6 +37,15 @@ Susie Liu
 	    e. run "mvn package" to generate .war file
 
 	    f. copy the .war file into Tomcat webapp folder to deploy the application
+	    
+	    
+   How to deploy our android app:
+
+		a. build apk file
+		
+		b. use apk file to install application on android device or emulator
+		
+		c. connect to tomcat server and run app
 
 
 3. Substring matching design
@@ -51,9 +71,9 @@ Susie Liu
 
         MovieListServlet.java
         https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/MovieListServlet.java
-
-	MainParser.java
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/sax-parser/src/main/java/MainParser.java
+	
+        MainParser.java
+        https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/sax-parser/src/main/java/MainParser.java
         
         PaymentServlet.java
         https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/PaymentServlet.java
@@ -106,7 +126,18 @@ Susie Liu
 
 
 
-7. Project1 Each Member's Contribution:
+7. Fuzzy Search Implementation
+
+		take the union of result from full text search and edit distance search
+		
+		for fuzzy search edit distance, we set our threshold based on the query length, 
+		we allow users to make:
+			1. 1 typo if word length is less or equal to 3
+			2. 2 typos if word length is greater than 3 and less or equal to 6
+			3. 3 typos if word length is greater than 6
+
+
+8. Project1 Each Member's Contribution:
 
 		Kanglan Tang: 
 
@@ -153,3 +184,14 @@ Susie Liu
 
 	    Susie Liu:
 		    Recaptcha implementation, https redirection, dashboard display metadata and add star, parsing main & actor & casts, optimization using hashtable, inconsistency data report
+		    
+		    
+
+   Project 4 Each Member's Contribution:
+	    
+	    Kanglan Tang: 
+		    autocomplete UI, autocomplete search, android login, android main page and search, android movielist page display, fuzzy search
+		
+
+	    Susie Liu:
+		    full text search, autocomplete jump, javascript console log, android movielist page jump and pagination, android single page
