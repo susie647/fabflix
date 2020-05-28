@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 
 import java.util.*;
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +27,8 @@ public class LoginServlet extends HttpServlet {
      */
 
     // Create a dataSource which registered in web.xml
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
+    //@Resource(name = "jdbc/moviedb")
+    //private DataSource dataSource;
 
     private static final long serialVersionUID = 1L;
 
@@ -55,9 +57,44 @@ public class LoginServlet extends HttpServlet {
 
 
         try {
+            // the following few lines are for connection pooling
+            // Obtain our environment naming context
 
-            // Create a new connection to database
-            Connection dbCon = dataSource.getConnection();
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null) {
+//                out.println("envCtx is NULL");
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "envCtx is NULL");
+                response.getWriter().write(responseJsonObject.toString());
+            }
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            // the following commented lines are direct connections without pooling
+            //Class.forName("org.gjt.mm.mysql.Driver");
+            //Class.forName("com.mysql.jdbc.Driver").newInstance();
+            //Connection dbcon = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+
+            if (ds == null){
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "ds is null.");
+                response.getWriter().write(responseJsonObject.toString());
+            }
+//                out.println("ds is null.");
+
+            Connection dbCon = ds.getConnection();
+            if (dbCon == null) {
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "dbcon is null.");
+                response.getWriter().write(responseJsonObject.toString());
+//                out.println("dbcon is null.");
+            }
+
+//            // Create a new connection to database
+//            Connection dbCon = dataSource.getConnection();
 
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String email = request.getParameter("email");

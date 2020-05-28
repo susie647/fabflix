@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,19 +27,50 @@ public class DashboardServlet extends HttpServlet {
      */
 
     // Create a dataSource which registered in web.xml
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
+//    @Resource(name = "jdbc/moviedb")
+//    private DataSource dataSource;
     //private DatabaseMetaData databaseMetaData;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         response.setContentType("application/json"); // Response mime type
+        JsonObject responseJsonObject = new JsonObject();
 
         PrintWriter out = response.getWriter();
 
         try {
 
-            Connection dbCon = dataSource.getConnection();
+            // the following few lines are for connection pooling
+            // Obtain our environment naming context
+
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null) {
+//                out.println("envCtx is NULL");
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "envCtx is NULL");
+                response.getWriter().write(responseJsonObject.toString());
+            }
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            // the following commented lines are direct connections without pooling
+            //Class.forName("org.gjt.mm.mysql.Driver");
+            //Class.forName("com.mysql.jdbc.Driver").newInstance();
+            //Connection dbcon = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+
+            if (ds == null){
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "ds is null.");
+                response.getWriter().write(responseJsonObject.toString());
+            }
+//                out.println("ds is null.");
+
+            Connection dbCon = ds.getConnection();
+
+//            Connection dbCon = dataSource.getConnection();
             //databaseMetaData = dbCon.getMetaData();
             //ResultSet rs = databaseMetaData.getTables(null,null,null,new String[]{"TABLE"});
 

@@ -4,6 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +29,8 @@ public class AddStarServlet extends HttpServlet {
      */
 
     // Create a dataSource which registered in web.xml
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
+//    @Resource(name = "jdbc/moviedb")
+//    private DataSource dataSource;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //HttpSession session = request.getSession(true);
@@ -35,7 +38,42 @@ public class AddStarServlet extends HttpServlet {
         //PrintWriter out = response.getWriter();
 
         try {
-            Connection dbCon = dataSource.getConnection();
+            // the following few lines are for connection pooling
+            // Obtain our environment naming context
+
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null) {
+//                out.println("envCtx is NULL");
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "envCtx is NULL");
+                response.getWriter().write(responseJsonObject.toString());
+            }
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            // the following commented lines are direct connections without pooling
+            //Class.forName("org.gjt.mm.mysql.Driver");
+            //Class.forName("com.mysql.jdbc.Driver").newInstance();
+            //Connection dbcon = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+
+            if (ds == null){
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "ds is null.");
+                response.getWriter().write(responseJsonObject.toString());
+            }
+//                out.println("ds is null.");
+
+            Connection dbCon = ds.getConnection();
+            if (dbCon == null) {
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "dbcon is null.");
+                response.getWriter().write(responseJsonObject.toString());
+//                out.println("dbcon is null.");
+            }
+//            Connection dbCon = dataSource.getConnection();
             String star_name = request.getParameter("star_name");
             String star_birthYear = request.getParameter("star_birthYear");
 
@@ -79,7 +117,7 @@ public class AddStarServlet extends HttpServlet {
             response.setStatus(200);
 
 
-        } catch (SQLException e) {
+        } catch (SQLException | NamingException e) {
             e.printStackTrace();
             //response.getWriter().write("failure");
             responseJsonObject.addProperty("status", "fail");

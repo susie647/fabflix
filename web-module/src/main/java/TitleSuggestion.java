@@ -3,6 +3,8 @@ package main.java;
 import java.io.IOException;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,9 +29,9 @@ public class TitleSuggestion extends HttpServlet {
      * populate the Super hero hash map.
      * Key is hero ID. Value is hero name.
      */
-//    public static HashMap<Integer, String> superHeroMap = new HashMap<>();
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
+////    public static HashMap<Integer, String> superHeroMap = new HashMap<>();
+//    @Resource(name = "jdbc/moviedb")
+//    private DataSource dataSource;
 
     public TitleSuggestion() {
         super();
@@ -57,6 +59,7 @@ public class TitleSuggestion extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            JsonObject responseJsonObject = new JsonObject();
             // setup the response json arrray
             JsonArray jsonArray = new JsonArray();
 //            HttpSession session = request.getSession();
@@ -95,10 +98,47 @@ public class TitleSuggestion extends HttpServlet {
             // this example only does a substring match
             // TODO: in project 4, you should do full text search with MySQL to find the matches on movies and stars
 
+            // the following few lines are for connection pooling
+            // Obtain our environment naming context
+
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null) {
+//                out.println("envCtx is NULL");
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "envCtx is NULL");
+                response.getWriter().write(responseJsonObject.toString());
+            }
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            // the following commented lines are direct connections without pooling
+            //Class.forName("org.gjt.mm.mysql.Driver");
+            //Class.forName("com.mysql.jdbc.Driver").newInstance();
+            //Connection dbcon = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+
+            if (ds == null){
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "ds is null.");
+                response.getWriter().write(responseJsonObject.toString());
+            }
+//                out.println("ds is null.");
+
+            Connection connection = ds.getConnection();
+            if (connection == null) {
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "dbcon is null.");
+                response.getWriter().write(responseJsonObject.toString());
+//                out.println("dbcon is null.");
+            }
+
             // full text search and fuzzy search
             String query = "SELECT * FROM movies as m WHERE ( (MATCH (m.title) AGAINST (? IN BOOLEAN MODE)) " +
                     "OR (m.title like ?) OR (ed(m.title, ?) <= ?) ) limit 10";
-            Connection connection = dataSource.getConnection();
+
+//            Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
 
             if (title.compareTo("") > 0) {
