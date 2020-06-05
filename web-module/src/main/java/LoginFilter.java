@@ -24,23 +24,29 @@ public class LoginFilter implements Filter {
 
         System.out.println("LoginFilter: " + httpRequest.getRequestURI());
 
-        // Check if this URL is allowed to access without logging in (already in login page)
-        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
-            // Keep default action: pass along the filter chain
-            chain.doFilter(request, response);
-            return;
-        }
+        ///////////////////////////
+        // for Jmeter test purpose
+        chain.doFilter(request, response);
+        return;
+        /////////////////////////////
 
-        // Redirect to login page if the "user" attribute doesn't exist in session
-        if (httpRequest.getSession(true).getAttribute("user") == null) {
-            httpResponse.sendRedirect("login.html");
-        }
-        else if (httpRequest.getSession().getAttribute("login").equals(false)) {
-            httpResponse.sendRedirect("login.html");
-        }
-        else {
-            chain.doFilter(request, response);
-        }
+        // Check if this URL is allowed to access without logging in (already in login page)
+//        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
+//            // Keep default action: pass along the filter chain
+//            chain.doFilter(request, response);
+//            return;
+//        }
+//
+//        // Redirect to login page if the "user" attribute doesn't exist in session
+//        if (httpRequest.getSession(true).getAttribute("user") == null) {
+//            httpResponse.sendRedirect("./login.html");
+//        }
+//        else if (httpRequest.getSession().getAttribute("login").equals(false)) {
+//            httpResponse.sendRedirect("./login.html");
+//        }
+//        else {
+//            chain.doFilter(request, response);
+//        }
     }
 
     private boolean isUrlAllowedWithoutLogin(String requestURI) {

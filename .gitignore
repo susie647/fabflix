@@ -13,6 +13,9 @@ sax-parser/stanford-movies/
 web-module/src/main/java/RecaptchaConstants.java
 web-module/movie-data.sql
 
+#log
+web-module/log_processing.txt
+
 ### Eclipse ###
 
 .metadata

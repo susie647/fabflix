@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -77,6 +78,10 @@ public class MovieListServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Time an event in a program to nanosecond precision
+        long startTimeTS = System.nanoTime();
+        long TJ = 0;
+
         JsonObject responseJsonObject = new JsonObject();
         response.setContentType("application/json"); // Response mime type
 
@@ -115,20 +120,6 @@ public class MovieListServlet extends HttpServlet {
             }
 //                out.println("ds is null.");
 
-            Connection dbcon = ds.getConnection();
-
-            if (dbcon == null) {
-                responseJsonObject.addProperty("status", "fail");
-                responseJsonObject.addProperty("message", "dbcon is null.");
-                response.getWriter().write(responseJsonObject.toString());
-//                out.println("dbcon is null.");
-            }
-            // Get a connection from dataSource
-//            Connection dbcon = dataSource.getConnection();
-
-            PreparedStatement statement;
-            ResultSet rs;
-
             int page = Integer.parseInt(request.getParameter("page"));
             session.setAttribute("ML_page", page);
 
@@ -142,6 +133,22 @@ public class MovieListServlet extends HttpServlet {
             if(sortQuery == null) {
                 throw new Exception("invalid sorting order");
             }
+
+            // Time an event in a program to nanosecond precision
+            long startTimeTJ = System.nanoTime();
+            Connection dbcon = ds.getConnection();
+
+            if (dbcon == null) {
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "dbcon is null.");
+                response.getWriter().write(responseJsonObject.toString());
+//                out.println("dbcon is null.");
+            }
+            // Get a connection from dataSource
+//            Connection dbcon = dataSource.getConnection();
+
+            PreparedStatement statement;
+            ResultSet rs;
 
             if(request.getParameter("genreId") != null){
                 // Generate a SQL query
@@ -355,6 +362,11 @@ public class MovieListServlet extends HttpServlet {
             rs.close();
             statement.close();
             dbcon.close();
+
+            // end Timer
+            long endTimeTJ = System.nanoTime();
+            TJ = endTimeTJ - startTimeTJ; // elapsed time in nano seconds. Note: print the values in nano seconds
+
         } catch (Exception e) {
 
             // write error message JSON object to output
@@ -368,5 +380,17 @@ public class MovieListServlet extends HttpServlet {
         }
         out.close();
 
+        // end Timer
+        long endTimeTS = System.nanoTime();
+        long TS = endTimeTS - startTimeTS; // elapsed time in nano seconds. Note: print the values in nano seconds
+
+        String contextPath = getServletContext().getRealPath("/");
+        String xmlFilePath=contextPath+"log1.txt";
+//        File myfile = new File(xmlFilePath);
+//        myfile.createNewFile();
+        FileWriter myWriter = new FileWriter(xmlFilePath, true);
+        myWriter.write(String.format("%d | %d\n", TS, TJ));
+        myWriter.close();
+//        System.out.println("wrote");
     }
 }
