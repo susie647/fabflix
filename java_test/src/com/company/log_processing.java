@@ -30,16 +30,16 @@ public class log_processing
             TJs.add(Integer.parseInt(arrOfStr[2]));
         }
 
-        int totalTS = 0;
-        int totalTJ = 0;
+        long totalTS = 0;
+        long totalTJ = 0;
 
         for(int i = 0; i < TSs.size(); i++){
-            totalTS += TSs.get(i);
-            totalTJ += TJs.get(i);
+            totalTS += (TSs.get(i)/1000);
+            totalTJ += (TJs.get(i)/1000);
         }
 
-        int avgTS = totalTS / TSs.size();
-        int avgTJ = totalTJ / TJs.size();
+        double avgTS = totalTS / TSs.size()*1000;
+        double avgTJ = totalTJ / TJs.size()*1000;
         System.out.println("The Average TS is: " + avgTS);
         System.out.println("The Average TJ is: " + avgTJ);
     }
