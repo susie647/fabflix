@@ -118,7 +118,7 @@
 
     - #### How to get log files:
 
-    	1. Comment out few lines in LoginFilter.java that disable login filter
+    	1. *Comment out 34-49 lines and uncommnet 29-39 lines in LoginFilter.java to disable login filter for Jmeter test*
     	2. Run Jmeter Test (we set loop count=2642, recycle eof => false, and stop thread eof => true)
     	3. Log file (log1.txt) will be generated in the tomcat/webapps/cs122b-spring20-team125/
     	4. (Rename the file or save/move it to a different place) 
