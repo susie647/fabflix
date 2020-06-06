@@ -11,21 +11,24 @@
 
     - #### Instruction of deployment: 
 
-		a. open your terminal and type "git clone https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125.git"; 
-	    b. prepare a movie data; 
-	    c. run "source create-table.sql" on your terminal; 
-	    d. run your movie data file to populate your moviedb database;
-	    e. run "mvn package" to generate .war file
-	    f. copy the .war file into Tomcat webapp folder to deploy the application
-	    g. use port 80 for load balancer (scaled version), port 8080 for http, and port 8443 for https (single version)
+		1. open your terminal and type "git clone https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125.git"; 
+	    2. prepare a movie data; 
+	    3. run "source create-table.sql" on your terminal; 
+	    4. run your movie data file to populate your moviedb database;
+	    5. run "mvn package" to generate .war file
+	    6. copy the .war file into Tomcat webapp folder to deploy the application
+	    7. use port 80 for load balancer (scaled version), port 8080 for http, and port 8443 for https (single version)
 
 
 
     - #### Collaborations and Work Distribution (Project 5): 
 
     	Kanglan Tang:
+    		
     		time statements for measuring TS and TJ, log_processing.java, Apache JMeter test
+    	
     	Susie Liu:
+    		
     		connection pooling, mysql master/slave replication, load balancing, aws and gcp setup
 
 
@@ -81,27 +84,27 @@
 
     	Master/Slave SQL (assigned by load balancer): 
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddMovieServlet.java
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddMovieServlet.java
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddStarServlet.java
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddStarServlet.java
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/BrowseServlet.java
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/BrowseServlet.java
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/LoginServlet.java
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/LoginServlet.java
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/MovieListServlet.java
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/MovieListServlet.java
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/PaymentServlet.java
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/PaymentServlet.java
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleMovieServlet.java
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleMovieServlet.java
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleStarServlet.java
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleStarServlet.java
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/TitleSuggestion.java
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/TitleSuggestion.java
 
-	Where to specify the urls of Master/Slave:
+		Where to specify the urls of Master/Slave:
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/web/META-INF/context.xml
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/web/META-INF/context.xml
 
 
     - #### How read/write requests were routed to Master/Slave SQL?
@@ -124,36 +127,36 @@
 	
 	- Single-instance cases:
 	
-	Use HTTP, 1 thread in JMeter.
+		Use HTTP, 1 thread in JMeter.
 	
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread1.txt
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread1.txt
 
-	Use HTTP, 10 threads in JMeter.
+		Use HTTP, 10 threads in JMeter.
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread10.txt
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread10.txt
 	
-	Use HTTPS, 10 threads in JMeter.
+		Use HTTPS, 10 threads in JMeter.
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread10-https.txt
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread10-https.txt
 	
-	Use HTTP, without using Connection Pooling, 10 threads in JMeter.
+		Use HTTP, without using Connection Pooling, 10 threads in JMeter.
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread10-ncp.txt
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread10-ncp.txt
 
 
 	- Scaled-version cases:(separate log file for master and slave)
 
-	Use HTTP, 1 thread in JMeter. 
+		Use HTTP, 1 thread in JMeter. 
 	
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/tree/master/log_files/aws-1thread
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/tree/master/log_files/aws-1thread
 
-	Use HTTP, 10 threads in JMeter.
+		Use HTTP, 10 threads in JMeter.
 	
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/tree/master/log_files/aws-10thread
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/tree/master/log_files/aws-10thread
 
-	Use HTTP, without using Connection Pooling, 10 threads in JMeter.
+		Use HTTP, without using Connection Pooling, 10 threads in JMeter.
 
-	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/tree/master/log_files/aws-noconnectionpooling
+		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/tree/master/log_files/aws-noconnectionpooling
 	
 
     - #### How to use log_processing.java script to process log files:
@@ -185,19 +188,19 @@
 
 	    (Project 1): 
 	
-	https://www.youtube.com/watch?v=xq9lA9oqXO4&feature=youtu.be
+		https://www.youtube.com/watch?v=xq9lA9oqXO4&feature=youtu.be
 	
 		(Project 2): 
 	
-	https://youtu.be/Xd9wJLdDiis
+		https://youtu.be/Xd9wJLdDiis
 	
     	(Project 3): 
 	
-	https://youtu.be/nEmwS-B2_bA
+		https://youtu.be/nEmwS-B2_bA
 	    
 	    (Project 4): 
 	
-	https://youtu.be/YknaC1sOyK4
+		https://youtu.be/YknaC1sOyK4
 
 	
 
