@@ -75,33 +75,33 @@
 
     	Master SQL:
 
-    		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/DashboardServlet.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/DashboardServlet.java
 
-    		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/UpdateSalesServlet.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/UpdateSalesServlet.java
 
     	Master/Slave SQL (assigned by load balancer): 
 
-	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddMovieServlet.java
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddMovieServlet.java
 
-	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddStarServlet.java
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddStarServlet.java
 
-	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/BrowseServlet.java
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/BrowseServlet.java
 
-	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/LoginServlet.java
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/LoginServlet.java
 
-	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/MovieListServlet.java
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/MovieListServlet.java
 
-	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/PaymentServlet.java
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/PaymentServlet.java
 
-	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleMovieServlet.java
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleMovieServlet.java
 
-	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleStarServlet.java
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleStarServlet.java
 
-	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/TitleSuggestion.java
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/TitleSuggestion.java
 
-	    Where to specify the urls of Master/Slave:
+	Where to specify the urls of Master/Slave:
 
-	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/web/META-INF/context.xml
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/web/META-INF/context.xml
 
 
     - #### How read/write requests were routed to Master/Slave SQL?
@@ -116,13 +116,45 @@
     - #### How to get log files:
 
     	1. Comment out few lines in LoginFilter.java that disable login filter
-    	2. Run Jmeter Test
+    	2. Run Jmeter Test (we set loop count=2642, recycle eof => false, and stop thread eof => true)
     	3. Log file (log1.txt) will be generated in the tomcat/webapps/cs122b-spring20-team125/
     	4. (Rename the file or save/move it to a different place) 
 
     - #### log files: 
+	
+	- Single-instance cases:
+	
+	Use HTTP, 1 thread in JMeter.
+	
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread1.txt
+
+	Use HTTP, 10 threads in JMeter.
+
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread10.txt
+	
+	Use HTTPS, 10 threads in JMeter.
+
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread10-https.txt
+	
+	Use HTTP, without using Connection Pooling, 10 threads in JMeter.
+
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/log_files/single/log-thread10-ncp.txt
 
 
+	- Scaled-version cases:(separate log file for master and slave)
+
+	Use HTTP, 1 thread in JMeter. 
+	
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/tree/master/log_files/aws-1thread
+
+	Use HTTP, 10 threads in JMeter.
+	
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/tree/master/log_files/aws-10thread
+
+	Use HTTP, without using Connection Pooling, 10 threads in JMeter.
+
+	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/tree/master/log_files/aws-noconnectionpooling
+	
 
     - #### How to use log_processing.java script to process log files:
 
@@ -135,16 +167,16 @@
 
 | **Single-instance Version Test Plan**          | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis**                                       |
 |------------------------------------------------|------------------------------|----------------------------|-------------------------------------|----------------|----------------------------------------------------|
-| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | 148                        | 5.8392E7                            | 5.8039E7        | less average query time, but longer total time     |
-| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | 590                        | 4.80552E8                           | 4.80401E8       | longer average query time, but larger throughput   |
-| Case 3: HTTPS/10 threads                       | ![](path to image in img/)   | 609                        | 4.94847E8                           | 4.9457E8        | slightly more time than http because SSL handshake |
-| Case 4: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | 591                        | 4.99196E8                           | 4.99042E8       | more time b/c every request builds new connection  |
+| Case 1: HTTP/1 thread                          | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/img/single-http-1thread.png)   | 148                        | 5.8392E7                            | 5.8039E7        | less average query time, but longer total time     |
+| Case 2: HTTP/10 threads                        | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/img/single-http-10thread.png)   | 590                        | 4.80552E8                           | 4.80401E8       | longer average query time, but larger throughput   |
+| Case 3: HTTPS/10 threads                       | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/img/single-https-10thread.png)   | 609                        | 4.94847E8                           | 4.9457E8        | slightly more time than http because SSL handshake |
+| Case 4: HTTP/10 threads/No connection pooling  | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/img/single-noconnectionpooling-10thread.png)   | 591                        | 4.99196E8                           | 4.99042E8       | more time b/c every request builds new connection  |
 
 | **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)**| **Analysis**                                        |
 |------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------|-----------------------------------------------------|
-| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | 134                        | 5.8165E7                            | 5.792E7        | slightly less than single-instance                  |
-| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | 294                        | 2.11172E8                           | 2.11001E8      | less than single b/c requests are balanced to M/S   |
-| Case 3: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | 306                        | 2.23329E8                           | 2.23174E8      | more time b/c every request builds new connection   |
+| Case 1: HTTP/1 thread                          | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/img/loadbalancer-1thread.png)   | 134                        | 5.8165E7                            | 5.792E7        | slightly less than single-instance                  |
+| Case 2: HTTP/10 threads                        | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/img/loadbalancer-10thread.png)   | 294                        | 2.11172E8                           | 2.11001E8      | less than single b/c requests are balanced to M/S   |
+| Case 3: HTTP/10 threads/No connection pooling  | ![](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/img/loadbalancer-noconnectionpooling-10thread.png)   | 306                        | 2.23329E8                           | 2.23174E8      | more time b/c every request builds new connection   |
 
 
 - # previous projects:
