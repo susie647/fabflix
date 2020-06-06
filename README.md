@@ -11,50 +11,45 @@ Susie Liu
 	
 	https://www.youtube.com/watch?v=xq9lA9oqXO4&feature=youtu.be
 	
-	    (Project 2): 
+		(Project 2): 
 	
 	https://youtu.be/Xd9wJLdDiis
 	
-            (project 3): 
+    	(Project 3): 
 	
 	https://youtu.be/nEmwS-B2_bA
 	    
-	    (project 4): 
+	    (Project 4): 
 	
 	https://youtu.be/YknaC1sOyK4
+
+		(Project 5):
+	
 
 
 2. How to deploy our application with Tomcat: 
 
 	    a. open your terminal and type "git clone https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125.git"; 
-
 	    b. prepare a movie data; 
-
 	    c. run "source create-table.sql" on your terminal; 
-
 	    d. run your movie data file to populate your moviedb database;
-
 	    e. run "mvn package" to generate .war file
-
 	    f. copy the .war file into Tomcat webapp folder to deploy the application
 	    
 	    
    How to deploy our android app:
 
 		a. build apk file
-		
 		b. use apk file to install application on android device or emulator
-		
 		c. connect to tomcat server and run app
 
 
 3. Substring matching design
 
 	    Users keyword will be searched via the following substring matching design:
-	
-		like 'ABC%': All strings that start with 'ABC'. E.g. 'ABCD' and 'ABCABC'.
-		like '%XYZ': All strings that end with 'XYZ'. E.g. 'WXYZ' and 'ZZXYZ'.
-		like '%AN%': All strings that contain the pattern 'AN' anywhere. E.g. 'LOS ANGELES' and 'SAN FRANCISCO'.
+			like 'ABC%': All strings that start with 'ABC'. E.g. 'ABCD' and 'ABCABC'.
+			like '%XYZ': All strings that end with 'XYZ'. E.g. 'WXYZ' and 'ZZXYZ'.
+			like '%AN%': All strings that contain the pattern 'AN' anywhere. E.g. 'LOS ANGELES' and 'SAN FRANCISCO'.
 
 
 4. Queries with Prepared Statements
@@ -140,28 +135,16 @@ Susie Liu
 8. Project1 Each Member's Contribution:
 
 		Kanglan Tang: 
-
 			1. wrote movie list page;
-
 			2. wrote single movie page;
-
 			3. linked movie list page and single movie page;
-
 			4. added .gitignore file
-
 			5. wrote README.md
-
-
 		Susie Liu:
-
 			1. wrote movie list page;
-
 			2. wrote single star page;
-
 			3. linked movie list page and single star page;
-
 			4. modified css;
-
 			5. created create_table.sql
 
 
@@ -170,8 +153,6 @@ Susie Liu
 	    
 	    Kanglan Tang: 
 		    Logout, main page, browsing, single page sorting, jump functionality, shopping cart page, confirmation page, place order action
-		
-
 	    Susie Liu:
 		    Login, login filter, searching, prev/next button, number of listings, movielist sorting, payment page, place order action
 
@@ -180,8 +161,6 @@ Susie Liu
 	    
 	    Kanglan Tang: 
 		    password encryption, prepared statement, dashboard employee credentials and add movie, parsing main & actor & casts, optimization using load data, inconsistency data report
-		
-
 	    Susie Liu:
 		    Recaptcha implementation, https redirection, dashboard display metadata and add star, parsing main & actor & casts, optimization using hashtable, inconsistency data report
 		    
@@ -191,7 +170,107 @@ Susie Liu
 	    
 	    Kanglan Tang: 
 		    autocomplete UI, autocomplete search, android login, android main page and search, android movielist page display, fuzzy search
-		
-
 	    Susie Liu:
 		    full text search, autocomplete jump, javascript console log, android movielist page jump and pagination, android single page
+
+
+ Project 5:
+- # General
+    - #### Team#: 125
+    
+    - #### Names: Kanglan Tang, Susie Liu
+    
+    - #### Project 5 Video Demo Link: 
+
+    - #### Instruction of deployment: 
+
+    - #### Collaborations and Work Distribution (Project 5): 
+
+    	Kanglan Tang:
+    		time statements for measuring TS and TJ, log_processing.java, Apache JMeter test
+    	Susie Liu:
+    		connection pooling, mysql master/slave replication, load balancing, gcp
+
+
+- # Connection Pooling
+    - #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
+    
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddMovieServlet.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddStarServlet.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/BrowseServlet.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/DashboardServlet.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/LoginServlet.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/MovieListServlet.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/PaymentServlet.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleMovieServlet.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleStarServlet.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/TitleSuggestion.java
+    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/UpdateSalesServlet.java
+    	Where to enable JDBC Connection Pooling:
+    		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/web/META-INF/context.xml
+    
+    - #### Explain how Connection Pooling is utilized in the Fabflix code.
+
+
+    
+    - #### Explain how Connection Pooling works with two backend SQL.
+
+
+    
+
+- # Master/Slave
+    - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
+
+    	Master:
+    		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/DashboardServlet.java
+    		https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/UpdateSalesServlet.java
+    	Master/Slave (assigned by load balancer): 
+	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddMovieServlet.java
+	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/AddStarServlet.java
+	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/BrowseServlet.java
+	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/LoginServlet.java
+	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/MovieListServlet.java
+	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/PaymentServlet.java
+	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleMovieServlet.java
+	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/SingleStarServlet.java
+	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/src/main/java/TitleSuggestion.java
+	    Where to specify the urls of Master/Slave:
+	    	https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-125/blob/master/web-module/web/META-INF/context.xml
+
+
+    - #### How read/write requests were routed to Master/Slave SQL?
+
+    	All write requests will look up urls with name "jdbc/moviedb_master" in context and be routed to Master SQL, no matter whether it is in Master instance or Slave instance. 
+    	Read requests will look up urls with name "jdbc/moviedb" in context and be routed to Master/Slave SQL. 
+    
+
+- # JMeter TS/TJ Time Logs
+    - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
+
+    	How to get log files:
+    	1. Comment out LoginFilter.java
+    	2. Run Jmeter Test
+    	3. Log file (log1.txt) will be generated in the tomcat/webapps/cs122b-spring20-team125
+    	4. (Rename the file or save/move it to a different place) 
+
+    	How to use log_processing.java script to process log files:
+    	1. open java_test/src
+    	2. Compile log_processing.java: javac com/company/log_processing.java
+    	3. Run log_processing: java com.company.log_processing <logFile1 logFile2 ...>
+
+
+- # JMeter TS/TJ Time Measurement Report
+
+| **Single-instance Version Test Plan**          | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
+|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
+| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 3: HTTPS/10 threads                       | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 4: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+
+| **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
+|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
+| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 3: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+
